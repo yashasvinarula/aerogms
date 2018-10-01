@@ -102,6 +102,21 @@ render() {
 				</div>
                 <div className="form-group">
 					<div className="col-1 col-ml-auto">
+						<label className="form-label" htmlFor="email">Email address</label>
+					</div>
+					<div className="col-3 col-mr-auto">
+						<input className="form-input"
+							type="email"
+							id="email"
+							name="email"
+							placeholder=""
+							value={this.state.username}
+							onChange={this.handleChange}
+						/>
+					</div>
+				</div>
+                <div className="form-group">
+					<div className="col-1 col-ml-auto">
 						<label className="form-label" htmlFor="mobile">Mobile number</label>
 					</div>
 					<div className="col-3 col-mr-auto">
