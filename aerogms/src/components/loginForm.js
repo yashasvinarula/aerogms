@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import axios from 'axios'
+import '../App.css';
+import AeroLogo from '../images/AeroLOGO.png';
+import BuildingsImage from '../images/login-page-image.png'
+import Navbar from './navbar';
 
 class LoginForm extends Component {
     constructor() {
@@ -22,8 +26,10 @@ class LoginForm extends Component {
     }
 
     handleSubmit(event) {
-        event.preventDefault()
-        console.log('handleSubmit')
+        event.preventDefault();
+        console.log('handleSubmit');
+
+        
 
         axios
             .post('/user/login', {
@@ -50,57 +56,69 @@ class LoginForm extends Component {
                 
             })
     }
-
+    
     render() {
         if (this.state.redirectTo) {
             return <Redirect to={{ pathname: this.state.redirectTo }} />
         } else {
             return (
                 <div>
-                    <h4>Login</h4>
-                    <form className="form-horizontal">
-                        <div className="form-group">
-                            <div className="col-1 col-ml-auto">
-                                <label className="form-label" htmlFor="username">Username</label>
+                    <div className="top-margin">
+                        <div className="row">
+                            <div className="col m1 offset m1"></div>
+                            <div className="col m5">
+                                <h3 className="center">Welcome to AeroGMS</h3>
+                                <hr className="hr-row"></hr>
+                                <p className="center">Geographic Management System is a framework for city administrators to collect, 
+                                    analyze and extract useful information for cities and towns. It encompasses all
+                                     aspects of management and planning process in an organization from servey to 
+                                     advanced analytics.
+                                </p>
+                                <img src={BuildingsImage} className="buildings-image"></img>
                             </div>
-                            <div className="col-3 col-mr-auto">
-                                <input className="form-input"
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    placeholder="Username"
-                                    value={this.state.username}
-                                    onChange={this.handleChange}
-                                />
+                            <div className="col m1 offset m1"></div>
+                            <div className="col m1 offset m1"></div>
+                            <div className="col m3 border-css form-height side-margin">
+                                <img src={AeroLogo} className="img-logo"></img>
+                                <form className="">
+                                    <div className="">
+                                    <div className="">
+                                        <label className="" htmlFor="username">Enter Username</label>
+                                    </div>
+                                    <div className="">
+                                        <input className="validate" type="text" id="username" name="username" required="true" placeholder=""
+                                            value={this.state.username} onChange={this.handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                    <div className="">
+                                    <div className="">
+                                        <label className="" htmlFor="password">Enter Password</label>
+                                    </div>
+                                    <div className="">
+                                        <input className="validate" placeholder="" type="password" name="password" required="true"
+                                            value={this.state.password} onChange={this.handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                    <div className=" ">
+                                        <div className="">
+                                            <button className="btn btn-auth col s12" onClick={this.handleSubmit} type="submit">Login</button>
+                                        </div>
+                                        <div className="">
+                                            <a href="/signup" className="btn col s12">New User? Sign up</a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
+                            <div className="col m1 offset m1"></div>
                         </div>
-                        <div className="form-group">
-                            <div className="col-1 col-ml-auto">
-                                <label className="form-label" htmlFor="password">Password: </label>
-                            </div>
-                            <div className="col-3 col-mr-auto">
-                                <input className="form-input"
-                                    placeholder="password"
-                                    type="password"
-                                    name="password"
-                                    value={this.state.password}
-                                    onChange={this.handleChange}
-                                />
-                            </div>
-                        </div>
-                        <div className="form-group ">
-                            <div className="col-7"></div>
-                            <button
-                                className="btn btn-primary col-1 col-mr-auto"
-                               
-                                onClick={this.handleSubmit}
-                                type="submit">Login</button>
-                        </div>
-                    </form>
+                    </div>
+                        
                 </div>
             )
         }
     }
 }
 
-export default LoginForm
+export default LoginForm;
