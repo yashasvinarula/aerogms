@@ -10,7 +10,7 @@ class Navbar extends Component {
         return (
             <div>
                 <div>
-                    <img src={AeroLogoHeader} className="header-logo"></img>
+                    <img src={AeroLogoHeader} alt="Aero Logo" className="header-logo"></img>
                 </div>
                 <nav className="home-nav">
                     <div className="">

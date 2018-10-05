@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
+import '../App.css';
 
 class HomeFooter extends Component {
-    constructor(){
-        super();
-    }
     render(){
         return(
-                <div>   
+                <div className="container">   
                     <hr></hr> 
                     <footer className="">
                         <div className="container">
-                            <div className="row">
+                            <div className="row pos-footer">
                               <div className="col m8"></div>  
                               <div className="col m4">
                                 <ul>

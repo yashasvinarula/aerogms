@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import Navbar from './navbar';
+
 class ContactUs extends Component {
-    constructor(){
-        super()
-    }
     render(){
         return (
             <div>
