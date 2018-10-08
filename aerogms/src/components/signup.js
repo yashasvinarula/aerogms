@@ -134,7 +134,7 @@ render() {
 										<p className="invalid-input">{this.state.formErrors["firstName"]}</p>
 									</div>
 									<label htmlFor="firstName">First name</label>
-                                    <input className="validate" type="text" id="first-name"	name="firstName" required="true" placeholder=""
+                                    <input className="validate" type="text" id="first-name"	name="firstName" required={true} placeholder=""
 				    	            	value={this.state.firstName} onChange={this.handleChange}
 				    	            />
                                 </div>
@@ -156,7 +156,7 @@ render() {
                                 <div className=" input-margin col s12">
 									<p className="invalid-input">{this.state.formErrors["email"]}</p>
 									<label className="" htmlFor="email">Email address</label>
-					    	        <input className="validate"	type="email" id="email"	name="email" required="true" placeholder=""
+					    	        <input className="validate"	type="email" id="email"	name="email" required={true} placeholder=""
 					    	        	value={this.state.username}	onChange={this.handleChange}
 					    	        />
                                 </div>
@@ -164,7 +164,7 @@ render() {
                             <div className="row">
                                 <div className=" input-margin col s12">
 									<label className="" htmlFor="mobile">Mobile number</label>
-						            <input className="validate" type="tel" id="mobile-number" name="mobile" required="true"	placeholder=""
+						            <input className="validate" type="tel" id="mobile-number" name="mobile" required={true}	placeholder=""
 							            value={this.state.mobile} onChange={this.handleChange}
 						            />
                                 </div>
@@ -172,13 +172,13 @@ render() {
 				            <div className="row">
                                 <div className=" input-margin col s6">
 									<label className="" htmlFor="password">Password</label>
-                                    <input className="validate" placeholder="" type="password" name="password" required="true" 
+                                    <input className="validate" placeholder="" type="password" name="password" required={true} 
                                         value={this.state.password}	onChange={this.handleChange}
 						            />
                                 </div>
                                 <div className=" input-margin col s6">
 									<label className="" htmlFor="password"> Confirm Password</label>
-						            <input className="validate"	placeholder="" type="password" name="confirmPassword" required="true"
+						            <input className="validate"	placeholder="" type="password" name="confirmPassword" required={true}
 							            value={this.state.confirmPassword} onChange={this.handleChange}
 						            />	
                                 </div>

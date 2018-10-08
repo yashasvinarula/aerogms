@@ -5,7 +5,7 @@ import './App.css';
 // components
 import Navbar from './components/navbar';
 import Signup from './components/signup';
-import LoginForm from './components/loginForm';
+import Login from './components/loginForm';
 import Dashboard from './components/dashboard';
 import About from './components/about';
 import ContactUs from './components/contactUs';
@@ -13,7 +13,8 @@ import HomeFooter from './components/footer-home';
 import Help from './components/help';
 import FAQ from './components/faq';
 import Feedback from './components/feedback';
-
+import 'materialize-css'; // It installs the JS asset only
+import 'materialize-css/dist/css/materialize.min.css';
 class App extends Component {
   constructor() {
     super()
@@ -62,7 +63,7 @@ class App extends Component {
         {/* Routes to different components */}
         <Navbar />
         <Route exact path="/dashboard" component={Dashboard} />
-        <Route path="/login" render={() => <LoginForm updateUser={this.updateUser} />} />
+        <Route path="/login" render={() => <Login updateUser={this.updateUser} />} />
         <Route path="/signup" render={() => <Signup/>} />
         <Route path="/about" render={() =>  <About />} />
         <Route path="/contact" render={() => <ContactUs />} />
