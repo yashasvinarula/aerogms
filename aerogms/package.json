@@ -4,8 +4,11 @@
   "private": true,
   "dependencies": {
     "axios": "0.18.0",
+    "dns": "file:./src/mock/dns",
+    "pg": "7.4.3",
     "react": "16.5.2",
     "react-dom": "16.5.2",
+    "react-redux": "5.0.7",
     "react-router-dom": "4.3.1",
     "react-scripts": "1.1.5"
   },
@@ -14,5 +17,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "proxy": "http://localhost:3001/"
 }

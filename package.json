@@ -1,0 +1,35 @@
+{
+  "name": "aerogms-web-elevenx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "client": "cd aerogms && npm start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm server\" \"npm client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Prateekjain7676@bitbucket.org/vaibhav11x/aerogms-web-elevenx.git"
+  },
+  "author": "Prateek jain",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/vaibhav11x/aerogms-web-elevenx#readme",
+  "dependencies": {
+    "async": "2.6.1",
+    "bcryptjs": "2.4.3",
+    "body-parser": "1.18.3",
+    "concurrently": "4.0.1",
+    "cookie-parser": "1.4.3",
+    "express": "4.16.3",
+    "express-session": "1.15.6",
+    "nodemailer": "4.6.8",
+    "passport": "0.4.0",
+    "passport-local": "1.0.0",
+    "path": "0.12.7",
+    "pg": "7.4.3",
+    "pg-promise": "8.4.6"
+  }
+}

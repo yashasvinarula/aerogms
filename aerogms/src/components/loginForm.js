@@ -1,19 +1,30 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import axios from 'axios'
+//import {connect} from 'react-redux'
 
 class LoginForm extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             username: '',
             password: '',
+            email:'',
             redirectTo: null
         }
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleChange = this.handleChange.bind(this)
-  
     }
+    // componentDidMount(){
+    //     axios.get('api/signup')
+    //     .then(res=>{
+    //         console.log(res.data[0]);
+    //         alert(res.data.length);
+    //     })
+    //     .catch(error=>{
+    //         console.log(error.message);
+    //     })
+	// }
 
     handleChange(event) {
         this.setState({
@@ -26,34 +37,39 @@ class LoginForm extends Component {
         console.log('handleSubmit')
 
         axios
-            .post('/user/login', {
+            .post('/api/login', {
                 username: this.state.username,
                 password: this.state.password
             })
             .then(response => {
+                debugger
                 console.log('login response: ')
-                console.log(response)
+                console.log(response.data.message)
                 if (response.status === 200) {
                     // update App.js state
                     this.props.updateUser({
                         loggedIn: true,
-                        username: response.data.username
+                        username: response.data.userfname,
+                        email: response.data.email,
+                        password:''
                     })
                     // update the state to redirect to home
                     this.setState({
-                        redirectTo: '/'
+                        redirectTo: '/dashboard'
                     })
                 }
             }).catch(error => {
-                console.log('login error: ')
+                if(error.response.status===401)
+                {
+                    alert('Please enter correct email and password!');
+                }
                 console.log(error);
-                
             })
     }
 
     render() {
         if (this.state.redirectTo) {
-            return <Redirect to={{ pathname: this.state.redirectTo }} />
+            return <Redirect to={{ pathname: this.state.redirectTo}} />
         } else {
             return (
                 <div>

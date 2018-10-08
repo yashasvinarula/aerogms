@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-import axios from 'axios'
+import React, { Component } from 'react';
+import axios from 'axios';
+import  { Redirect } from 'react-router-dom';
 
 class Signup extends Component {
 	constructor() {
@@ -7,16 +8,16 @@ class Signup extends Component {
 		this.state = {
             firstName : '',
             lastName : '',
-            username : '',
+            //username : '',
             email : '',
             mobile : '',
 			password: '',
 			confirmPassword: '',
-
 		}
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleChange = this.handleChange.bind(this)
 	}
+
 	handleChange(event) {
 		this.setState({
 			[event.target.name]: event.target.value
@@ -28,31 +29,45 @@ class Signup extends Component {
 		event.preventDefault()
 
 		//request to server to add a new username/password
-		axios.post('/user/', {
+		axios.post('/api/signup', {
+			firstName : this.state.firstName,
+			lastName : this.state.lastName,
 			email : this.state.email,
+			mobile : this.state.mobile,
 			password : this.state.password
 		})
 			.then(response => {
-				console.log(response)
-				if (!response.data.errmsg) {
+				console.log(response);
+				debugger;
+				alert(response.data.message);
+				if (response.data) {
+					if(response.data.message === 'Email exists')
+					{
+						alert('Email-id already exists!');
+						return;
+					}
 					console.log('successful signup')
 					this.setState({ //redirect to login page
 						redirectTo: '/login'
 					})
-				} else {
-					console.log('username already taken')
+					//window.location.href = '/login'
 				}
 			}).catch(error => {
-				console.log('signup error: ')
-				console.log(error)
-
+				console.log('signup error: ' + error)
+				if(error.response.data.constraint === 'uk_mobile')
+				{
+					alert('Mobile number is already exist!');
+				}
 			})
 	}
 
-
 render() {
+	if(this.state.redirectTo){
+		return <Redirect to={{ pathname: this.state.redirectTo }} />
+	}
 	return (
 		<div className="SignupForm">
+		{/* <Route path="/login" render={() =><LoginForm />}/> */}
 			<h4>Sign up</h4>
 			<form className="form-horizontal">
 				<div className="form-group">
@@ -85,7 +100,7 @@ render() {
 						/>
 					</div>
 				</div>
-                <div className="form-group">
+                {/* <div className="form-group">
 					<div className="col-1 col-ml-auto">
 						<label className="form-label" htmlFor="username">Username</label>
 					</div>
@@ -99,7 +114,7 @@ render() {
 							onChange={this.handleChange}
 						/>
 					</div>
-				</div>
+				</div> */}
                 <div className="form-group">
 					<div className="col-1 col-ml-auto">
 						<label className="form-label" htmlFor="email">Email address</label>
