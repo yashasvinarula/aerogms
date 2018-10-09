@@ -45,7 +45,7 @@ class Forgot extends Component {
                 console.log('forgot password response: ')
                 console.log(response)
                 if (response.status === 200) {
-                    {this.props.unmountMe()};
+                    this.props.unmountMe();
                 }
             }).catch(error => {
                 console.log('forgot password error: ')

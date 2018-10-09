@@ -18,3 +18,15 @@
     right: -8px;
     color : white;
 }
+.bell-size {
+    width: 25px;
+    height: 25px;
+}
+.header-logo-admin {
+    /* vertical-align: middle; */
+    width : 250px;
+}
+.popover-anchor {
+    display: block;
+    text-decoration: none;
+}

@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import axios from 'axios'
-// import '../App.css';
-
-// import { Form, FormGroup , FormControl } from 'react-bootstrap';
+import '../../App.css';
+import Loader from '../loader';
 
 class LoginForm extends Component {
     constructor(props) {
@@ -20,6 +19,7 @@ class LoginForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
+    
     
     handleChange(event) {
         const name = event.target.name;
@@ -55,8 +55,12 @@ class LoginForm extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log('handleSubmit');
+        console.log(` handlesubmit ${event} is`);
+        // document.addEventListener(event, () => {
+        //     document.getElementsByClassName('preloader-background');
 
+        // });
+        
         axios
             .post('/user/login', {
                 username: this.state.email,

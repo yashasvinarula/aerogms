@@ -6,7 +6,7 @@ import './App.css';
 import Navbar from './components/navbar';
 import Signup from './components/signup';
 import Login from './components/loginForm';
-import Dashboard from './components/dashboard';
+import Dashboard from './components/Dashboard/dashboard';
 import About from './components/about';
 import ContactUs from './components/contactUs';
 import HomeFooter from './components/footer-home';
@@ -61,7 +61,6 @@ class App extends Component {
     return (
       <div className="App">
         {/* Routes to different components */}
-        {/* <Navbar /> */}
         <Route exact path="/dashboard" component={Dashboard} />
         <Route path="/login" render={() => <Login updateUser={this.updateUser} />} />
         <Route path="/signup" render={() => <Signup/>} />
@@ -70,7 +69,6 @@ class App extends Component {
         <Route path="/help" render={() => <Help />} />
         <Route path="/faq" render={() => <FAQ />} />
         <Route path="/feedback" render={() => <Feedback />} />
-        {/* <HomeFooter /> */}
       </div>
     );
   }
