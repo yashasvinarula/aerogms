@@ -70,8 +70,8 @@
   background-color: #036;
 }
 .header-logo {
-  position: static;
-  left : 0px;
+  /* position: static;
+  left : 0px; */
   width : 500px;
 }
 /* *** */

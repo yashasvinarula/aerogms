@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import '../App.css';
+import FormErrors from './formErrors';
 import AeroLogo from '../images/AeroLOGO.png';
 import 'materialize-css'; // It installs the JS asset only
 import 'materialize-css/dist/css/materialize.min.css';
@@ -58,7 +59,7 @@ class Signup extends Component {
 				fieldValidationErrors.email = emailValid ? '' : ' Please enter valid email address ';
 				break;
 			case 'mobile': 
-				mobileValid = value.match(/^([0|[0-9]{1,5})?([6-9][0-9]{9})$/);
+				mobileValid = value.match(/^[6-9][0-9]{9}$/);
 				fieldValidationErrors.mobile = mobileValid ? '' : 'Please enter valid mobile number';
 				break;
 			case 'password': 
@@ -72,8 +73,7 @@ class Signup extends Component {
 			default: 
 				break;
 		}
-		if( this.state.password === this.state.confirmPassword )
-			// this.state.passwordMatch = true;
+		
 		this.setState({ formErrors : fieldValidationErrors,
 								firstNameValid : firstNameValid,
 								lastNameValid : lastNameValid,
@@ -84,9 +84,7 @@ class Signup extends Component {
 							 }, this.validateForm)
 	}
 	validateForm() {
-		this.setState({ formValid : this.state.firstNameValid && this.state.emailValid 
-			&& this.state.mobileValid && this.state.passwordValid && this.state.confirmPasswordValid 
-			&& (this.state.password === this.state.confirmPassword)});
+		this.setState({ formValid : this.state.firstNameValid && this.state.emailValid && this.state.mobileValid && this.state.passwordValid && this.state.confirmPasswordValid && (this.state.password === this.state.confirmPassword)});
 	}
 
 	handleSubmit(event) {
@@ -124,15 +122,15 @@ render() {
                 <div className="col m4 border-css">
                     <img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
 			        <div>
-						{/* <FormErrors formErrors={this.state.formErrors} /> */}
+						<FormErrors formErrors={this.state.formErrors} />
 					</div>
 					<div className="col s1 offset s1"></div>
 					<form className="col s10">
 				            <div className="row">
                                 <div className=" input-margin col s6">
-									<div className="input-relative">
+									{/* <div className="input-relative">
 										<p className="invalid-input">{this.state.formErrors["firstName"]}</p>
-									</div>
+									</div> */}
 									<label htmlFor="firstName">First name</label>
                                     <input className="validate" type="text" id="first-name"	name="firstName" required={true} placeholder=""
 				    	            	value={this.state.firstName} onChange={this.handleChange}

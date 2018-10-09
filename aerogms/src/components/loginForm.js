@@ -11,9 +11,9 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            renderLogin : false,
+            renderLogin : true,
             renderForgot : false,
-            renderReset : true,
+            renderReset : false,
         }
         this.loginWillMount = this.loginWillMount.bind(this);
         this.forgotWillMount = this.forgotWillMount.bind(this);

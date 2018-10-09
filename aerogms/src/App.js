@@ -61,7 +61,7 @@ class App extends Component {
     return (
       <div className="App">
         {/* Routes to different components */}
-        <Navbar />
+        {/* <Navbar /> */}
         <Route exact path="/dashboard" component={Dashboard} />
         <Route path="/login" render={() => <Login updateUser={this.updateUser} />} />
         <Route path="/signup" render={() => <Signup/>} />
@@ -70,7 +70,7 @@ class App extends Component {
         <Route path="/help" render={() => <Help />} />
         <Route path="/faq" render={() => <FAQ />} />
         <Route path="/feedback" render={() => <Feedback />} />
-        <HomeFooter />
+        {/* <HomeFooter /> */}
       </div>
     );
   }
