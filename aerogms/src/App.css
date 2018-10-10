@@ -1,19 +1,7 @@
-/* .App {
-  text-align: center;
-} */
 
-/* .App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-#logo-text {
-  font-weight: 700;
-} */
-.hr-row {
+/* .hr-row {
   background-color : #036;
-}
+} */
 .top-margin {
   margin-top: 25px;
 }
@@ -70,8 +58,8 @@
   background-color: #036;
 }
 .header-logo {
-  position: static;
-  left : 0px;
+  /* position: static;
+  left : 0px; */
   width : 500px;
 }
 /* *** */
@@ -92,3 +80,18 @@
   left: 0px; 
 } */
 /* *** */
+/* Preloader  */
+.preloader-background {
+  display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #eee;
+	
+	position: fixed;
+	z-index: 100;
+	top: 0;
+	left: 0;
+	right: 0;
+  bottom: 0;
+}
+ 

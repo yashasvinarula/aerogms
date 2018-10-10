@@ -69,7 +69,7 @@ class ResetPassword extends Component {
                 console.log('login response: ')
                 console.log(response)
                 if (response.status === 200) {
-                    {this.props.unmountMe()};
+                    this.props.unmountMe();
                 }
             }).catch(error => {
                 debugger

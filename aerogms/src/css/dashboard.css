@@ -1,0 +1,32 @@
+.circular-icon {
+    border-radius: 50%;
+    background-color: #036;
+    color: white;
+    width: 30px;
+    height : 30px;
+}
+.bell-parent {
+    position: relative;
+}
+.bell-child {
+    background-color: rgb(160, 15, 15);
+    position: absolute;
+    border-radius: 60%;
+    width : 15px;
+    height : 15px;
+    top : -10px;
+    right: -8px;
+    color : white;
+}
+.bell-size {
+    width: 25px;
+    height: 25px;
+}
+.header-logo-admin {
+    /* vertical-align: middle; */
+    width : 250px;
+}
+.popover-anchor {
+    display: block;
+    text-decoration: none;
+}

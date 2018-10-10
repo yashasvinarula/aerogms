@@ -6,6 +6,9 @@ import BuildingsImage from '../images/login-page-image.png'
 import Login from'./Login/login';
 import Forgot from './Login/forgotPassword';
 import ResetPassword from './Login/reset-password';
+import Navbar from './navbar';
+import HomeFooter from './footer-home';
+import Loader from './loader';
 
 class LoginForm extends Component {
     constructor(props) {
@@ -33,6 +36,7 @@ class LoginForm extends Component {
     render() {
         return (
             <div>
+                <Navbar />
                 <div className="top-margin">
                     <div className="row">
                         <div className="col m1 offset m1"></div>
@@ -46,6 +50,7 @@ class LoginForm extends Component {
                             </p>
                             <img src={BuildingsImage} alt="buildings" className="buildings-image"></img>
                         </div>
+                        <Loader />
                         <div className="col m1 offset m1"></div>
                         <div className="col m1 offset m1"></div>
                         <div className="col m3 border-css form-height side-margin">
@@ -57,7 +62,8 @@ class LoginForm extends Component {
                         </div>
                         <div className="col m1 offset m1"></div>
                     </div>
-                </div>        
+                </div>  
+                <HomeFooter />      
             </div>
         )
     }
