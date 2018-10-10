@@ -66,6 +66,7 @@ class ResetPassword extends Component {
             })
             .then(response => {
                 debugger;
+                alert(response.data.message);
                 console.log('login response: ')
                 console.log(response)
                 if (response.status === 200) {

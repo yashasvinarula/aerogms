@@ -50,7 +50,7 @@ class LoginForm extends Component {
                             </p>
                             <img src={BuildingsImage} alt="buildings" className="buildings-image"></img>
                         </div>
-                        <Loader />
+                        {/* <Loader /> */}
                         <div className="col m1 offset m1"></div>
                         <div className="col m1 offset m1"></div>
                         <div className="col m3 border-css form-height side-margin">

@@ -61,7 +61,6 @@ class App extends Component {
     return (
       <div className="App">
         {/* Routes to different components */}
-        <Navbar />
         <Route path="/" exact={true} render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username} />}  />
         <Route path="/dashboard" render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username}/>}  />
         <Route path="/login" render={() => <LoginForm updateUser={this.updateUser} />} />
