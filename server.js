@@ -2,6 +2,7 @@
 const express = require('express');
 const  app = express();
 const path = require('path');
+require('dotenv').config();
 const bodyParser = require('body-parser');
 const user_route = require('./api/route/user_route')
 const session = require('express-session');

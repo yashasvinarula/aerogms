@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
-import axios from 'axios'
-import { Route } from 'react-router-dom'
+import axios from 'axios';
+import { Route } from 'react-router-dom';
+import './App.css';
 // components
-import Signup from './components/signup'
-import LoginForm from './components/loginForm'
-import Dashboard from './components/dashboard'
-
+import Navbar from './components/navbar';
+import Signup from './components/signup';
+import LoginForm from './components/loginForm';
+import Dashboard from './components/dashboard';
+import About from './components/about';
+import ContactUs from './components/contactUs';
+import HomeFooter from './components/footer-home';
+import Help from './components/help';
+import FAQ from './components/faq';
+import Feedback from './components/feedback';
+import 'materialize-css'; // It installs the JS asset only
+import 'materialize-css/dist/css/materialize.min.css';
 class App extends Component {
   constructor() {
     super()
@@ -51,24 +60,18 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-   
         {/* Routes to different components */}
-        <Route
-          exact path="/dashboard"
-          component={Dashboard} />
-        <Route
-          path="/login"
-          render={() =>
-            <LoginForm
-              updateUser={this.updateUser}
-            />}
-        />
-        <Route
-          path="/signup"
-          render={() =>
-            <Signup/>}
-        />
-
+        <Navbar />
+        <Route path="/" exact={true} render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username} />}  />
+        <Route path="/dashboard" render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username}/>}  />
+        <Route path="/login" render={() => <LoginForm updateUser={this.updateUser} />} />
+        <Route path="/signup" render={() => <Signup/>} />
+        <Route path="/about" render={() =>  <About />} />
+        <Route path="/contact" render={() => <ContactUs />} />
+        <Route path="/help" render={() => <Help />} />
+        <Route path="/faq" render={() => <FAQ />} />
+        <Route path="/feedback" render={() => <Feedback />} />
+        <HomeFooter />
       </div>
     );
   }

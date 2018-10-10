@@ -1,122 +1,66 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
-import axios from 'axios'
-//import {connect} from 'react-redux'
+
+import '../App.css';
+import AeroLogo from '../images/AeroLOGO.png';
+import BuildingsImage from '../images/login-page-image.png'
+import Login from'./Login/login';
+import Forgot from './Login/forgotPassword';
+import ResetPassword from './Login/reset-password';
 
 class LoginForm extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            username: '',
-            password: '',
-            email:'',
-            redirectTo: null
+            renderLogin : true,
+            renderForgot : false,
+            renderReset : false,
         }
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleChange = this.handleChange.bind(this)
+        this.loginWillMount = this.loginWillMount.bind(this);
+        this.forgotWillMount = this.forgotWillMount.bind(this);
+        this.resetWillMount = this.resetWillMount.bind(this);
     }
-    // componentDidMount(){
-    //     axios.get('api/signup')
-    //     .then(res=>{
-    //         console.log(res.data[0]);
-    //         alert(res.data.length);
-    //     })
-    //     .catch(error=>{
-    //         console.log(error.message);
-    //     })
-	// }
-
-    handleChange(event) {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
+    
+    loginWillMount() {
+        this.setState({ renderReset : false , renderLogin : true, renderForgot : false });
     }
-
-    handleSubmit(event) {
-        event.preventDefault()
-        console.log('handleSubmit')
-
-        axios
-            .post('/api/login', {
-                username: this.state.username,
-                password: this.state.password
-            })
-            .then(response => {
-                debugger
-                console.log('login response: ')
-                console.log(response.data.message)
-                if (response.status === 200) {
-                    // update App.js state
-                    this.props.updateUser({
-                        loggedIn: true,
-                        username: response.data.userfname,
-                        email: response.data.email,
-                        password:''
-                    })
-                    // update the state to redirect to home
-                    this.setState({
-                        redirectTo: '/dashboard'
-                    })
-                }
-            }).catch(error => {
-                if(error.response.status===401)
-                {
-                    alert('Please enter correct email and password!');
-                }
-                console.log(error);
-            })
+    forgotWillMount() {
+        this.setState({ renderLogin : false, renderForgot : true , renderReset : false });
     }
-
+    resetWillMount() {
+        this.setState({ renderForgot : false , renderReset : true, renderLogin : false });
+    }
+    
     render() {
-        if (this.state.redirectTo) {
-            return <Redirect to={{ pathname: this.state.redirectTo}} />
-        } else {
-            return (
-                <div>
-                    <h4>Login</h4>
-                    <form className="form-horizontal">
-                        <div className="form-group">
-                            <div className="col-1 col-ml-auto">
-                                <label className="form-label" htmlFor="username">Username</label>
-                            </div>
-                            <div className="col-3 col-mr-auto">
-                                <input className="form-input"
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    placeholder="Username"
-                                    value={this.state.username}
-                                    onChange={this.handleChange}
-                                />
-                            </div>
+        return (
+            <div>
+                <div className="top-margin">
+                    <div className="row">
+                        <div className="col m1 offset m1"></div>
+                        <div className="col m5">
+                            <h3 className="center">Welcome to AeroGMS</h3>
+                            <hr className="hr-row"></hr>
+                            <p className="center">Geographic Management System is a framework for city administrators to collect, 
+                                analyze and extract useful information for cities and towns. It encompasses all
+                                 aspects of management and planning process in an organization from servey to 
+                                 advanced analytics.
+                            </p>
+                            <img src={BuildingsImage} alt="buildings" className="buildings-image"></img>
                         </div>
-                        <div className="form-group">
-                            <div className="col-1 col-ml-auto">
-                                <label className="form-label" htmlFor="password">Password: </label>
-                            </div>
-                            <div className="col-3 col-mr-auto">
-                                <input className="form-input"
-                                    placeholder="password"
-                                    type="password"
-                                    name="password"
-                                    value={this.state.password}
-                                    onChange={this.handleChange}
-                                />
-                            </div>
+                        <div className="col m1 offset m1"></div>
+                        <div className="col m1 offset m1"></div>
+                        <div className="col m3 border-css form-height side-margin">
+                        
+                            <img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
+                            { this.state.renderLogin ? <Login unmountMe={this.forgotWillMount} updateUser={this.props.updateUser} /> : null }
+                            { this.state.renderForgot ? <Forgot unmountMe={this.resetWillMount} /> : null }
+                            { this.state.renderReset ? <ResetPassword unmountMe={this.loginWillMount} /> : null }
                         </div>
-                        <div className="form-group ">
-                            <div className="col-7"></div>
-                            <button
-                                className="btn btn-primary col-1 col-mr-auto"
-                               
-                                onClick={this.handleSubmit}
-                                type="submit">Login</button>
-                        </div>
-                    </form>
-                </div>
-            )
-        }
+                        <div className="col m1 offset m1"></div>
+                    </div>
+                </div>        
+            </div>
+        )
     }
 }
 
-export default LoginForm
+export default LoginForm;

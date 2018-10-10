@@ -7,7 +7,7 @@ const auth = require('./Auth.js');
 
 router.post('/signup', cntrlr.user_signup);
 router.post('/login',  passport.authenticate('local'), cntrlr.user_login);
-router.get('/forgot', cntrlr.pw_forgot);
+router.post('/forgot', cntrlr.pw_forgot);
 router.post('/reset', cntrlr.pw_reset);
 
 router.get('/test', auth.loggedIn, function(req, res){

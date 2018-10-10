@@ -1,28 +1,94 @@
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
+/* .App-header {
   background-color: #222;
   height: 150px;
   padding: 20px;
   color: white;
 }
-
-.App-title {
-  font-size: 1.5em;
+#logo-text {
+  font-weight: 700;
+} */
+.hr-row {
+  background-color : #036;
+}
+.top-margin {
+  margin-top: 25px;
+}
+.border-css {
+  padding : 15px; 
+  border-radius : 25px; 
+  background-color: white;
+  /* height : 600px; */
+}
+/* Forms */
+.form-height {
+  height: 400px;
+}
+.input-field {
+  line-height: 1;
+}
+.input-field {
+  margin : 0px;
+} 
+.invalid-input {
+  color : red;
+}
+.input-relative {
+  position: absolute;
+}
+.input-container {
+  display: inline-block;
+  position: relative;
+  /* overflow: hidden; */
+}
+.forgot-link {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  margin-right: 0px;
 }
 
-.App-intro {
-  font-size: large;
+/* *** */
+/* Images */
+.buildings-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 550px;
 }
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.img-logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 175px;
 }
+/* Navigation */
+.home-nav {
+  background-color: #036;
+}
+.header-logo {
+  position: static;
+  left : 0px;
+  width : 500px;
+}
+/* *** */
+/* buttons */
+.btn-auth {
+  color : #06c; 
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+/* *** */
+/* Footer */
+.footer-elem {
+  display: block;
+}
+/* .pos-footer {
+  position: fixed;
+  bottom: 0px;
+  left: 0px; 
+} */
+/* *** */
