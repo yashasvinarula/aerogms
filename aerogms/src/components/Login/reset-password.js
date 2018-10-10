@@ -5,11 +5,13 @@ class ResetPassword extends Component {
     constructor(){
         super();
         this.state = {
-            newpassword : '',
+            token : '',
+            newPassword : '',
             retypepassword : '',
+            tokenValid : '',
             newpasswordValid : '',
             retypepasswordValid : '',
-            formErrors : { newPassword : '', reEnteredPassword : '' },
+            formErrors : { token:'', newPassword : '', reEnteredPassword : '' },
             formValid : '',
         }
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -23,10 +25,16 @@ class ResetPassword extends Component {
 
     validateField(fieldName, value) {
         let fieldValidationErrors = this.state.formErrors;
+        let tokenValid = this.state.tokenValid;
         let newpasswordValid = this.state.newpasswordValid;
         let retypepasswordValid = this.state.retypepasswordValid;
 
         switch(fieldName) {
+            case 'token':
+            tokenValid = value.length > 0;
+            fieldValidationErrors.token = tokenValid ? '' : 'Token is too short';
+            break; 
+
             case 'newPassword':
                 newpasswordValid = value.length >= 6;
                 fieldValidationErrors.newPassword = newpasswordValid ? '' : 'Password should be of atleast of 6 characters';
@@ -39,30 +47,34 @@ class ResetPassword extends Component {
                 break;  
         }
         this.setState({ formErrors : fieldValidationErrors,
+                        tokenValid:tokenValid,
                         newpasswordValid : newpasswordValid,
                         retypepasswordValid : retypepasswordValid}, this.validateForm);
     }
 
     validateForm() {
-        this.setState({formValid : this.state.newpasswordValid && this.state.retypepasswordValid});
+        this.setState({formValid : this.state.newpasswordValid && this.state.retypepasswordValid && this.state.tokenValid});
     }
 
     handleSubmit(event) {
         event.preventDefault();
         console.log('handleSubmit');
-
         axios
-            .post('/resetPassword', {
-                newPassword : this.state.newpassword,
-                reEnteredPassword: this.state.retypepassword,
+            .post('/api/reset', {
+                token : this.state.token,
+                newPassword : this.state.newPassword
             })
             .then(response => {
+                debugger;
+                alert(response.data.message);
                 console.log('login response: ')
                 console.log(response)
                 if (response.status === 200) {
                     this.props.unmountMe();
                 }
             }).catch(error => {
+                debugger
+                alert(error.response.data.message)
                 console.log('login error: ')
                 console.log(error);  
             })
@@ -73,7 +85,19 @@ class ResetPassword extends Component {
             <div> 
                 <form className="">
                     <div className="">
-                        <div className="input-relative">
+                        {/* <div className="input-relative">
+							<p className="invalid-input">{this.state.formErrors["newPassword"]}</p>
+						</div> */}
+                        <div className="">
+                            <label className="" htmlFor="password">Enter Token</label>
+                        </div>
+                        <div className="">
+                            <input className="validate" placeholder="" type="password" name="token" required={true}
+                                value={this.state.token} onChange={this.handleChange} 
+                            />
+                        </div>
+
+                         <div className="input-relative">
 							<p className="invalid-input">{this.state.formErrors["newPassword"]}</p>
 						</div>
                         <div className="">
@@ -81,9 +105,10 @@ class ResetPassword extends Component {
                         </div>
                         <div className="">
                             <input className="validate" placeholder="" type="password" name="newPassword" required={true}
-                                value={this.state.password} onChange={this.handleChange} 
+                                value={this.state.newPassword} onChange={this.handleChange} 
                             />
                         </div>
+
                         <div className="input-relative">
 							<p className="invalid-input">{this.state.formErrors["reEnterPassword"]}</p>
 						</div>
@@ -92,7 +117,7 @@ class ResetPassword extends Component {
                         </div>
                         <div className="">
                             <input className="validate" placeholder="" type="password" name="reEnteredPassword" required={true}
-                                value={this.state.password} onChange={this.handleChange} 
+                                value={this.state.reEnteredPassword} onChange={this.handleChange} 
                             />
                         </div>
                     </div>

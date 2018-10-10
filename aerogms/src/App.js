@@ -5,7 +5,7 @@ import './App.css';
 // components
 import Navbar from './components/navbar';
 import Signup from './components/signup';
-import Login from './components/loginForm';
+import LoginForm from './components/loginForm';
 import Dashboard from './components/Dashboard/dashboard';
 import About from './components/about';
 import ContactUs from './components/contactUs';
@@ -29,7 +29,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.getUser()
+   // this.getUser()
   }
 
   updateUser (userObject) {
@@ -61,8 +61,9 @@ class App extends Component {
     return (
       <div className="App">
         {/* Routes to different components */}
-        <Route exact path="/dashboard" component={Dashboard} />
-        <Route path="/login" render={() => <Login updateUser={this.updateUser} />} />
+        <Route path="/" exact={true} render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username} />}  />
+        <Route path="/dashboard" render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username}/>}  />
+        <Route path="/login" render={() => <LoginForm updateUser={this.updateUser} />} />
         <Route path="/signup" render={() => <Signup/>} />
         <Route path="/about" render={() =>  <About />} />
         <Route path="/contact" render={() => <ContactUs />} />

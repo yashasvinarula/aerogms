@@ -3,14 +3,14 @@ import React, { Component } from 'react'
 import '../App.css';
 import AeroLogo from '../images/AeroLOGO.png';
 import BuildingsImage from '../images/login-page-image.png'
-import LoginForm from'./Login/login-form';
+import Login from'./Login/login';
 import Forgot from './Login/forgotPassword';
 import ResetPassword from './Login/reset-password';
 import Navbar from './navbar';
 import HomeFooter from './footer-home';
 import Loader from './loader';
 
-class Login extends Component {
+class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -56,7 +56,7 @@ class Login extends Component {
                         <div className="col m3 border-css form-height side-margin">
                         
                             <img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
-                            { this.state.renderLogin ? <LoginForm unmountMe={this.forgotWillMount} /> : null }
+                            { this.state.renderLogin ? <Login unmountMe={this.forgotWillMount} updateUser={this.props.updateUser} /> : null }
                             { this.state.renderForgot ? <Forgot unmountMe={this.resetWillMount} /> : null }
                             { this.state.renderReset ? <ResetPassword unmountMe={this.loginWillMount} /> : null }
                         </div>
@@ -69,4 +69,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default LoginForm;

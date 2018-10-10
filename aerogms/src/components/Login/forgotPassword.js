@@ -38,18 +38,20 @@ class Forgot extends Component {
         console.log('handleSubmit');
 
         axios
-            .post('/forgotPassword', {
+            .post('/api/forgot', {
                 email : this.state.email
             })
             .then(response => {
+                debugger
                 console.log('forgot password response: ')
-                console.log(response)
+                alert(response.data.message);
                 if (response.status === 200) {
                     this.props.unmountMe();
                 }
             }).catch(error => {
+                debugger
+                alert(error.response.data.message)
                 console.log('forgot password error: ')
-                console.log(error);  
             })
     }
 

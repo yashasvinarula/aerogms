@@ -4,7 +4,7 @@ import axios from 'axios'
 import '../../App.css';
 import Loader from '../loader';
 
-class LoginForm extends Component {
+class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -62,18 +62,19 @@ class LoginForm extends Component {
         // });
         
         axios
-            .post('/user/login', {
+            .post('/api/login', {
                 username: this.state.email,
                 password: this.state.password
             })
             .then(response => {
+                debugger
                 console.log('login response: ')
                 console.log(response)
                 if (response.status === 200) {
                     // update App.js state
                     this.props.updateUser({
                         loggedIn: true,
-                        username: response.data.username
+                        username: response.data.userfname
                     })
                     // update the state to redirect to dashboard
                     this.setState({
@@ -81,7 +82,10 @@ class LoginForm extends Component {
                     })
                 }
             }).catch(error => {
-                console.log('login error: ')
+                if(error.response.status===401)
+                {
+                    alert('Please enter correct email and password!');
+                }
                 console.log(error);  
             })
     }
@@ -137,4 +141,4 @@ class LoginForm extends Component {
     }
 }
 
-export default LoginForm;
+export default Login;
