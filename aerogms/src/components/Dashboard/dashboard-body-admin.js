@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { Table, Pager, ButtonGroup, Button, Popover, OverlayTrigger, overlay } from 'react-bootstrap/lib';
 import axios from 'axios';
-import '../../css/dashboard.css';
 
 const popoverleft = (
     <Popover id="popover-positioned-left">
         <div>
-            <a className="popover-anchor">Edit</a>
-            <a className="popover-anchor">Remove</a>
-            <a className="popover-anchor">Toggle Status</a>
-            <a className="popover-anchor">Details</a>
+            <a href="" className="popover-anchor">Edit</a>
+            <a href="" className="popover-anchor">Remove</a>
+            <a href="" className="popover-anchor">Toggle Status</a>
+            <a href="" className="popover-anchor">Details</a>
         </div>
     </Popover>
 );
@@ -31,20 +30,20 @@ class DashboardBodyAdmin extends Component {
         axios.get('/fetchUsers').then((response) => {
             console.log('fetchusers response');
             if(response.status === 200){
-                
+                console.log('got response');
             }
         });
     }
 
     render() {
         return (
-            <div>
-                <Table>
+            <div className="top-padding">
+                <Table striped  hover>
                     <thead>
                         <tr>
                             <th>User Id</th>
                             <th>User Name <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
-                            <th>Registraion Date <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
+                            <th>Registration Date <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
                             <th>Status <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
                         </tr>
                     </thead>
@@ -55,9 +54,9 @@ class DashboardBodyAdmin extends Component {
                             <td>04-12-17</td>
                             <td>Enabled</td>
                             <span bsSize="small">
-                                    <OverlayTrigger trigger="click" placement="bottom" overlay={popoverleft}>
-                                        <Glyphicon glyph="option-vertical" />
-                                    </OverlayTrigger>
+                                <OverlayTrigger trigger="click" placement="bottom" overlay={popoverleft}>
+                                    <Glyphicon glyph="option-vertical" />
+                                </OverlayTrigger>
                             </span>
                         </tr>
                     </tbody>

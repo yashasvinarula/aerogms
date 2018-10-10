@@ -38,7 +38,7 @@ class LoginForm extends Component {
                 fieldValidationErrors.email = emailValid ? '' : ' Email is invalid ';
                 break; 
             case 'password': 
-                passwordValid = value.length >= 3;
+                passwordValid = value.length >= 6;
                 fieldValidationErrors.password = passwordValid ? '' : 'Password is too short';
                 break;
             default:

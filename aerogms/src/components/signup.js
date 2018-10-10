@@ -18,7 +18,7 @@ class Signup extends Component {
             mobile : '',
 			password: '',
 			confirmPassword: '',
-			formErrors : { firstName : '', lastName : '', email : '', mobile : '', password : '', confirmPassword : '', passwordMatch : false, },
+			formErrors : { firstName : '', lastName : '', email : '', mobile : '', password : '', confirmPassword : '' },
 			firstNameValid : false,
 			lastNameValid : false,
 			emailValid : false,
@@ -67,13 +67,12 @@ class Signup extends Component {
 				fieldValidationErrors.password = passwordValid ? '' : ' Password should be of atleast 6 characters ';
 				break;
 			case 'confirmPassword':
-				confirmPasswordValid = value.length >= 6;
-				fieldValidationErrors.confirmPassword = confirmPasswordValid ? '' : ' Confirm Password should be of atleast 6 characters ';
+				confirmPasswordValid = (this.state.password === this.state.confirmPassword)
+				fieldValidationErrors.confirmPassword = confirmPasswordValid ? '' : ' Password and Confirm Password aren\'t matchig ';
 				break;
 			default: 
 				break;
 		}
-		
 		this.setState({ formErrors : fieldValidationErrors,
 								firstNameValid : firstNameValid,
 								lastNameValid : lastNameValid,
@@ -83,6 +82,11 @@ class Signup extends Component {
 								confirmPasswordValid : confirmPasswordValid,
 							 }, this.validateForm)
 	}
+	// if(password === confirmPassword){
+	// 	this.setState({
+	// 		fieldValidationErrors.passwordMatch = true
+	// 	});
+	// }
 	validateForm() {
 		this.setState({ formValid : this.state.firstNameValid && this.state.emailValid && this.state.mobileValid && this.state.passwordValid && this.state.confirmPasswordValid && (this.state.password === this.state.confirmPassword)});
 	}

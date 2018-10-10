@@ -28,12 +28,12 @@ class ResetPassword extends Component {
 
         switch(fieldName) {
             case 'newPassword':
-                newpasswordValid = value.length >= 3;
-                fieldValidationErrors.newPassword = newpasswordValid ? '' : 'Password is too short';
+                newpasswordValid = value.length >= 6;
+                fieldValidationErrors.newPassword = newpasswordValid ? '' : 'Password should be of atleast of 6 characters';
                 break; 
             case 'reEnteredPassword': 
-                retypepasswordValid = value.length >= 3;
-                fieldValidationErrors.reEnteredPassword = retypepasswordValid ? '' : 'Password is too short';
+                retypepasswordValid = (this.state.password === this.state.retypepassword)
+                fieldValidationErrors.reEnteredPassword = retypepasswordValid ? '' : 'Password\'s don\'t match';
                 break;
             default:
                 break;  
