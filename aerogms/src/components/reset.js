@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import {Redirect} from 'react-router-dom';
+import '../App.css';
+import AeroLogo from '../images/AeroLOGO.png';
+import BuildingsImage from '../images/login-page-image.png'
+import Navbar from './navbar';
+import HomeFooter from './footer-home';
+import Loader from './loader';
 
 class ResetPassword extends Component {
     constructor(){
@@ -13,6 +20,7 @@ class ResetPassword extends Component {
             retypepasswordValid : '',
             formErrors : { token:'', newPassword : '', reEnteredPassword : '' },
             formValid : '',
+            redirectTo:null
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -40,8 +48,8 @@ class ResetPassword extends Component {
                 fieldValidationErrors.newPassword = newpasswordValid ? '' : 'Password is too short';
                 break; 
             case 'reEnteredPassword': 
-                retypepasswordValid = value.length >= 6;
-                fieldValidationErrors.reEnteredPassword = retypepasswordValid ? '' : 'Password is too short';
+                retypepasswordValid = (this.state.newPassword === this.state.reEnteredPassword)
+                fieldValidationErrors.reEnteredPassword = retypepasswordValid ? '' : 'Password is not matched';
                 break;
             default:
                 break;  
@@ -70,7 +78,7 @@ class ResetPassword extends Component {
                 console.log('login response: ')
                 console.log(response)
                 if (response.status === 200) {
-                    this.props.unmountMe();
+                   this.setState({redirectTo:'/login'});
                 }
             }).catch(error => {
                 debugger
@@ -81,9 +89,34 @@ class ResetPassword extends Component {
     }
 
     render(){
+        if(this.state.redirectTo)
+        {
+           return <Redirect to={{pathname:this.state.redirectTo}}/>
+        }
         return (
-            <div> 
-                <form className="">
+            <div>
+            <Navbar />
+            <div className="top-margin">
+                <div className="row">
+                    <div className="col m1 offset m1"></div>
+                    <div className="col m5">
+                        <h3 className="center">Welcome to AeroGMS</h3>
+                        <hr className="hr-row"></hr>
+                        <p className="center">Geographic Management System is a framework for city administrators to collect, 
+                            analyze and extract useful information for cities and towns. It encompasses all
+                             aspects of management and planning process in an organization from servey to 
+                             advanced analytics.
+                        </p>
+                        <img src={BuildingsImage} alt="buildings" className="buildings-image"></img>
+                    </div>
+                    {/* <Loader /> */}
+                    <div className="col m1 offset m1"></div>
+                    <div className="col m1 offset m1"></div>
+                    <div className="col m3 border-css form-height side-margin">
+                    
+                    <img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
+                    <div> 
+                    <form className="">
                     <div className="">
                         {/* <div className="input-relative">
 							<p className="invalid-input">{this.state.formErrors["newPassword"]}</p>
@@ -127,7 +160,13 @@ class ResetPassword extends Component {
                         </div>
                     </div>
                 </form>
-            </div>
+                </div>    
+                    </div>
+                    <div className="col m1 offset m1"></div>
+                </div>
+            </div>  
+            <HomeFooter />      
+        </div>
         );
     }
 }

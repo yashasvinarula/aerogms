@@ -5,7 +5,9 @@ import './App.css';
 // components
 import Navbar from './components/navbar';
 import Signup from './components/signup';
-import LoginForm from './components/loginForm';
+import Login from './components/login';
+import Forgot from './components/forgot';
+import Reset from './components/reset';
 import Dashboard from './components/Dashboard/dashboard';
 import About from './components/about';
 import ContactUs from './components/contactUs';
@@ -15,12 +17,14 @@ import FAQ from './components/faq';
 import Feedback from './components/feedback';
 import 'materialize-css'; // It installs the JS asset only
 import 'materialize-css/dist/css/materialize.min.css';
+
 class App extends Component {
   constructor() {
     super()
     this.state = {
       loggedIn: false,
-      username: null
+      username: null,
+      email:null
     }
 
     this.getUser = this.getUser.bind(this)
@@ -63,13 +67,16 @@ class App extends Component {
         {/* Routes to different components */}
         <Route path="/" exact={true} render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username} />}  />
         <Route path="/dashboard" render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username}/>}  />
-        <Route path="/login" render={() => <LoginForm updateUser={this.updateUser} />} />
+        <Route path="/login" render={() => <Login updateUser={this.updateUser} />} />
+        <Route path="/forgot" render={() => <Forgot />} />
+        <Route path="/reset" render={() => <Reset />} />
         <Route path="/signup" render={() => <Signup/>} />
         <Route path="/about" render={() =>  <About />} />
         <Route path="/contact" render={() => <ContactUs />} />
         <Route path="/help" render={() => <Help />} />
         <Route path="/faq" render={() => <FAQ />} />
         <Route path="/feedback" render={() => <Feedback />} />
+        <Route component={() => <div>No Such Page!!</div>} />
       </div>
     );
   }
