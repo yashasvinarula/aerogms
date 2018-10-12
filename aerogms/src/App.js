@@ -5,7 +5,6 @@ import './App.css';
 // components
 
 import Signup from './components/signup';
-import LoginForm from './components/loginForm';
 import Forgot from './components/Login/forgotPassword';
 import Login from './components/Login/login';
 import ResetPassword from './components/Login/reset-password';
@@ -15,8 +14,7 @@ import ContactUs from './components/contactUs';
 import Help from './components/help';
 import FAQ from './components/faq';
 import Feedback from './components/feedback';
-import 'materialize-css'; // It installs the JS asset only
-import 'materialize-css/dist/css/materialize.min.css';
+
 class App extends Component {
   constructor() {
     super()
