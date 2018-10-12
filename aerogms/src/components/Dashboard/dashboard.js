@@ -12,18 +12,18 @@ class Dashboard extends Component {
     }
     render()
     {
-        if(!this.props.loggedIn)
-        {
-          return <Redirect to={{pathname:'/login'}}/>
-        }
-        else{
+        // if(!this.props.loggedIn)
+        // {
+        //   return <Redirect to={{pathname:'/login'}}/>
+        // }
+        // else{
         return (
             <div>
                 <NavbarAdmin />
                 <DashboardBodyAdmin />
             </div>
         );
-        }
+        // }
     }
 }
 

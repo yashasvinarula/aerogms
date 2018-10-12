@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
 
 import '../App.css';
 import AeroLogo from '../images/AeroLOGO.png';
@@ -8,7 +9,6 @@ import Forgot from './Login/forgotPassword';
 import ResetPassword from './Login/reset-password';
 import Navbar from './navbar';
 import HomeFooter from './footer-home';
-import Loader from './loader';
 
 class LoginForm extends Component {
     constructor(props) {
@@ -19,19 +19,19 @@ class LoginForm extends Component {
             renderReset : false,
         }
         this.loginWillMount = this.loginWillMount.bind(this);
-        this.forgotWillMount = this.forgotWillMount.bind(this);
-        this.resetWillMount = this.resetWillMount.bind(this);
+        // this.forgotWillMount = this.forgotWillMount.bind(this);
+        // this.resetWillMount = this.resetWillMount.bind(this);
     }
     
     loginWillMount() {
         this.setState({ renderReset : false , renderLogin : true, renderForgot : false });
     }
-    forgotWillMount() {
-        this.setState({ renderLogin : false, renderForgot : true , renderReset : false });
-    }
-    resetWillMount() {
-        this.setState({ renderForgot : false , renderReset : true, renderLogin : false });
-    }
+    // forgotWillMount() {
+    //     this.setState({ renderLogin : false, renderForgot : true , renderReset : false });
+    // }
+    // resetWillMount() {
+    //     this.setState({ renderForgot : false , renderReset : true, renderLogin : false });
+    // }
     
     render() {
         return (
@@ -56,9 +56,11 @@ class LoginForm extends Component {
                         <div className="col m3 border-css form-height side-margin">
                         
                             <img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
+                            <Route path="/forgotPassword" render={() => <Forgot />} />
+                            <Route path="/resetPassword" render={() => <ResetPassword />} />
                             { this.state.renderLogin ? <Login unmountMe={this.forgotWillMount} updateUser={this.props.updateUser} /> : null }
-                            { this.state.renderForgot ? <Forgot unmountMe={this.resetWillMount} /> : null }
-                            { this.state.renderReset ? <ResetPassword unmountMe={this.loginWillMount} /> : null }
+                            {/* { this.state.renderForgot ? <Forgot unmountMe={this.resetWillMount} /> : null }
+                            { this.state.renderReset ? <ResetPassword unmountMe={this.loginWillMount} /> : null } */}
                         </div>
                         <div className="col m1 offset m1"></div>
                     </div>

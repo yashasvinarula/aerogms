@@ -2,6 +2,9 @@
 /* .hr-row {
   background-color : #036;
 } */
+a {
+  text-decoration: none;
+}
 .top-margin {
   margin-top: 25px;
 }
@@ -60,7 +63,7 @@
 .header-logo {
   /* position: static;
   left : 0px; */
-  width : 500px;
+  width : 250px;
 }
 /* *** */
 /* buttons */
@@ -85,7 +88,7 @@
   display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: #eee;
+	/* background-color: #eee; */
 	
 	position: fixed;
 	z-index: 100;
@@ -94,4 +97,6 @@
 	right: 0;
   bottom: 0;
 }
- 
+.top-padding {
+  padding-top: 65px;
+}

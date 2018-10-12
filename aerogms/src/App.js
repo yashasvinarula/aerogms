@@ -3,13 +3,15 @@ import axios from 'axios';
 import { Route } from 'react-router-dom';
 import './App.css';
 // components
-import Navbar from './components/navbar';
+
 import Signup from './components/signup';
 import LoginForm from './components/loginForm';
+import Forgot from './components/Login/forgotPassword';
+import Login from './components/Login/login';
+import ResetPassword from './components/Login/reset-password';
 import Dashboard from './components/Dashboard/dashboard';
 import About from './components/about';
 import ContactUs from './components/contactUs';
-import HomeFooter from './components/footer-home';
 import Help from './components/help';
 import FAQ from './components/faq';
 import Feedback from './components/feedback';
@@ -63,8 +65,10 @@ class App extends Component {
         {/* Routes to different components */}
         <Route path="/" exact={true} render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username} />}  />
         <Route path="/dashboard" render={() => <Dashboard loggedIn={this.state.loggedIn} username={this.state.username}/>}  />
-        <Route path="/login" render={() => <LoginForm updateUser={this.updateUser} />} />
+        <Route path="/login" render={() => <Login updateUser={this.updateUser} />} />
         <Route path="/signup" render={() => <Signup/>} />
+        <Route path="/forgot" render={() => <Forgot />} />
+        <Route path="/reset" render={() => <ResetPassword />} />
         <Route path="/about" render={() =>  <About />} />
         <Route path="/contact" render={() => <ContactUs />} />
         <Route path="/help" render={() => <Help />} />
