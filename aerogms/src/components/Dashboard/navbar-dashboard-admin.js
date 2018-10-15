@@ -38,7 +38,7 @@ class NavbarAdmin extends Component {
                                 </NavItem>
                                 <NavItem>
                                     <div className="circular-icon text-center">
-                                        <span>{this.props.username}</span>
+                                        <span><b>{this.props.username.charAt(0)}</b></span>
                                     </div>
                                 </NavItem>
                                 <NavItem>

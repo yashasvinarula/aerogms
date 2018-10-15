@@ -12,6 +12,7 @@ class Dashboard extends Component {
 
     render()
     {
+        debugger;
         console.log(this.props);
         console.log('I am in dashboard: ' + this.props.userDetails.email);
         if(!this.props.userDetails.isLoggedIn)
