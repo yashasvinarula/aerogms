@@ -4,8 +4,6 @@ import  { Redirect } from 'react-router-dom';
 import '../App.css';
 import FormErrors from './formErrors';
 import AeroLogo from '../images/AeroLOGO.png';
-import 'materialize-css'; // It installs the JS asset only
-import 'materialize-css/dist/css/materialize.min.css';
 // import FormErrors from './formErrors';
 
 class Signup extends Component {

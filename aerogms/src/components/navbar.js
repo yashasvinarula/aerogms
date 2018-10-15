@@ -27,17 +27,17 @@ class NavbarLogin extends Component {
             //     </nav>
             // </div>
             <div className="top-padding">
-                <Navbar fluid fixedTop>
-                    <Navbar.Header>
+                <Navbar row fluid fixedTop>
+                    <Navbar.Header className="col-md-3">
                         <Navbar.Brand>
                             <a ><Image src={AeroLogoHeader} alt="AeroGMS Logo" className="header-logo"></Image></a>
                         </Navbar.Brand>
                     </Navbar.Header>
-                    <Navbar.Collapse>
-                        <Nav pullRight>
-                            <NavItem eventKey={1}>Home</NavItem>
-                            <NavItem eventKey={2}>About</NavItem>
-                            <NavItem eventKey={3}>Contact us</NavItem>
+                    <Navbar.Collapse className="col-md-9">
+                        <Nav className="row">
+                            <NavItem className="col-md-4" eventKey={1}>Home</NavItem>
+                            <NavItem className="col-md-4" eventKey={2}>About</NavItem>
+                            <NavItem className="col-md-4" eventKey={3}>Contact us</NavItem>
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>

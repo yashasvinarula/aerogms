@@ -100,3 +100,8 @@ a {
 .top-padding {
   padding-top: 65px;
 }
+input {
+  border-top-color: white;
+  border-left-color: white;
+  border-right-color: white;
+}

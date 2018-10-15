@@ -51,6 +51,7 @@ app.use('/api', user_route)
 
 app.get('/logout', (req, res) => {
     req.logout();
+    console.log('message: logout');
     res.status(200).send({message:'loggedOut'});
   });
 
