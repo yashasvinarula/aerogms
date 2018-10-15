@@ -4,49 +4,27 @@ import NavbarAdmin from './navbar-dashboard-admin';
 import {Redirect} from 'react-router-dom';
 import '../../css/dashboard.css';
 
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {doLogin} from '../../actions';
-
-
 class Dashboard extends Component {
     constructor(props){
         super(props);
         this.state = {}
     }
 
-    // componentDidMount()
-    // {
-    //     this.props.doLogin('prateekjain7676@gmail.com', '123456');
-    // }
-
     render()
     {
-        console.log('I am in dashboard');
-        debugger
-        console.log(this.props.userDetails);
-        // if(!this.props.loggedIn)
-        // {
-        //   return <Redirect to={{pathname:'/login'}}/>
-        // }
-        // else{
+        console.log(this.props);
+        console.log('I am in dashboard: ' + this.props.userDetails.email);
+        if(!this.props.userDetails.isLoggedIn)
+        {
+          return <Redirect to={{pathname:'/login'}}/>
+        }
         return (
             <div>
-                <NavbarAdmin  loggedIn={this.state.loggedIn} username={this.state.username}/>
+                <NavbarAdmin username={this.props.userDetails.username} isLoggedIn={this.props.userDetails.isLoggedIn} doLogout={this.props.doLogout}/>
                 <DashboardBodyAdmin />
             </div>
         );
-        //}
     }
 }
 
-function mapStateToProps(state){
-    return {userDetails: state.userDetails};
- }
-
-function mapDispatchToProps(dispatch){
-    return bindActionCreators({doLogin}, dispatch);
-}
-
-//export default Dashboard;
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default Dashboard;

@@ -9,6 +9,12 @@ router.post('/signup', cntrlr.user_signup);
 router.post('/login',  passport.authenticate('local'), cntrlr.user_login);
 router.post('/forgot', cntrlr.pw_forgot);
 router.post('/reset', cntrlr.pw_reset);
+router.get('/logout', (req, res)=>{
+    req.logout();
+    console.log('message: logout');
+    console.log(req.user);
+    res.status(200).send({message:'loggedOut'});
+})
 
 router.get('/test', auth.loggedIn, function(req, res){
     res.status(200).send({message:'You are logged in'});

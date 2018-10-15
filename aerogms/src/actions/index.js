@@ -1,13 +1,19 @@
 import axios from 'axios';
-export const LOGIN = 'login';
-const ROOL_URL = 'http://localhost:3001/api/';
+import * as type from './types';
 
-export function doLogin(username, pwd){
-    const request = axios.post(`${ROOL_URL}login`,
+export function doLogin(username, pwd, callback){
+    const request = axios.post(`${type.ROOT_URL}/login`,
     { username: username, password: pwd});
 
     return {
-        type: LOGIN,
+        type: type.LOGIN,
         payload: request//{something: 'Here is some data'}
+    }
+}
+export function doLogout(){
+    const request = axios.get(`${type.ROOT_URL}/logout`);
+    return {
+        type: type.LOGOUT,
+        payload: request
     }
 }

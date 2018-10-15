@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import {Redirect} from 'react-router-dom';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { Navbar, Nav, NavItem, MenuItem, NavDropDown, FormGroup, FormControl, Image, Button } from 'react-bootstrap/lib/';
@@ -14,30 +13,11 @@ class NavbarAdmin extends Component {
 
     handleLogout(event) {
         event.preventDefault();
-        console.log(` handlesubmit ${event} is`);
-
-        axios
-            .get('/logout')
-            .then(response => {
-                debugger
-                console.log('logout response: ')
-                console.log(response)
-                if (response.status === 200) {
-                    // update App.js state
-                    console.log('logout successfully');
-                    this.setState({redirectTo:'/login'});
-                }
-            }).catch(error => {
-                //this.setState({redirectTo:null});
-                console.log(error);  
-            })
+        console.log(this.props);
+        this.props.doLogout();
     }
 
     render(){
-        if(this.state.redirectTo)
-        {
-            return <Redirect to={{pathname:this.state.redirectTo}}/>
-        }
             return (
                 <div>
                     <Navbar className="show-grid">
@@ -58,7 +38,7 @@ class NavbarAdmin extends Component {
                                 </NavItem>
                                 <NavItem>
                                     <div className="circular-icon text-center">
-                                        <span>S</span>
+                                        <span>{this.props.username}</span>
                                     </div>
                                 </NavItem>
                                 <NavItem>
