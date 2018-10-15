@@ -7,10 +7,6 @@ import Navbar from './navbar';
 import HomeFooter from './footer-home';
 import Loader from './loader';
 
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {doLogin} from '../actions'
-
 class Login extends Component {
     constructor(props) {
         super(props)
@@ -21,7 +17,7 @@ class Login extends Component {
             emailValid : false,
             passwordValid : false,
             formValid : false,
-            redirectTo: null
+            redirectTo: '/dashboard'
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -61,25 +57,30 @@ class Login extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log(` handlesubmit ${event} is`);
+        console.log(`handlesubmit ${event} is`);
+        // document.addEventListener(event, () => {
+        //     document.getElementsByClassName('preloader-background');
+
+        // });
         this.props.doLogin(this.state.email, this.state.password);
+        this.setState({ password:""});
     }
-    
     render() {
         //debugger
-        //console.log(this.props.userDetails);
-        if (this.props.userDetails.length>0) {
-            this.setState({redirectTo:'/dashboard'});
-            console.log(this.props.userDetails[0]);
-            this.props.updateUser({
-                                loggedIn: true,
-                                username: this.props.userDetails[0].userfname,
-                                email: this.props.userDetails[0].email
-                            })
-            debugger
-            return <Redirect to={{ pathname: this.state.redirectTo }} />
-        } else {
-            return (
+        const {userDetails} = this.props;
+        console.log(userDetails);
+        if(userDetails.isLoggedIn){
+            console.log(this.props.userDetails.username);
+            //this.props.history.push('/dashboard');
+            return <Redirect to='/dashboard' />
+        }
+        if(!userDetails.isLoggedIn && (userDetails.error != ""))
+        {
+            console.log('in case of error: '+ userDetails.error);
+            alert('Please enter correct email and password!');
+            userDetails.error = "";
+        }
+        return (
                 <div>
                 <Navbar />
                 <div className="top-margin">
@@ -148,17 +149,8 @@ class Login extends Component {
                 </div>  
                 <HomeFooter />      
             </div>                
-            )
-        }
+        )
     }
 }
 
-function mapDispatchToProps(dispatch){
-    return bindActionCreators({doLogin}, dispatch);
-}
-
-function mapStateToProps(state){
-    return {userDetails:state.userDetails}
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;

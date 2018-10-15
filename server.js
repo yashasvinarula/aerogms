@@ -49,11 +49,11 @@ app.use(passport.session());
 
 app.use('/api', user_route)
 
-app.get('/logout', (req, res) => {
-    req.logout();
-    console.log('message: logout');
-    res.status(200).send({message:'loggedOut'});
-  });
+// app.get('/logout', (req, res) => {
+//     req.logout();
+//     console.log('message: logout');
+//     res.status(200).send({message:'loggedOut'});
+//   });
 
 app.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));

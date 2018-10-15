@@ -98,10 +98,13 @@ a {
   bottom: 0;
 }
 .top-padding {
-  padding-top: 65px;
+  padding-top: 75px;
 }
 input {
   border-top-color: white;
   border-left-color: white;
   border-right-color: white;
+}
+.align-vertical {
+  vertical-align: middle;
 }
