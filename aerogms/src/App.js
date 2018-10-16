@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
 import './App.css';
+import './css/dashboard.css';
 import history from './history';
 // components
+import 'react-bootstrap';
 import Signup from './components/signup';
 import Login from './components/login';
 import Forgot from './components/forgot';
@@ -13,8 +15,7 @@ import ContactUs from './components/contactUs';
 import Help from './components/help';
 import FAQ from './components/faq';
 import Feedback from './components/feedback';
-import 'materialize-css'; // It installs the JS asset only
-import 'materialize-css/dist/css/materialize.min.css';
+
 import {connect} from 'react-redux';
 //import {bindActionCreators} from 'redux';
 import {doLogin, doLogout} from './actions'

@@ -85,11 +85,11 @@ class Login extends Component {
                 <Navbar />
                 <div className="top-margin">
                     <div className="row">
-                        <div className="col m1 offset m1"></div>
-                        <div className="col m5">
-                            <h3 className="center">Welcome to AeroGMS</h3>
+                        <div className="col-md-1 offset-md-1"></div>
+                        <div className="col-md-5">
+                            <h3 className="text-center">Welcome to AeroGMS</h3>
                             <hr className="hr-row"></hr>
-                            <p className="center">Geographic Management System is a framework for city administrators to collect, 
+                            <p className="text-center">Geographic Management System is a framework for city administrators to collect, 
                                 analyze and extract useful information for cities and towns. It encompasses all
                                  aspects of management and planning process in an organization from servey to 
                                  advanced analytics.
@@ -97,9 +97,9 @@ class Login extends Component {
                             <img src={BuildingsImage} alt="buildings" className="buildings-image"></img>
                         </div>
                         {/* <Loader /> */}
-                        <div className="col m1 offset m1"></div>
-                        <div className="col m1 offset m1"></div>
-                        <div className="col m3 border-css form-height side-margin">
+                        <div className="col-md-1 offset-md-1"></div>
+                        <div className="col-md-1 offset-md-1"></div>
+                        <div className="col-md-3 border-css form-height side-margin">
                         
                             <img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
                             <div> 
@@ -148,8 +148,8 @@ class Login extends Component {
                     </div>
                 </div>  
                 <HomeFooter />      
-            </div>
-            )
+            </div>                
+        )
     }
 }
 

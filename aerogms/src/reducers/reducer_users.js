@@ -5,7 +5,8 @@ export default function(state={}, action){
 switch(action.type)
 {
     case type.GET_USERS:
-        return _.mapKeys(action.payload.data, "u_id")
-
+        return _.mapKeys(action.payload.data, 'u_id')
+    default:
+        return state;
 }
-} 
+}

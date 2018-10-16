@@ -2,6 +2,9 @@
 /* .hr-row {
   background-color : #036;
 } */
+a {
+  text-decoration: none;
+}
 .top-margin {
   margin-top: 25px;
 }
@@ -60,7 +63,7 @@
 .header-logo {
   /* position: static;
   left : 0px; */
-  width : 500px;
+  width : 250px;
 }
 /* *** */
 /* buttons */
@@ -85,7 +88,7 @@
   display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: #eee;
+	/* background-color: lightgray; */
 	
 	position: fixed;
 	z-index: 100;
@@ -94,4 +97,14 @@
 	right: 0;
   bottom: 0;
 }
- 
+.top-padding {
+  padding-top: 75px;
+}
+input {
+  border-top-color: white;
+  border-left-color: white;
+  border-right-color: white;
+}
+.align-vertical {
+  vertical-align: middle;
+}

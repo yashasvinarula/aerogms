@@ -2,19 +2,15 @@ import React, { Component } from 'react';
 import {Redirect} from 'react-router-dom';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { Navbar, Nav, NavItem, MenuItem, NavDropDown, FormGroup, FormControl, Image, Button } from 'react-bootstrap/lib/';
+import { bootstrapUtils } from 'react-bootstrap/lib/utils';
 
-import AeroLogoHeader from '../../images/AeroLogoHeader.png';
+
+
 class NavbarAdmin extends Component {
     constructor(props){
         super(props);
         this.state = { redirectTo: null}
         this.handleLogout = this.handleLogout.bind(this);
-    }
-
-    handleLogout(event) {
-        event.preventDefault();
-        console.log(this.props);
-        this.props.doLogout();
     }
 
     render(){
@@ -50,7 +46,6 @@ class NavbarAdmin extends Component {
                     </Navbar> 
                 </div>
             );
-        
     }
 }
 
