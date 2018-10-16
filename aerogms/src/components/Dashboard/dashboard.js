@@ -1,23 +1,12 @@
 import React, { Component } from 'react';
 // import NavbarAdmin from './navbar-dashboard-admin';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, FormControl, Image, Button, Table, Pager, Popover, OverlayTrigger, overlay } from 'react-bootstrap/lib/';
+import { Navbar, Nav, NavItem, FormControl, Image, Button, ButtonGroup, Table, Pager } from 'react-bootstrap/lib/';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
 import UserDetail from './user-details';
-
-const popoverleft = (
-    <Popover id="popover-positioned-left">
-        <div>
-            <a href="" className="popover-anchor">Edit</a>
-            <a href="" className="popover-anchor">Remove</a>
-            <a href="" className="popover-anchor">Toggle Status</a>
-            <a href="" id="user-detail" onClick="openNav()" className="popover-anchor">Details</a>
-        </div>
-    </Popover>
-);
 
 class Dashboard extends Component {
     constructor(props){
@@ -27,15 +16,33 @@ class Dashboard extends Component {
             username : '',
             regDate : '',
             status : '',
+            showMenu : false
         }
         this.fetchUsers = this.fetchUsers.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
+        this.showMenu = this.showMenu.bind(this);   
+        this.closeMenu = this.closeMenu.bind(this);
     }
-
+    
     handleLogout(event) {
         event.preventDefault();
         console.log(this.props);
         this.props.doLogout();
+    }
+
+    showMenu(event) {
+        event.preventDefault();
+        this.setState({showMenu : true}, () => {
+            document.addEventListener('click', this.closeMenu);
+        });
+    }
+
+    closeMenu(event) {
+        if(!this.dropdownMenu.contains(event.target)) {
+            this.setState({showMenu : false}, () => {
+                document.removeEventListener('click', this.closeMenu);  
+            });
+        }
     }
 
     fetchUsers() {
@@ -113,9 +120,20 @@ class Dashboard extends Component {
                                 <td>04-12-17</td>
                                 <td>Enabled</td>
                                 <span bsSize="small">
-                                    <OverlayTrigger trigger="click" placement="bottom" overlay={popoverleft}>
-                                        <Glyphicon className="align-vertical" glyph="option-vertical" />
-                                    </OverlayTrigger>
+                                        <Glyphicon className="align-vertical" onClick={this.showMenu} glyph="option-vertical" />
+                                        {
+                                            this.state.showMenu
+                                                ? ( <div className="menu" ref={(element) => {this.dropdownMenu = element}}>
+                                                        <ButtonGroup>
+                                                            <Button className="menuItem">Edit</Button>
+                                                            <Button className="menuItem">Remove</Button>
+                                                            <Button className="menuItem">Toggle Status</Button>
+                                                            <Button className="menuItem">Details</Button>
+                                                        </ButtonGroup>   
+                                                    </div>
+                                                )
+                                                : (null) 
+                                        }
                                 </span>
                             </tr>
                         </tbody>
@@ -125,7 +143,6 @@ class Dashboard extends Component {
                         <Pager.Item next href="#">Next</Pager.Item>
                     </Pager>
                 </div>
-                <UserDetail />
             </div>
         );
     }
