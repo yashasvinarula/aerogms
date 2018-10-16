@@ -3,16 +3,6 @@ import React, { Component } from 'react';
 class UserDetail extends Component {
     constructor(props){
         super(props);
-        this.closeNav = this.closeNav.bind(this);
-        this.openNav = this.openNav.bind(this);
-    }
-
-    closeNav() {
-        document.getElementById('mySidebar').style.width = '0px';    
-    }
-
-    openNav() {
-        document.getElementById('mySidebar').style.width = '250px';
     }
 
     render() {

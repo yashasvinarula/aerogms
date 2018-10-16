@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 // import NavbarAdmin from './navbar-dashboard-admin';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, FormControl, Image, Button, Table, Pager, Popover, OverlayTrigger, overlay } from 'react-bootstrap/lib/';
+import { Navbar, Nav, NavItem, FormControl, Image, Button, ButtonGroup, Table, Pager } from 'react-bootstrap/lib/';
 import {Redirect} from 'react-router-dom';
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
@@ -10,18 +10,6 @@ import UserDetail from './user-details';
 
 import {connect} from 'react-redux';
 import {getUsers} from '../../actions';
-
-const popoverleft = (
-    <Popover id="popover-positioned-left">
-        <div>
-            <a href="" className="popover-anchor">Edit</a>
-            <a href="" className="popover-anchor">Remove</a>
-            <a href="" className="popover-anchor">Toggle Status</a>
-            <a href="" id="user-detail" onClick="openNav()" className="popover-anchor">Details</a>
-        </div>
-    </Popover>
-);
-
 class Dashboard extends Component {
     constructor(props){
         super(props);
@@ -30,9 +18,12 @@ class Dashboard extends Component {
             username : '',
             regDate : '',
             status : '',
+            showMenu : false
         }
         this.renderUsers = this.renderUsers.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
+        this.showMenu = this.showMenu.bind(this);   
+        this.closeMenu = this.closeMenu.bind(this);
     }
 
     componentDidMount(){
@@ -58,15 +49,27 @@ class Dashboard extends Component {
                     <td>{user.date_time}</td>
                     <td>{user.status == true ? 'Enable': 'Disable' }</td>
                     <span bsSize="small">
-                    <OverlayTrigger trigger="click" placement="bottom" overlay={popoverleft}>
                     <Glyphicon className="align-vertical" glyph="option-vertical" />
-                    </OverlayTrigger>
                     </span>
                 </tr>
                 )
-        })
+        })}
+
+    showMenu(event) {
+        event.preventDefault();
+        this.setState({showMenu : true}, () => {
+            document.addEventListener('click', this.closeMenu);
+        });
     }
 
+    closeMenu(event) {
+        if(!this.dropdownMenu.contains(event.target)) {
+            this.setState({showMenu : false}, () => {
+                document.removeEventListener('click', this.closeMenu);  
+            });
+        }
+    }
+    
 
     render()
     {
@@ -138,9 +141,20 @@ class Dashboard extends Component {
                                 <td>04-12-17</td>
                                 <td>Enabled</td>
                                 <span bsSize="small">
-                                    <OverlayTrigger trigger="click" placement="bottom" overlay={popoverleft}>
-                                        <Glyphicon className="align-vertical" glyph="option-vertical" />
-                                    </OverlayTrigger>
+                                        <Glyphicon className="align-vertical" onClick={this.showMenu} glyph="option-vertical" />
+                                        {
+                                            this.state.showMenu
+                                                ? ( <div className="menu" ref={(element) => {this.dropdownMenu = element}}>
+                                                        <ButtonGroup>
+                                                            <Button className="menuItem">Edit</Button>
+                                                            <Button className="menuItem">Remove</Button>
+                                                            <Button className="menuItem">Toggle Status</Button>
+                                                            <Button className="menuItem">Details</Button>
+                                                        </ButtonGroup>   
+                                                    </div>
+                                                )
+                                                : (null) 
+                                        }
                                 </span>
                             </tr> */}
                             {this.renderUsers()}
@@ -152,7 +166,6 @@ class Dashboard extends Component {
                         <Pager.Item next href="#">Next</Pager.Item>
                     </Pager>
                 </div>
-                <UserDetail />
             </div>
         );
     }
