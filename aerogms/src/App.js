@@ -15,6 +15,7 @@ import ContactUs from './components/contactUs';
 import Help from './components/help';
 import FAQ from './components/faq';
 import Feedback from './components/feedback';
+import UserDashboard from './components/Dashboard/user-dashboard';
 
 import {connect} from 'react-redux';
 //import {bindActionCreators} from 'redux';
@@ -26,6 +27,7 @@ const App = ({userDetails, doLogin, doLogout}) =>(
         <Switch>
         <Route path="/" exact={true} render={() => <Dashboard doLogout={doLogout} userDetails={userDetails} />}  />
         <Route path="/dashboard" render={() => <Dashboard doLogout={doLogout} userDetails={userDetails} />}  />
+        <Route path="/userDashboard" render={() => <UserDashboard />}></Route>
         <Route path="/login" render={(props) => <Login doLogin={doLogin} userDetails={userDetails} {...props}/>} />
         <Route path="/forgot" render={() => <Forgot />} />
         <Route path="/reset" render={() => <Reset />} />
