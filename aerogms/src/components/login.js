@@ -44,7 +44,7 @@ class Login extends Component {
                 fieldValidationErrors.password = passwordValid ? '' : 'Password is too short';
                 break;
             default:
-                break;  
+                break;
         }
         this.setState({ formErrors : fieldValidationErrors,
                         emailValid : emailValid,
@@ -74,7 +74,7 @@ class Login extends Component {
             //this.props.history.push('/dashboard');
             return <Redirect to='/dashboard' />
         }
-        if(!userDetails.isLoggedIn && (userDetails.error != ""))
+        if(!userDetails.isLoggedIn && (userDetails.error !== ""))
         {
             console.log('in case of error: '+ userDetails.error);
             alert('Please enter correct email and password!');

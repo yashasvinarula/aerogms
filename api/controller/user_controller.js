@@ -98,9 +98,9 @@ module.exports.user_signup =  function(req, res){
 }
 
 module.exports.user_login = function(req, res){
-
     console.log('in login');
-    console.log(req.user);
+    console.log(req.session);
+    //req.session.user = req.user.email;
     return res.status(200).send(req.user);
 }
 
@@ -179,7 +179,6 @@ module.exports.pw_reset = async function(req, res){
     }
 }
 
-
 module.exports.pw_forgot = async function(req, res) {
         var mailId = req.body.email;
         if(mailId == "" || mailId == undefined)
@@ -232,8 +231,7 @@ module.exports.pw_forgot = async function(req, res) {
         });
   }
 
-
-  function sendMail(req, res, from, to, sub, content, message) {
+function sendMail(req, res, from, to, sub, content, message) {
     var smtpTransport = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -256,3 +254,63 @@ module.exports.pw_forgot = async function(req, res) {
       return res.status(200).send({message:message});
     });
   }
+
+
+module.exports.getUserlist = function(req, res){
+   
+    db.func('public.sp_getuserslist', ['userlist', 0])
+    .then(result => {
+    if(result)
+    {
+        console.log(result[0].sp_aerogms);
+        return res.status(200).send(result);
+    }
+})
+.catch(error => {
+    console.log('ERROR:', error); // print the error;
+    return res.status(400).send(error);
+});
+}   
+
+module.exports.removeUser = function(req, res){
+    //has to implement....................
+    db.func('public.sp_aerogms', ['remove_user', [req.body.u_id]])
+    .then(result => {
+    if(result[0].sp_aerogms)
+    {
+        console.log(result[0].sp_aerogms);
+        return res.status(200).send({u_id:result[0].sp_aerogms});
+        //return res.status(200).send({message:'User removed successfully!'});
+    }
+    else
+    {
+        return res.status(200).send({message:'User already removed!'});
+    }
+    })
+    .catch(error => {
+    console.log('ERROR:', error); // print the error;
+    return res.status(400).send(error);
+    });
+}
+
+module.exports.toggleUserStatus = function(req, res){
+
+    db.func('public.sp_aerogms', ['toggle_user_status', [req.body.u_id]])
+    .then(result => {
+    if(result[0].sp_aerogms)
+    {
+        console.log(result[0].sp_aerogms);
+        return res.status(200).send({u_id:result[0].sp_aerogms});
+        //return res.status(200).send({message:'User removed successfully!'});
+    }
+    else
+    {
+        console.log('Problem in status toggling');
+        return res.status(200).send({message:'Problem in status toggling'});
+    }
+    })
+    .catch(error => {
+    console.log('ERROR:', error); // print the error;
+    return res.status(400).send(error);
+    });
+    }

@@ -27,7 +27,7 @@ class NavbarLogin extends Component {
             //     </nav>
             // </div>
             <div className="top-padding">
-                <Navbar row fluid fixedTop>
+                <Navbar row="true" fluid fixedTop>
                     <Navbar.Header className="col-md-3">
                         <Navbar.Brand>
                             <a ><Image src={AeroLogoHeader} alt="AeroGMS Logo" className="header-logo"></Image></a>

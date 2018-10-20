@@ -37,12 +37,13 @@
 
 /* Individual User Menu */
 .menu {
-    position: relative;
+    z-index: 50;
+    position: absolute;
     width:  30px;
     height: 50px;
 }
 .menuItem {
     /* position: absolute; */
     display: block;
-    text-decoration: none !important;
+    width: 110px;
 }

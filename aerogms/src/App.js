@@ -30,7 +30,7 @@ const App = ({userDetails, doLogin, doLogout}) =>(
         <Route path="/forgot" render={() => <Forgot />} />
         <Route path="/reset" render={() => <Reset />} />
         <Route path="/signup" render={() => <Signup/>} />
-        <Route path="/about" render={() =>  <About />} />
+        <Route path="/about" render={() =>  <About />} /> 
         <Route path="/contact" render={() => <ContactUs />} />
         <Route path="/help" render={() => <Help />} />
         <Route path="/faq" render={() => <FAQ />} />

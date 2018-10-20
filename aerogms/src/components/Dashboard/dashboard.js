@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import axios from 'axios';
 // import NavbarAdmin from './navbar-dashboard-admin';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { Navbar, Nav, NavItem, FormControl, Image, Button, ButtonGroup, Table, Pager } from 'react-bootstrap/lib/';
@@ -7,6 +8,8 @@ import {Redirect} from 'react-router-dom';
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
 import UserDetail from './user-details';
+
+import TableRow from './user_table';
 
 import {connect} from 'react-redux';
 import {getUsers} from '../../actions';
@@ -18,12 +21,9 @@ class Dashboard extends Component {
             username : '',
             regDate : '',
             status : '',
-            showMenu : false
         }
         this.renderUsers = this.renderUsers.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
-        this.showMenu = this.showMenu.bind(this);   
-        this.closeMenu = this.closeMenu.bind(this);
     }
 
     componentDidMount(){
@@ -32,6 +32,21 @@ class Dashboard extends Component {
         {
             this.props.getUsers();
         }
+        // axios.get('/api/userlist')
+        // .then(response => {
+        //     debugger
+        //     console.log('user response: ')
+        //     console.log(response.data.message)
+        //     if (response.status === 200) {
+        //         // update App.js state
+        //     }
+        // }).catch(error => {
+        //     if(error.response.status===401)
+        //     {
+        //         alert('user list error');
+        //     }
+        //     console.log(error);
+        // })
     }
 
     handleLogout(event) {
@@ -40,36 +55,13 @@ class Dashboard extends Component {
         this.props.doLogout();
     }
 
+
     renderUsers(){
     return _.map(this.props.users, user => {
             return (
-                <tr>
-                    <td>{user.u_id}</td>
-                    <td>{user.name}</td>
-                    <td>{user.date_time}</td>
-                    <td>{user.status == true ? 'Enable': 'Disable' }</td>
-                    <span bsSize="small">
-                    <Glyphicon className="align-vertical" glyph="option-vertical" />
-                    </span>
-                </tr>
+               <TableRow user={user}/>
                 )
         })}
-
-    showMenu(event) {
-        event.preventDefault();
-        this.setState({showMenu : true}, () => {
-            document.addEventListener('click', this.closeMenu);
-        });
-    }
-
-    closeMenu(event) {
-        if(!this.dropdownMenu.contains(event.target)) {
-            this.setState({showMenu : false}, () => {
-                document.removeEventListener('click', this.closeMenu);  
-            });
-        }
-    }
-    
 
     render()
     {
@@ -83,6 +75,11 @@ class Dashboard extends Component {
         {
           return <Redirect to={{pathname:'/login'}}/>
         }
+        // if(!this.props.users)
+        // {
+        //   return <Redirect to={{pathname:'/login'}}/>
+        // }
+
         return (
             <div>
                 {/* <NavbarAdmin username={this.props.userDetails.username} isLoggedIn={this.props.userDetails.isLoggedIn} doLogout={this.props.doLogout}/> */}
@@ -135,30 +132,7 @@ class Dashboard extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {/* <tr>
-                                <td>1234AB</td>
-                                <td>Parveen Sahrawat</td>
-                                <td>04-12-17</td>
-                                <td>Enabled</td>
-                                <span bsSize="small">
-                                        <Glyphicon className="align-vertical" onClick={this.showMenu} glyph="option-vertical" />
-                                        {
-                                            this.state.showMenu
-                                                ? ( <div className="menu" ref={(element) => {this.dropdownMenu = element}}>
-                                                        <ButtonGroup>
-                                                            <Button className="menuItem">Edit</Button>
-                                                            <Button className="menuItem">Remove</Button>
-                                                            <Button className="menuItem">Toggle Status</Button>
-                                                            <Button className="menuItem">Details</Button>
-                                                        </ButtonGroup>   
-                                                    </div>
-                                                )
-                                                : (null) 
-                                        }
-                                </span>
-                            </tr> */}
                             {this.renderUsers()}
-                            
                         </tbody>
                     </Table>
                     <Pager>
@@ -170,6 +144,7 @@ class Dashboard extends Component {
         );
     }
 }
+
 
 function mapStateToProps({users}){
     return {users}

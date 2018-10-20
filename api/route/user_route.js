@@ -16,8 +16,9 @@ router.get('/logout', (req, res)=>{
     res.status(200).send({message:'loggedOut'});
 })
 
-router.get('/test', auth.loggedIn, function(req, res){
-    res.status(200).send({message:'You are logged in'});
-});
+router.get('/userlist',  auth.loggedIn, cntrlr.getUserlist);
+router.delete('/removeUser', auth.loggedIn, cntrlr.removeUser);
+router.patch('/toggleUserStatus', auth.loggedIn, cntrlr.toggleUserStatus);
+
 
 module.exports = router;

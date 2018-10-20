@@ -5,8 +5,6 @@ class UserDashboard extends Component {
         super(props);   
     }
     render(){
-        return (
-            
-        );
+        return ();
     }
 }

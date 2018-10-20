@@ -11,13 +11,12 @@ module.exports = (passport) => {
 
 	passport.deserializeUser((username, cb) => {
         db.func('public.sp_getuserdata', ['user_byemail', [username]])
-        .then(result => {
-            cb(null, result[0])
+        .then(user => {
+            cb(null, user[0])
         })
         .catch(err => {
             return cb(err);
         });
-
     })
     
     passport.use(new LocalStrategy(

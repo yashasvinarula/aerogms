@@ -31,22 +31,20 @@ app.all('*', function (req, res, next) {
     }
 });
 
-app.use( (req, res, next) => {
-    console.log('req.session', req.session);
-    return next();
-  });
-
+app.use(cookieParser());
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb',  parameterLimit: 100000, extended:true}));
-app.use(cookieParser());
 app.use(session({
-    secret: 'old-rock-ace', //pick a random string to make the hash that is generated secure
+    secret: 'old-rock-ace',
     resave: false, //required
     saveUninitialized: false //required
     }));
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use( (req, res, next) => {
+    console.log('req.session ', req.session);
+    return next();
+  });
 app.use('/api', user_route)
 
 // app.get('/logout', (req, res) => {
