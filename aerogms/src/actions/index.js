@@ -17,3 +17,11 @@ export function doLogout(){
         payload: request
     }
 }
+
+export function getUsers(){
+    const request = axios.get(`${type.ROOT_URL}/userlist`);
+    return{
+        type:type.GET_USERS,
+        payload: request
+    }
+}
