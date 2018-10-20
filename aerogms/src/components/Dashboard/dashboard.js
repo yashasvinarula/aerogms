@@ -51,10 +51,10 @@ class TableRow extends Component {
                             this.state.showMenu
                                 ? ( <div className="menu" ref={(element) => {this.dropdownMenu = element}}>
                                         <ButtonGroup>
-                                            <Button className="menuItem">Edit</Button>
-                                            <Button className="menuItem">Remove</Button>
-                                            <Button className="menuItem">Toggle Status</Button>
-                                            <Button className="menuItem">Details</Button>
+                                            <Button className="menuItem text-center">Edit</Button>
+                                            <Button className="menuItem text-center">Remove</Button>
+                                            <Button className="menuItem text-center">Toggle Status</Button>
+                                            <Button className="menuItem text-center">Details</Button>
                                         </ButtonGroup>   
                                     </div>
                                 )
