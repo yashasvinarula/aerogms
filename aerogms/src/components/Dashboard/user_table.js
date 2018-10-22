@@ -36,7 +36,8 @@ class TableRow extends Component{
     }
     }
 
-    toggleUserStatus(){
+    toggleUserStatus(event){
+        this.setState({showMenu : false});
         this.props.toggleUserStatus(this.props.user.u_id);
     }
 

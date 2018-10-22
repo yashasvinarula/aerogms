@@ -1,3 +1,6 @@
+/* p {
+    line-height: 0.5;
+} */
 .circular-icon {
     border-radius: 50%;
     background-color: #036;
@@ -37,13 +40,63 @@
 
 /* Individual User Menu */
 .menu {
-    z-index: 50;
     position: absolute;
     width:  30px;
     height: 50px;
+    z-index: 50;
 }
 .menuItem {
     /* position: absolute; */
     display: block;
-    width: 110px;
+    width:  110px;
+}
+.user-icon-menu {
+    position: absolute;
+    z-index: 50;
+}
+.circular-icon-menu {
+    border-radius: 50%;
+    background-color: #036;
+    color: white;
+    width: 60px;
+    height : 60px;
+}
+.btn-color {
+    background-color: #036;
+    color: white;
+    border-radius: 25px;
+    box-shadow: 0 0 8px 0 gray; 
+}
+.align-vertical {
+    vertical-align: middle;
+}
+.project {
+    display : inline;
+    border-bottom: 10px solid gray;
+}
+.map-thumbnail {
+    width : 150px;
+    height : 150px;
+}
+.nav-user {
+    margin-bottom: 15px;
+}
+/* .navItem-user {
+    
+} */
+.pos-drawing {
+    display: inline-block;
+}
+.drawing-right {
+    text-align: right;
+}
+.navbar-css {
+    background-color: rgb(220, 220, 220);
+}
+.drawing-bottom {
+    border-bottom: 5px solid rgb(200, 200, 200);
+    width : 150px;
+}
+ul {
+    list-style-type: none;
 }

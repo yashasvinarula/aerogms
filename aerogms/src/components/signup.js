@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import  { Redirect } from 'react-router-dom';
+import MediaQuery from 'react-responsive';
 import '../App.css';
 import FormErrors from './formErrors';
+import Navbar from './navbar';
 import AeroLogo from '../images/AeroLOGO.png';
 // import FormErrors from './formErrors';
 
@@ -82,11 +84,7 @@ class Signup extends Component {
 								confirmPasswordValid : confirmPasswordValid,
 							 }, this.validateForm)
 	}
-	// if(password === confirmPassword){
-	// 	this.setState({
-	// 		fieldValidationErrors.passwordMatch = true
-	// 	});
-	// }
+	
 	validateForm() {
 		this.setState({ formValid : this.state.firstNameValid && this.state.emailValid && this.state.mobileValid && this.state.passwordValid && this.state.confirmPasswordValid && (this.state.password === this.state.confirmPassword)});
 	}
@@ -130,91 +128,164 @@ class Signup extends Component {
 			})
 	}
 
-render() {
+	render() {
 	if(this.state.redirectTo){
 		return <Redirect to={{ pathname: this.state.redirectTo }} />
 	}
 	return (
-        <div>
-		    <div className="row" id="home">
-                <div className="col m4 offset m4"></div>
-                <div className="col m4 border-css">
-                    <img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
-			        <div>
-						<FormErrors formErrors={this.state.formErrors} />
+		<MediaQuery maxWidth={768}>
+			{(matches) => {
+				if(matches) {
+					return (
+						<div>
+						<Navbar />
+						<div className="" id="home">
+							<div className="border-css">
+								<h3 className="text-center">Create your account</h3>
+								<div className="form-css"></div>
+								<form className="">
+										<div className="">
+											<div className="">
+												{/* <div className="input-relative">
+													<p className="invalid-input">{this.state.formErrors["firstName"]}</p>
+												</div> */}
+												<label htmlFor="firstName">First name</label>
+												<input className="validate" type="text" id="first-name"	name="firstName" required={true} placeholder=""
+													value={this.state.firstName} onChange={this.handleChange}
+												/>
+											</div>
+											<div className="">
+												<label htmlFor="lastName">Last name</label>
+												<input className="validate" type="text" id="lasst-name"	name="lastName"	placeholder=""
+													value={this.state.lastName} onChange={this.handleChange}
+												/>
+											</div>
+										</div>
+										<div className="">
+											<div className="">
+												<p className="invalid-input">{this.state.formErrors["email"]}</p>
+												<label className="" htmlFor="email">Email address</label>
+												<input className="validate"	type="email" id="email"	name="email" required={true} placeholder=""
+													value={this.state.username}	onChange={this.handleChange}
+												/>
+											</div>
+										</div>
+										<div className="">
+											<div className="">
+												<label className="" htmlFor="mobile">Mobile number</label>
+												<input className="validate" type="tel" id="mobile-number" name="mobile" required={true}	placeholder=""
+													value={this.state.mobile} onChange={this.handleChange}
+												/>
+											</div>
+										</div>
+										<div className="">
+											<div className="">
+												<label className="" htmlFor="password">Password</label>
+												<input className="validate" placeholder="" type="password" name="password" required={true} 
+													value={this.state.password}	onChange={this.handleChange}
+												/>
+											</div>
+											<div className="">
+												<label className="" htmlFor="password"> Confirm Password</label>
+												<input className="validate"	placeholder="" type="password" name="confirmPassword" required={true}
+													value={this.state.confirmPassword} onChange={this.handleChange}
+												/>	
+											</div>
+										</div>	
+										<small className="text-center">By clicking 'Continue' you agree to the <span><a>Terms</a></span> and <span><a>Privacy Policy</a></span></small>
+										<div className="">
+											<div className="">
+												<button className="btn btn-auth" disabled={!this.state.formValid} onClick={this.handleSubmit} type="submit">Continue</button>
+											</div>
+										</div>
+										<p className="text-center">Already have an Account? <span><a href="/login">Login</a></span></p>
+								</form>
+								<div className=""></div>
+							</div>
+							<div className=""></div>
+						</div>
 					</div>
-					<div className="col s1 offset s1"></div>
-					<form className="col s10">
-				            <div className="row">
-                                <div className=" input-margin col s6">
-									{/* <div className="input-relative">
-										<p className="invalid-input">{this.state.formErrors["firstName"]}</p>
-									</div> */}
-									<label htmlFor="firstName">First name</label>
-                                    <input className="validate" type="text" id="first-name"	name="firstName" required={true} placeholder=""
-				    	            	value={this.state.firstName} onChange={this.handleChange}
-				    	            />
-                                </div>
-                                <div className=" input-margin col s6">
-									<label htmlFor="lastName">Last name</label>
-                                    <input className="validate" type="text" id="lasst-name"	name="lastName"	placeholder=""
-					                	value={this.state.lastName} onChange={this.handleChange}
-					                />
-                                </div>
-								{/* <div className=" col s12">
-									<label htmlFor="username">Username</label>
-                                    <input className="validate" type="text" id="username" name="username" placeholder=""
-                                        value={this.state.username} onChange={this.handleChange}
-                                    />
-                                    
-				                </div> */}
-				            </div>
-                            <div className="row">
-                                <div className=" input-margin col s12">
-									<p className="invalid-input">{this.state.formErrors["email"]}</p>
-									<label className="" htmlFor="email">Email address</label>
-					    	        <input className="validate"	type="email" id="email"	name="email" required={true} placeholder=""
-					    	        	value={this.state.username}	onChange={this.handleChange}
-					    	        />
-                                </div>
-				            </div>
-                            <div className="row">
-                                <div className=" input-margin col s12">
-									<label className="" htmlFor="mobile">Mobile number</label>
-						            <input className="validate" type="tel" id="mobile-number" name="mobile" required={true}	placeholder=""
-							            value={this.state.mobile} onChange={this.handleChange}
-						            />
-                                </div>
-				            </div>
-				            <div className="row">
-                                <div className=" input-margin col s6">
-									<label className="" htmlFor="password">Password</label>
-                                    <input className="validate" placeholder="" type="password" name="password" required={true} 
-                                        value={this.state.password}	onChange={this.handleChange}
-						            />
-                                </div>
-                                <div className=" input-margin col s6">
-									<label className="" htmlFor="password"> Confirm Password</label>
-						            <input className="validate"	placeholder="" type="password" name="confirmPassword" required={true}
-							            value={this.state.confirmPassword} onChange={this.handleChange}
-						            />	
-                                </div>
-				            </div>	
-				            <div className="row">
-				                <div className="">
-				                    <button className="btn btn col s12" disabled={!this.state.formValid} onClick={this.handleSubmit} type="submit">Continue</button>
-                                </div>
-				            </div>
-                            <small className="center">By clicking 'Continue' you agree to the <span><a>Terms</a></span> and <span><a>Privacy Policy</a></span></small>
-                            <p className="center">Already have an Account? <span><a href="/login">Login</a></span></p>
-                    </form>
-					<div className="col s1 offset s1"></div>
-            	</div>
-			    <div className="col m4 offset m4"></div>
-		    </div>
-        </div>
+					);
+				} else {
+					return (
+						<div>
+						<Navbar />
+						<div className="container" id="home">
+							<div className="row">
+							<div className="col-md-4 offset-md-4"></div>
+							<div className="border-css">
+								<img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
+								<div className=""></div>
+								<form className="">
+										<div className="">
+											<div className="">
+												<div className="input-relative">
+													<p className="invalid-input">{this.state.formErrors["firstName"]}</p>
+												</div>
+												<label htmlFor="firstName">First name</label>
+												<input className="validate" type="text" id="first-name"	name="firstName" required={true} placeholder=""
+													value={this.state.firstName} onChange={this.handleChange}
+												/>
+											</div>
+											<div className="">
+												<label htmlFor="lastName">Last name</label>
+												<input className="validate" type="text" id="last-name"	name="lastName"	placeholder=""
+													value={this.state.lastName} onChange={this.handleChange}
+												/>
+											</div>
+										</div>
+										<div className="">
+											<div className="">
+												<p className="invalid-input">{this.state.formErrors["email"]}</p>
+												<label className="" htmlFor="email">Email address</label>
+												<input className="validate"	type="email" id="email"	name="email" required={true} placeholder=""
+													value={this.state.username}	onChange={this.handleChange}
+												/>
+											</div>
+										</div>
+										<div className="">
+											<div className="">
+												<label className="" htmlFor="mobile">Mobile number</label>
+												<input className="validate" type="tel" id="mobile-number" name="mobile" required={true}	placeholder=""
+													value={this.state.mobile} onChange={this.handleChange}
+												/>
+											</div>
+										</div>
+										<div className="">
+											<div className="">
+												<label className="" htmlFor="password">Password</label>
+												<input className="validate" placeholder="" type="password" name="password" required={true} 
+													value={this.state.password}	onChange={this.handleChange}
+												/>
+											</div>
+											<div className="">
+												<label className="" htmlFor="password"> Confirm Password</label>
+												<input className="validate"	placeholder="" type="password" name="confirmPassword" required={true}
+													value={this.state.confirmPassword} onChange={this.handleChange}
+												/>	
+											</div>
+										</div>	
+										<small className="text-center">By clicking 'Continue' you agree to the <span><a>Terms</a></span> and <span><a>Privacy Policy</a></span></small>
+										<div className="">
+											<div className="">
+												<button className="btn btn-auth" disabled={!this.state.formValid} onClick={this.handleSubmit} type="submit">Continue</button>
+											</div>
+										</div>
+										<p className="text-center">Already have an Account? <span><a href="/login">Login</a></span></p>
+								</form>
+								<div className=""></div>
+							</div>
+							<div className=""></div>
+							</div>
+						</div>
+					</div>
+					);
+				}
+			}}
+		</MediaQuery>
+
 	)
-}
+	}
 }
 
 export default Signup

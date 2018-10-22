@@ -59,7 +59,7 @@ class Dashboard extends Component {
     renderUsers(){
     return _.map(this.props.users, user => {
             return (
-               <TableRow user={user}/>
+               <TableRow key={user.u_id} user={user}/>
                 )
         })}
 
@@ -75,11 +75,10 @@ class Dashboard extends Component {
         {
           return <Redirect to={{pathname:'/login'}}/>
         }
-        // if(!this.props.users)
-        // {
-        //   return <Redirect to={{pathname:'/login'}}/>
-        // }
-
+        if(this.props.userDetails.email!=="elevenx099@gmail.com")
+        {
+          return <Redirect to={{pathname:'/login'}}/>
+        }
         return (
             <div>
                 {/* <NavbarAdmin username={this.props.userDetails.username} isLoggedIn={this.props.userDetails.isLoggedIn} doLogout={this.props.doLogout}/> */}

@@ -1,9 +1,6 @@
 
-/* .hr-row {
-  background-color : #036;
-} */
 a {
-  text-decoration: none;
+  text-decoration: none !important;
 }
 .top-margin {
   margin-top: 25px;
@@ -12,7 +9,6 @@ a {
   padding : 15px; 
   border-radius : 25px; 
   background-color: white;
-  /* height : 600px; */
 }
 /* Forms */
 .form-height {
@@ -28,7 +24,7 @@ a {
   color : red;
 }
 .input-relative {
-  position: absolute;
+  position: relative;
 }
 .input-container {
   display: inline-block;
@@ -64,13 +60,21 @@ a {
   /* position: static;
   left : 0px; */
   width : 250px;
+  vertical-align: middle;
+}
+.form-css {
+  display: block;
+  width: 80%;
+  margin: 0 auto;
 }
 /* *** */
 /* buttons */
 .btn-auth {
-  color : #06c; 
+  background-color: #06c;
+  color : white; 
   margin-top: 15px;
   margin-bottom: 15px;
+  width: 100%;
 }
 /* *** */
 /* Footer */
@@ -101,9 +105,15 @@ a {
   padding-top: 75px;
 }
 input {
-  border-top-color: white;
-  border-left-color: white;
-  border-right-color: white;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  width : 100%;
+}
+input:hover {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
 }
 .align-vertical {
   vertical-align: middle;

@@ -274,7 +274,7 @@ module.exports.getUserlist = function(req, res){
 
 module.exports.removeUser = function(req, res){
     //has to implement....................
-    db.func('public.sp_aerogms', ['remove_user', [req.body.u_id]])
+    db.func('public.sp_aerogms', ['remove_user', [req.query.u_id]])
     .then(result => {
     if(result[0].sp_aerogms)
     {
