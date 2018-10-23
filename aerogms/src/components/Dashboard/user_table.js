@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {removeUser,toggleUserStatus} from '../../actions';
 
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, FormControl, Image, Button, ButtonGroup, Table, Pager } from 'react-bootstrap/lib/';
+import { Button, ButtonGroup } from 'react-bootstrap/lib/';
 
 class TableRow extends Component{
     constructor(props){
