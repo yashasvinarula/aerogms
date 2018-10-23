@@ -37,7 +37,7 @@ const App = ({userDetails, doLogin, doLogout}) =>(
         <Route path="/help" render={() => <Help />} />
         <Route path="/faq" render={() => <FAQ />} />
         <Route path="/feedback" render={() => <Feedback />} />
-        <Route path="/usernotactivated" component={() => <div>User account is not activated now. As it is activated by admin then confirmation mail come to you. Please try again later!!</div>} />
+        <Route path="/usernotactivated" component={() => <div>User account is not activated now. Please try again later!</div>} />
         <Route component={() => <div>No Such Page!!</div>} />
         </Switch>
       </Router>

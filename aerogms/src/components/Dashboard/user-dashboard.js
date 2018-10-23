@@ -92,13 +92,15 @@ class UserDashboard extends Component {
         } 
         this.showMenu = this.showMenu.bind(this);
         this.closeMenu = this.closeMenu.bind(this);
+        this.logOut = this.logOut.bind(this);
     }
 
     showMenu(event) {
         event.preventDefault();
-        this.setState({showUserMenu : true}, () => {
-            document.addEventListener('click', this.closeMenu);
-        });
+        this.setState({showUserMenu : true});
+        //     , () => {
+        //     document.addEventListener('click', this.closeMenu);
+        // });
     }
 
     closeMenu(event) {
@@ -107,6 +109,11 @@ class UserDashboard extends Component {
                 document.removeEventListener('click', this.closeMenu);  
             });
         }
+    }
+
+    logOut(){
+        this.setState({showUserMenu : false});
+        this.props.doLogout();
     }
 
     render() {
@@ -147,7 +154,7 @@ class UserDashboard extends Component {
                                                     `}
                                                     </style>
                                                     <Button className="">Profile</Button>
-                                                    <Button className="" pullRight onClick={this.props.doLogout}>Logout</Button>
+                                                    <Button className="" pullRight onClick={this.logOut}>Logout</Button>
                                                 </ButtonGroup>
                                             </div>
                                         </div>
