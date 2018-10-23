@@ -68,16 +68,22 @@ class Login extends Component {
         this.setState({ password:""});
     }
     render() {
-        //debugger
+        debugger
         const {userDetails} = this.props;
         console.log(userDetails);
         if(userDetails.isLoggedIn){
             console.log(this.props.userDetails.username);
             //this.props.history.push('/dashboard');
-            if(userDetails.email==="elevenx099@gmail.com"){
+            if(userDetails.isadmin === "true"){
                 return <Redirect to='/dashboard' />
             }
-            return <Redirect to='/userDashboard' />
+            if(userDetails.status === true){
+                return <Redirect to='/userDashboard' />
+            }
+            else{
+                {this.props.doLogout()};
+                return  <Redirect to='/usernotactivated' />
+            }
         }
         if(!userDetails.isLoggedIn && (userDetails.error !== ""))
         {
