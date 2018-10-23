@@ -59,7 +59,7 @@ export function removeUser(u_id){
     const request = axios.delete(`${type.ROOT_URL}/removeUser`, {params:{u_id}});
     return {
         type: type.REMOVE_USER,
-        payload: u_id
+        payload: request
     }
 }
 
@@ -67,6 +67,6 @@ export function toggleUserStatus(u_id){
     const request = axios.patch(`${type.ROOT_URL}/toggleUserStatus`, {u_id});
     return{
         type: type.TOGGLE_USER_STATUS,
-        payload:u_id
+        payload:request
     }
 }

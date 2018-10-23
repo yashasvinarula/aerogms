@@ -66,19 +66,20 @@ class Dashboard extends Component {
     render()
     {
         debugger;
-        console.log(this.props);
-        console.log('Users List:');
         console.log(this.props.users);
-
         console.log('I am in dashboard: ' + this.props.userDetails.email);
-        if(!this.props.userDetails.isLoggedIn)
+        if(!this.props.userDetails.isLoggedIn || !this.props.userDetails.isadmin)
         {
           return <Redirect to={{pathname:'/login'}}/>
         }
-        if(this.props.userDetails.email!=="elevenx099@gmail.com")
-        {
-          return <Redirect to={{pathname:'/login'}}/>
+        if(this.props.users['error']){
+            debugger
+            alert('Your session is expired. Please login!')
+            console.log('error session out!');
+            this.props.doLogout();
+            //return <Redirect to='/login' />
         }
+       
         return (
             <div>
                 {/* <NavbarAdmin username={this.props.userDetails.username} isLoggedIn={this.props.userDetails.isLoggedIn} doLogout={this.props.doLogout}/> */}
@@ -134,10 +135,10 @@ class Dashboard extends Component {
                             {this.renderUsers()}
                         </tbody>
                     </Table>
-                    <Pager>
+                    {/* <Pager>
                         <Pager.Item previous href="#">Previous</Pager.Item>{' '}
                         <Pager.Item next href="#">Next</Pager.Item>
-                    </Pager>
+                    </Pager> */}
                 </div>
             </div>
         );

@@ -30,7 +30,7 @@ module.exports = (passport) => {
             const first = result[0];
             bcrypt.compare(password, first.passward, function(err, res) {
                 if(res) {
-                    done(null, { email: first.email, userfname: first.f_name + ' ' + first.l_name, status: first.status })
+                    done(null, { email: first.email, userfname: first.f_name + ' ' + first.l_name, status: first.status, isadmin:first.isadmin })
                 } else {
                     done(null, false)
                 }

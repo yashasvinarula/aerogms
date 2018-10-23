@@ -28,7 +28,7 @@ const App = ({userDetails, doLogin, doLogout}) =>(
         <Route path="/" exact={true} render={() => <div><h1>Coming soon...</h1></div>}  />
         <Route path="/dashboard" render={() => <Dashboard doLogout={doLogout} userDetails={userDetails} />}  />
         <Route path="/userDashboard" render={() => <UserDashboard doLogout={doLogout} userDetails={userDetails} />}></Route>
-        <Route path="/login" render={(props) => <Login doLogin={doLogin} userDetails={userDetails} {...props}/>} />
+        <Route path="/login" render={(props) => <Login doLogin={doLogin} doLogout={doLogout} userDetails={userDetails}/>} />
         <Route path="/forgot" render={() => <Forgot />} />
         <Route path="/reset" render={() => <Reset />} />
         <Route path="/signup" render={() => <Signup/>} />
@@ -37,6 +37,7 @@ const App = ({userDetails, doLogin, doLogout}) =>(
         <Route path="/help" render={() => <Help />} />
         <Route path="/faq" render={() => <FAQ />} />
         <Route path="/feedback" render={() => <Feedback />} />
+        <Route path="/usernotactivated" component={() => <div>User account is not activated now. As it is activated by admin then confirmation mail come to you. Please try again later!!</div>} />
         <Route component={() => <div>No Such Page!!</div>} />
         </Switch>
       </Router>

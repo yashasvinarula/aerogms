@@ -42,7 +42,8 @@ module.exports.user_signup =  function(req, res){
                 let to = req.body.email;
                 let sub = 'AeroGMS account confirmation';
                 let content ='Welcome to AeroGMS Family.\n\n' + 
-                'Thank you for showing your interest in AeroGMS.\n\n';
+                'Thank you for showing your interest in AeroGMS.\n\n'+
+                'Your account will be activate very soon and confirmation mail will be received by you.\n\n';
                 let message = 'Your account has been created successfully.';
                 sendMail(req, res, from, to, sub, content, message);
                 //return res.status(200).send({message:result2[0].sp_aerogms});
@@ -299,9 +300,26 @@ module.exports.toggleUserStatus = function(req, res){
     .then(result => {
     if(result[0].sp_aerogms)
     {
+        let retVal = result[0].sp_aerogms.split('#');
         console.log(result[0].sp_aerogms);
-        return res.status(200).send({u_id:result[0].sp_aerogms});
-        //return res.status(200).send({message:'User removed successfully!'});
+        if(retVal[0] == "true"){
+            let from = process.env.mail_id;
+            let to = retVal[1];
+            let sub = 'AeroGMS account Activation Status';
+            let content ='Welcome to AeroGMS Family.\n\n' + 
+            'Your account has been activated. Now you can login.\n\n';
+            let message = req.body.u_id;//'Your account has been activated successfully.';
+            sendMail(req, res, from, to, sub, content, message);
+        }
+        else{
+            let from = process.env.mail_id;
+            let to = retVal[1];
+            let sub = 'AeroGMS account Activation Status';
+            let content = 'Your account has been de-activated. Now you can not login. For more details contact to admin.\n\n';
+            let message = req.body.u_id;//'Your account has been de-activated successfully.';
+            sendMail(req, res, from, to, sub, content, message);
+        }
+        //return res.status(200).send({status:result[0].sp_aerogms});
     }
     else
     {

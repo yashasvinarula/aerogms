@@ -30,7 +30,7 @@ class TableRow extends Component{
         if(this.dropdownMenu){
         if(!this.dropdownMenu.contains(event.target)) {
             this.setState({showMenu : false}, () => {
-                document.removeEventListener('click', event.target.innerHTML!=="Remove"?this.closeMenu:null);  
+                document.removeEventListener('click', event.target.innerHTML!=="remove"?this.closeMenu:null);  
             });
         }
     }
@@ -38,12 +38,16 @@ class TableRow extends Component{
 
     toggleUserStatus(event){
         this.setState({showMenu : false});
-        this.props.toggleUserStatus(this.props.user.u_id);
+        if(window.confirm(`Do you really want to toogle the status of user ${this.props.user.name}!`)){
+            this.props.toggleUserStatus(this.props.user.u_id);
+        }
     }
 
     deleteUser(){
-        debugger
+        this.setState({showMenu : false});
+        if(window.confirm(`Do you really want to delete user ${this.props.user.name}!`)){
         this.props.removeUser(this.props.user.u_id);
+        }
     }
     
     render(){
@@ -53,7 +57,7 @@ class TableRow extends Component{
         <td>{user.u_id}</td>
         <td>{user.name}</td>
         <td>{user.date_time}</td>
-        <td>{user.status == true ? 'Enable': 'Disable' }</td>
+        <td>{user.status == true ? 'Enabled': 'Disabled' }</td>
         <td>
         <span bsSize="small">
         <Glyphicon  id={user.u_id} className="align-vertical" onClick={this.showMenu}  glyph="option-vertical" />

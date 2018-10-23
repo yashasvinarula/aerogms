@@ -2,16 +2,22 @@ import * as type from '../actions/types'
 import _ from 'lodash';
 
 export default function(state={}, action){
+    debugger
+    if(action.error){
+        action.type = 'error';
+    }
 switch(action.type)
 {
     case type.GET_USERS:
         return _.mapKeys(action.payload.data, 'u_id')
     case type.REMOVE_USER:
-        return _.omit(state, action.payload)
+        let u_id = action.payload.data.u_id;
+        return _.omit(state,u_id)
     case type.TOGGLE_USER_STATUS:
-    debugger
-    //const key = action.payload;
-        return {...state, [action.payload]:{...state[action.payload], status: !state[action.payload].status}}
+        let key = action.payload.data.message;
+        return {...state, [key]:{...state[key], status: !state[key].status}}
+    case 'error':
+        return {...state, error:'unauthorised'}
     default:
         return state;
 }
