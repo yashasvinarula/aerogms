@@ -88,7 +88,7 @@ class Login extends Component {
         return (
             <MediaQuery maxWidth={768}>
                 {(matches) => {
-                    if(matches){
+                    if(matches) {
                         return (
                             <div>
                             <Navbar />    
@@ -176,7 +176,9 @@ class Login extends Component {
                                                     </div>
                                                 </div>
                                                     <div className="">
-                                                    <div className="input-relative">
+                                                    <div className="input-relative  exit
+                                                    
+                                                    ">
 				            	            	    	<p className="invalid-input">{this.state.formErrors["password"]}</p>
 				            	            	    </div>
                                                     <div className="">
@@ -202,7 +204,7 @@ class Login extends Component {
                                             </form>
                                         </div>
                                     </div>
-                                            <div className="col m1 offset m1"></div>
+                                            <div className="col-md-1 offset-md-1"></div>
                                         </div>
                                     </div>  
                                 <HomeFooter />      

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {removeUser,toggleUserStatus} from '../../actions';
 
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, FormControl, Image, Button, ButtonGroup, Table, Pager } from 'react-bootstrap/lib/';
+import { Button, ButtonGroup } from 'react-bootstrap/lib/';
 
 class TableRow extends Component{
     constructor(props){
@@ -53,7 +53,7 @@ class TableRow extends Component{
         <td>{user.u_id}</td>
         <td>{user.name}</td>
         <td>{user.date_time}</td>
-        <td>{user.status == true ? 'Enable': 'Disable' }</td>
+        <td>{user.status === true ? 'Enable': 'Disable' }</td>
         <td>
         <span bsSize="small">
         <Glyphicon  id={user.u_id} className="align-vertical" onClick={this.showMenu}  glyph="option-vertical" />

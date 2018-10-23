@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import axios from 'axios';
+// import axios from 'axios';
 // import NavbarAdmin from './navbar-dashboard-admin';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, FormControl, Image, Button, ButtonGroup, Table, Pager } from 'react-bootstrap/lib/';
-import {Redirect} from 'react-router-dom';
+import { Navbar, Nav, NavItem, FormControl, Image, Button, Table, Pager } from 'react-bootstrap/lib/';
+// import {Redirect} from 'react-router-dom';
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
-import UserDetail from './user-details';
+// import Project from './project';
 
 import TableRow from './user_table';
 
 import {connect} from 'react-redux';
 import {getUsers} from '../../actions';
+
 class Dashboard extends Component {
     constructor(props){
         super(props);
@@ -28,7 +29,7 @@ class Dashboard extends Component {
 
     componentDidMount(){
         debugger
-        if(Object.keys(this.props.users).length == 0)
+        if(Object.keys(this.props.users).length === 0)
         {
             this.props.getUsers();
         }
@@ -71,14 +72,14 @@ class Dashboard extends Component {
         console.log(this.props.users);
 
         console.log('I am in dashboard: ' + this.props.userDetails.email);
-        if(!this.props.userDetails.isLoggedIn)
-        {
-          return <Redirect to={{pathname:'/login'}}/>
-        }
-        if(this.props.userDetails.email!=="elevenx099@gmail.com")
-        {
-          return <Redirect to={{pathname:'/login'}}/>
-        }
+        // if(!this.props.userDetails.isLoggedIn)
+        // {
+        //   return <Redirect to={{pathname:'/login'}}/>
+        // }
+        // if(this.props.userDetails.email!=="elevenx099@gmail.com")
+        // {
+        //   return <Redirect to={{pathname:'/login'}}/>
+        // }
         return (
             <div>
                 {/* <NavbarAdmin username={this.props.userDetails.username} isLoggedIn={this.props.userDetails.isLoggedIn} doLogout={this.props.doLogout}/> */}

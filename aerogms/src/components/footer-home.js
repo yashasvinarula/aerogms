@@ -9,12 +9,12 @@ class HomeFooter extends Component {
                     <footer className="">
                         <div className="container">
                             <div className="row pos-footer">
-                              <div className="col m8"></div>  
-                              <div className="col m4">
-                                <ul>
-                                  <li><a className="col m4 center footer-elem" href="/help">Help</a></li>
-                                  <li><a className="col m4 center footer-elem" href="/faq">FAQ</a></li>
-                                  <li><a className="col m4 center footer-elem" href="/feedback">Feedback</a></li>
+                              <div className="col-md-8 offset-md-8"></div>  
+                              <div className="col-md-4">
+                                <ul className="row">
+                                  <li><a className="col-md-4" href="/help">Help</a></li>
+                                  <li><a className="col-md-4" href="/faq">FAQ</a></li>
+                                  <li><a className="col-md-4" href="/feedback">Feedback</a></li>
                                 </ul>
                               </div>
                             </div>

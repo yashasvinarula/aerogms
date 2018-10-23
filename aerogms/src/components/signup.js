@@ -3,7 +3,6 @@ import axios from 'axios';
 import  { Redirect } from 'react-router-dom';
 import MediaQuery from 'react-responsive';
 import '../App.css';
-import FormErrors from './formErrors';
 import Navbar from './navbar';
 import AeroLogo from '../images/AeroLOGO.png';
 // import FormErrors from './formErrors';
@@ -52,10 +51,6 @@ class Signup extends Component {
 				firstNameValid = value.length>=3 && value.match(/^[a-zA-Z]*$/); 
 				fieldValidationErrors.firstName = firstNameValid ? '' : ' First name should be of atleast 3 characters ';
 				break;
-			// case 'lastName':
-			// 	lastNameValid = value.length >= 3;
-			// 	fieldValidationErrors.lastName = lastNameValid ? '' : ' Last name should be of atleast 3 characters ';
-			// 	break;
 			case 'email':
 				emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
 				fieldValidationErrors.email = emailValid ? '' : ' Please enter valid email address ';
@@ -146,9 +141,9 @@ class Signup extends Component {
 								<form className="">
 										<div className="">
 											<div className="">
-												{/* <div className="input-relative">
+												<div className="input-relative">
 													<p className="invalid-input">{this.state.formErrors["firstName"]}</p>
-												</div> */}
+												</div>
 												<label htmlFor="firstName">First name</label>
 												<input className="validate" type="text" id="first-name"	name="firstName" required={true} placeholder=""
 													value={this.state.firstName} onChange={this.handleChange}
@@ -163,7 +158,9 @@ class Signup extends Component {
 										</div>
 										<div className="">
 											<div className="">
-												<p className="invalid-input">{this.state.formErrors["email"]}</p>
+												<div className="input-relative">
+													<p className="invalid-input">{this.state.formErrors["email"]}</p>
+												</div>											
 												<label className="" htmlFor="email">Email address</label>
 												<input className="validate"	type="email" id="email"	name="email" required={true} placeholder=""
 													value={this.state.username}	onChange={this.handleChange}
@@ -172,6 +169,9 @@ class Signup extends Component {
 										</div>
 										<div className="">
 											<div className="">
+												<div className="input-relative">
+													<p className="invalid-input">{this.state.formErrors["mobile"]}</p>
+												</div>
 												<label className="" htmlFor="mobile">Mobile number</label>
 												<input className="validate" type="tel" id="mobile-number" name="mobile" required={true}	placeholder=""
 													value={this.state.mobile} onChange={this.handleChange}
@@ -180,12 +180,18 @@ class Signup extends Component {
 										</div>
 										<div className="">
 											<div className="">
+												<div className="input-relative">
+													<p className="invalid-input">{this.state.formErrors["password"]}</p>
+												</div>
 												<label className="" htmlFor="password">Password</label>
 												<input className="validate" placeholder="" type="password" name="password" required={true} 
 													value={this.state.password}	onChange={this.handleChange}
 												/>
 											</div>
 											<div className="">
+												<div className="input-relative">
+													<p className="invalid-input">{this.state.formErrors["confirmPassword"]}</p>
+												</div>
 												<label className="" htmlFor="password"> Confirm Password</label>
 												<input className="validate"	placeholder="" type="password" name="confirmPassword" required={true}
 													value={this.state.confirmPassword} onChange={this.handleChange}
@@ -213,7 +219,7 @@ class Signup extends Component {
 						<div className="container" id="home">
 							<div className="row">
 							<div className="col-md-4 offset-md-4"></div>
-							<div className="border-css">
+							<div className="border-css col-md-4">
 								<img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
 								<div className=""></div>
 								<form className="">
@@ -245,6 +251,9 @@ class Signup extends Component {
 										</div>
 										<div className="">
 											<div className="">
+												<div className="input-relative">
+													<p className="invalid-input">{this.state.formErrors["mobile"]}</p>
+												</div>
 												<label className="" htmlFor="mobile">Mobile number</label>
 												<input className="validate" type="tel" id="mobile-number" name="mobile" required={true}	placeholder=""
 													value={this.state.mobile} onChange={this.handleChange}
@@ -253,12 +262,18 @@ class Signup extends Component {
 										</div>
 										<div className="">
 											<div className="">
+												<div className="input-relative">
+													<p className="invalid-input">{this.state.formErrors["password"]}</p>
+												</div>
 												<label className="" htmlFor="password">Password</label>
 												<input className="validate" placeholder="" type="password" name="password" required={true} 
 													value={this.state.password}	onChange={this.handleChange}
 												/>
 											</div>
 											<div className="">
+												<div className="input-relative">
+													<p className="invalid-input">{this.state.formErrors["confirmPassword"]}</p>
+												</div>
 												<label className="" htmlFor="password"> Confirm Password</label>
 												<input className="validate"	placeholder="" type="password" name="confirmPassword" required={true}
 													value={this.state.confirmPassword} onChange={this.handleChange}
@@ -275,7 +290,7 @@ class Signup extends Component {
 								</form>
 								<div className=""></div>
 							</div>
-							<div className=""></div>
+							<div className="col-md-4"></div>
 							</div>
 						</div>
 					</div>

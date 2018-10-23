@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, FormControl, Image, Button, ButtonGroup, Table, Pager } from 'react-bootstrap/lib/';
-import {Redirect} from 'react-router-dom';
-import axios from 'axios';
+import { Navbar, Nav, NavItem, Image, Button, ButtonGroup, Modal } from 'react-bootstrap/lib/';
+// import {Redirect} from 'react-router-dom';
+// import axios from 'axios';
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
 import mapThumbnail from '../../images/map_thumbnail.jpeg';
 
 class UserNavs extends Component {
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
     render() {
         return (
             <div>
@@ -30,7 +30,7 @@ class UserNavs extends Component {
     }
 }
 
-class Project extends Component {
+class ProjectThumbnail extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -88,10 +88,29 @@ class UserDashboard extends Component {
     constructor(props){
         super(props);  
         this.state = {
-            showUserMenu : false
+            showUserMenu : false,
+            showmodal : false,
+            projectName : '',
         } 
+
+        this.showModal = this.showModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.showMenu = this.showMenu.bind(this);
         this.closeMenu = this.closeMenu.bind(this);
+    }
+
+    showModal() {
+        this.setState({ showmodal : true });
+    }
+
+    closeModal() {
+        this.setState({ showmodal : false });
+    } 
+
+    handleChange(event) {
+        const value = event.target.value;
+        this.setState({projectName : value});
     }
 
     showMenu(event) {
@@ -110,10 +129,10 @@ class UserDashboard extends Component {
     }
 
     render() {
-        if(!this.props.userDetails.isLoggedIn)
-        {
-          return <Redirect to={{pathname:'/login'}}/>
-        }
+        // if(!this.props.userDetails.isLoggedIn)
+        // {
+        //   return <Redirect to={{pathname:'/login'}}/>
+        // }
         return (
             <div>
                 <Navbar className="navbar-css">
@@ -123,8 +142,20 @@ class UserDashboard extends Component {
                         </Navbar.Brand>
                     </Navbar.Header>
                     <Nav pullRight>
-                        <NavItem>
-                            <Button className="btn-color">+ Create A New Project</Button>
+                        <NavItem className="modal-container">
+                            <Button className="btn-color" id="create-project" 
+                                onClick={() => {this.setState({showmodal : true})}}
+                            >
+                                + Create A New Project
+                            </Button>
+                            <Modal show={this.state.showmodal} onHide={this.closeModal} container={this}>
+                                <Modal.Header closeButton></Modal.Header>
+                                <Modal.Body> 
+                                    <label htmlFor="project-name">Enter Project Title</label>
+                                    <input type="text" name="projectName" value={this.state.projectName} onChange={this.handleChange}></input>
+                                    <button type="submit">Save</button>
+                                </Modal.Body>
+                            </Modal>
                         </NavItem>
                         <NavItem>
                             <div className="circular-icon text-center" onClick={this.showMenu}>
@@ -158,9 +189,8 @@ class UserDashboard extends Component {
                     </Nav>
                 </Navbar>
                 <div className="container">
-                    {/* <p className="text-center">No Project is created by you</p> */}
                     <UserNavs />
-                    <Project />
+                    <ProjectThumbnail />
                 </div>
             </div>
         );

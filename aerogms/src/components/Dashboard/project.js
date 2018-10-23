@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class UserDetail extends Component {
+class Project extends Component {
     constructor(props){
         super(props);
     }
@@ -20,4 +20,4 @@ class UserDetail extends Component {
     }
 }
 
-export default UserDetail;
+export default Project;

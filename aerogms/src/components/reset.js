@@ -6,7 +6,8 @@ import AeroLogo from '../images/AeroLOGO.png';
 import BuildingsImage from '../images/login-page-image.png'
 import Navbar from './navbar';
 import HomeFooter from './footer-home';
-import Loader from './loader';
+import MediaQuery from 'react-responsive';
+// import Loader from './loader';
 
 class ResetPassword extends Component {
     constructor(){
@@ -94,79 +95,147 @@ class ResetPassword extends Component {
            return <Redirect to={{pathname:this.state.redirectTo}}/>
         }
         return (
-            <div>
-            <Navbar />
-            <div className="top-margin">
-                <div className="row">
-                    <div className="col m1 offset m1"></div>
-                    <div className="col m5">
-                        <h3 className="center">Welcome to AeroGMS</h3>
-                        <hr className="hr-row"></hr>
-                        <p className="center">Geographic Management System is a framework for city administrators to collect, 
-                            analyze and extract useful information for cities and towns. It encompasses all
-                             aspects of management and planning process in an organization from servey to 
-                             advanced analytics.
-                        </p>
-                        <img src={BuildingsImage} alt="buildings" className="buildings-image"></img>
-                    </div>
-                    {/* <Loader /> */}
-                    <div className="col m1 offset m1"></div>
-                    <div className="col m1 offset m1"></div>
-                    <div className="col m3 border-css form-height side-margin">
-                    
-                    <img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
-                    <div> 
-                    <form className="">
-                    <div className="">
-                        {/* <div className="input-relative">
-							<p className="invalid-input">{this.state.formErrors["newPassword"]}</p>
-						</div> */}
-                        <div className="">
-                            <label className="" htmlFor="password">Enter Token</label>
-                        </div>
-                        <div className="">
-                            <input className="validate" placeholder="" type="password" name="token" required={true}
-                                value={this.state.token} onChange={this.handleChange} 
-                            />
-                        </div>
+            <MediaQuery maxWidth={768}>
+                {(matches) => {
+                    if(matches) {
+                        return (
+                            <div>
+                                <Navbar />
+                                <div className="top-margin">
+                                    <div className="">
+                                        <div className="border-css form-height side-margin">
+                                        <h3 className="text-center">Reset Password</h3>
+                                        <div> 
+                                        <form className="">
+                                        <div className="">
+                                            <div className="input-relative">
+		                    					<p className="invalid-input">{this.state.formErrors["token"]}</p>
+		                    				</div>
+                                            <div className="">
+                                                <label className="" htmlFor="password">Enter Token</label>
+                                            </div>
+                                            <div className="">
+                                                <input className="validate" placeholder="" type="password" name="token" required={true}
+                                                    value={this.state.token} onChange={this.handleChange} 
+                                                />
+                                            </div>
+                                        
+                                             <div className="input-relative">
+		                    					<p className="invalid-input">{this.state.formErrors["newPassword"]}</p>
+		                    				</div>
+                                            <div className="">
+                                                <label className="" htmlFor="password">Enter New Password</label>
+                                            </div>
+                                            <div className="">
+                                                <input className="validate" placeholder="" type="password" name="newPassword" required={true}
+                                                    value={this.state.newPassword} onChange={this.handleChange} 
+                                                />
+                                            </div>
+                                        
+                                            <div className="input-relative">
+		                    					<p className="invalid-input">{this.state.formErrors["reEnterPassword"]}</p>
+		                    				</div>
+                                            <div className="">
+                                                <label className="" htmlFor="password">Re-enter Password</label>
+                                            </div>
+                                            <div className="">
+                                                <input className="validate" placeholder="" type="password" name="reEnteredPassword" required={true}
+                                                    value={this.state.reEnteredPassword} onChange={this.handleChange} 
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="">
+                                            <div className="">
+                                                <button className="btn btn-auth" disabled={!this.state.formValid} onClick={this.handleSubmit} type="submit">Submit</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    </div>    
+                                        </div>
+                                        <div className="col-md-1 offset-md-1"></div>
+                                    </div>
+                                </div>  
+                            </div>
+                        );
+                    } else {
+                        return (
+                               <div>
+                                    <Navbar />
+                                    <div className="top-margin">
+                                        <div className="row">
+                                            <div className="col-md-1 offset-md-1"></div>
+                                            <div className="col-md-5">
+                                                <h3 className="text-center">Welcome to AeroGMS</h3>
+                                                <hr className="hr-row"></hr>
+                                                <p className="text-center">Geographic Management System is a framework for city administrators to collect, 
+                                                    analyze and extract useful information for cities and towns. It encompasses all
+                                                     aspects of management and planning process in an organization from servey to 
+                                                     advanced analytics.
+                                                </p>
+                                                <img src={BuildingsImage} alt="buildings" className="buildings-image"></img>
+                                            </div>
+                                            {/* <Loader /> */}
+                                            <div className="col-md-1 offset-md-1"></div>
+                                            <div className="col-md-1 offset-md-1"></div>
+                                            <div className="col-md-3 border-css form-height side-margin">
 
-                         <div className="input-relative">
-							<p className="invalid-input">{this.state.formErrors["newPassword"]}</p>
-						</div>
-                        <div className="">
-                            <label className="" htmlFor="password">Enter New Password</label>
-                        </div>
-                        <div className="">
-                            <input className="validate" placeholder="" type="password" name="newPassword" required={true}
-                                value={this.state.newPassword} onChange={this.handleChange} 
-                            />
-                        </div>
-
-                        <div className="input-relative">
-							<p className="invalid-input">{this.state.formErrors["reEnterPassword"]}</p>
-						</div>
-                        <div className="">
-                            <label className="" htmlFor="password">Re-enter Password</label>
-                        </div>
-                        <div className="">
-                            <input className="validate" placeholder="" type="password" name="reEnteredPassword" required={true}
-                                value={this.state.reEnteredPassword} onChange={this.handleChange} 
-                            />
-                        </div>
-                    </div>
-                    <div className="">
-                        <div className="">
-                            <button className="btn btn-auth col s12" disabled={!this.state.formValid} onClick={this.handleSubmit} type="submit">Submit</button>
-                        </div>
-                    </div>
-                </form>
-                </div>    
-                    </div>
-                    <div className="col m1 offset m1"></div>
-                </div>
-            </div>  
-            <HomeFooter />      
-        </div>
+                                            <img src={AeroLogo} alt="Aero Logo" className="img-logo"></img>
+                                            <div> 
+                                            <form className="">
+                                            <div className="">
+                                                {/* <div className="input-relative">
+		                        					<p className="invalid-input">{this.state.formErrors["newPassword"]}</p>
+		                        				</div> */}
+                                                <div className="">
+                                                    <label className="" htmlFor="password">Enter Token</label>
+                                                </div>
+                                                <div className="">
+                                                    <input className="validate" placeholder="" type="password" name="token" required={true}
+                                                        value={this.state.token} onChange={this.handleChange} 
+                                                    />
+                                                </div>
+                                            
+                                                 <div className="input-relative">
+		                        					<p className="invalid-input">{this.state.formErrors["newPassword"]}</p>
+		                        				</div>
+                                                <div className="">
+                                                    <label className="" htmlFor="password">Enter New Password</label>
+                                                </div>
+                                                <div className="">
+                                                    <input className="validate" placeholder="" type="password" name="newPassword" required={true}
+                                                        value={this.state.newPassword} onChange={this.handleChange} 
+                                                    />
+                                                </div>
+                                            
+                                                <div className="input-relative">
+		                        					<p className="invalid-input">{this.state.formErrors["reEnterPassword"]}</p>
+		                        				</div>
+                                                <div className="">
+                                                    <label className="" htmlFor="password">Re-enter Password</label>
+                                                </div>
+                                                <div className="">
+                                                    <input className="validate" placeholder="" type="password" name="reEnteredPassword" required={true}
+                                                        value={this.state.reEnteredPassword} onChange={this.handleChange} 
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="">
+                                                <div className="">
+                                                    <button className="btn btn-auth" disabled={!this.state.formValid} onClick={this.handleSubmit} type="submit">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        </div>    
+                                            </div>
+                                            <div className="col-md-1 offset-md-1"></div>
+                                        </div>
+                                    </div>  
+                                    <HomeFooter />      
+                                </div>
+                        );
+                    }
+                }}
+            </MediaQuery>
         );
     }
 }
