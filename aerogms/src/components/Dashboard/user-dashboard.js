@@ -36,18 +36,13 @@ class UserDashboard extends Component {
     this.state = {
       showUserMenu: false,
       showmodal: false,
-      projectName: ""
+      projectName: "",
     };
 
-    this.showModal = this.showModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.showMenu = this.showMenu.bind(this);
-    this.closeMenu = this.closeMenu.bind(this);
-  }
-
-  showModal() {
-    this.setState({ showmodal: true });
+    // this.showMenu = this.showMenu.bind(this);
+    // this.closeMenu = this.closeMenu.bind(this);
   }
 
   closeModal() {
@@ -59,22 +54,22 @@ class UserDashboard extends Component {
     this.setState({ projectName: value });
   }
 
-  showMenu(event) {
-    event.preventDefault();
-    this.setState({ showUserMenu: true });
-    //     () => {
-    //     document.addEventListener('click', this.closeMenu);
-    // });
-  }
+  // showMenu(event) {
+  //   event.preventDefault();
+  //   this.setState({ showUserMenu: true });
+  //   //     () => {
+  //   //     document.addEventListener('click', this.closeMenu);
+  //   // });
+  // }
 
-  closeMenu(event) {
-    // if(!this.dropdownMenu.contains(event.target)) {
-    this.setState({ showUserMenu: false });
-    //         , () => {
-    //         document.removeEventListener('click', this.closeMenu);
-    //     });
-    // }
-  }
+  // closeMenu(event) {
+  //   // if(!this.dropdownMenu.contains(event.target)) {
+  //   this.setState({ showUserMenu: false });
+  //   //         , () => {
+  //   //         document.removeEventListener('click', this.closeMenu);
+  //   //     });
+  //   // }
+  // }
 
   render() {
     // if(!this.props.userDetails.isLoggedIn)
@@ -147,9 +142,7 @@ class UserDashboard extends Component {
                     <Button className="col-md-6">Profile</Button>
                   </MenuItem>
                   <MenuItem>
-                    <Button
-                      className="col-md-6"
-                      pullRight
+                    <Button className="col-md-6" pullRight
                       onClick={this.props.doLogout}
                     >
                       Logout
