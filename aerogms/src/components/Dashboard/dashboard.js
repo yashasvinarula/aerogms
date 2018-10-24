@@ -65,18 +65,20 @@ class Dashboard extends Component {
     render()
     {
         debugger;
-        console.log(this.props.users);
-        console.log('I am in dashboard: ' + this.props.userDetails.email);
-        if(!this.props.userDetails.isLoggedIn || !this.props.userDetails.isadmin)
+        if(!this.props.userDetails.isLoggedIn)
         {
           return <Redirect to={{pathname:'/login'}}/>
+        }
+        if(this.props.userDetails.isadmin === "false")
+        {
+            return <Redirect to={{pathname:'/userDashboard'}}/>
         }
         if(this.props.users['error']){
             debugger
             alert('Your session is expired. Please login!')
             console.log('error session out!');
             this.props.doLogout();
-            //return <Redirect to='/login' />
+            return <Redirect to='/login' />
         }
        
         return (

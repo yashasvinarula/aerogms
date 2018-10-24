@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Button, ButtonGroup, Image, Modal } from 'react-bootstrap/lib/';
+import { Image, Modal, DropdownButton, MenuItem } from 'react-bootstrap/lib/';
 import mapThumbnail from '../../images/map_thumbnail.jpeg';
 import axios from 'axios';
 
 import {connect} from 'react-redux';
 import {deleteProject, renameProject} from '../../actions';
+
+const dropDownTitle = (<Glyphicon className="menu" onClick={this.showMenu} glyph="option-vertical" />);
 
 class Project extends Component {
     constructor(props) {
@@ -20,6 +22,7 @@ class Project extends Component {
         this.openProject = this.openProject.bind(this);
         this.deleteProject = this.deleteProject.bind(this);
         this.renameProject = this.renameProject.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     showMenu(event) {
@@ -27,6 +30,10 @@ class Project extends Component {
         this.setState({showMenu : true}, () => {
             document.addEventListener('click', this.closeMenu);
         });
+    }
+
+    closeModal() {
+        this.setState({ showmodal: false });
     }
 
     closeMenu(event) {
@@ -56,8 +63,8 @@ class Project extends Component {
         debugger
         let pro_name = this.state.projectName;
         let email = this.props.email;
-        axios.post('/api/pro_name_exists', {pro_name:pro_name, owner_email:email}).
-        then(response => {
+        axios.post('/api/pro_name_exists', {pro_name:pro_name, owner_email:email})
+        .then(response => {
             if(response.data.pro_id == null ){
                 this.props.renameProject(this.props.prodetails.pro_id, pro_name);
                 this.setState({projectName:'', showmodal:false})
@@ -65,8 +72,8 @@ class Project extends Component {
             else{
                 alert('Project name is already exists!');
             }
-        }).
-        catch(err=>{
+        })
+        .catch(err=>{
             console.log(err);
         })
     }
@@ -74,37 +81,40 @@ class Project extends Component {
     render() {
         debugger
         return (
-            <div className="col-md-2 project-Item">
+            <div className="col-md-2 col-xs-6 col-sm-4 project-Item">
             <div className="project">
-                <div className="md" onClick={this.openProject}>
+                <div className="" onClick={this.openProject}>
                     <Image src={mapThumbnail} className="map-thumbnail"/>
                 </div>
                 <div className="drawing-bottom">
                     <span className="pos-drawing">{this.props.prodetails.pro_name}</span>
                     <span className="pos-drawing drawing-right">
-                        <Glyphicon onClick={this.showMenu} glyph="option-vertical"></Glyphicon>
-                        {
-                            this.state.showMenu
-                                ? ( <div className="menu" ref={(element) => {this.dropdownMenu = element}}>
-                                        <ButtonGroup>
-                                            <Button className="menuItem text-center" onClick={this.deleteProject}>Delete</Button>
-                                            <div>
-                                            <Button className="menuItem text-center" onClick={() => {this.setState({showmodal : true})}}>Rename</Button>
-                                            <Modal show={this.state.showmodal} onHide={this.closeModal} container={this}>
-                                            <Modal.Header closeButton></Modal.Header>
-                                            <Modal.Body> 
-                                                <label htmlFor="project-name">Rename Project Title</label>
-                                                <input type="text" name="projectName" value={this.state.projectName} onChange={this.handleChange}></input>
-                                                <button type="submit" onClick={this.renameProject}>Save</button>
-                                            </Modal.Body>
-                                            </Modal>
-                                            </div>
-                                            {/* <Button className="menuItem text-center">Details</Button> */}
-                                        </ButtonGroup>   
-                                    </div>
-                                )
-                                : (null) 
-                        }
+                    <DropdownButton className="menu" noCaret title={dropDownTitle} >
+                      <MenuItem className="" onClick={this.deleteProject}>Delete</MenuItem>
+                      <MenuItem className="modal-container"
+                        onClick={() => {
+                          this.setState({ showmodal: true });
+                        }}
+                      >Rename</MenuItem>
+                      <Modal
+                        show={this.state.showmodal}
+                        onHide={this.closeModal}
+                        container={this}
+                      >
+                        <Modal.Header closeButton />
+                        <Modal.Body>
+                          <label htmlFor="project-name">Rename Project Title</label>
+                          <input
+                            type="text"
+                            name="projectName"
+                            value={this.state.projectName}
+                            onChange={this.handleChange}
+                          />
+                          <button type="submit" onClick={this.renameProject}>Save</button>
+                        </Modal.Body>
+                      </Modal>
+                      {/* <MenuItem>Details</MenuItem> */}
+                    </DropdownButton>
                     </span>
                     <span className="pos-drawing">{this.props.prodetails.date_time}</span>
                 </div>
@@ -112,6 +122,6 @@ class Project extends Component {
             </div>
         );
     }
-}
+  }
 
 export default connect(null, {deleteProject, renameProject})(Project);

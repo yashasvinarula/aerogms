@@ -64,10 +64,10 @@ class TableRow extends Component{
          { this.state.showMenu ? 
             (<div className="menu" ref={(element) => {this.dropdownMenu = element}}>
             <ButtonGroup id={user.u_id} >
-                <Button name="edit" className="menuItem">Edit</Button>
+                {/* <Button name="edit" className="menuItem">Edit</Button> */}
                 <Button name="remove" className="menuItem" onClick={this.deleteUser}>Remove</Button>
                 <Button name="toggleStatus" onClick={this.toggleUserStatus}  className="menuItem">Toggle Status</Button>
-                <Button name="details" className="menuItem">Details</Button>
+                {/* <Button name="details" className="menuItem">Details</Button> */}
             </ButtonGroup>
             </div>) : null  }
         </span>

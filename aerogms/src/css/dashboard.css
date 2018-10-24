@@ -41,9 +41,9 @@
 /* Individual User Menu */
 .menu {
     position: absolute;
-    width:  30px;
-    height: 50px;
     z-index: 50;
+    border: none;
+    background: none;
 }
 .menuItem {
     /* position: absolute; */
@@ -71,6 +71,7 @@
     vertical-align: middle;
 }
 .project {
+    position: relative;
     display : inline;
     border-bottom: 10px solid gray;
 }
@@ -88,12 +89,15 @@
     display: inline-block;
 }
 .drawing-right {
+    /* position: absolute;
+    right: 0; */
     float: right;
 }
 .navbar-css {
     background-color: rgb(220, 220, 220);
 }
 .drawing-bottom {
+    position: relative;
     border-bottom: 5px solid rgb(200, 200, 200);
     width : 150px;
 }

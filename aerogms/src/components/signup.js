@@ -198,7 +198,7 @@ class Signup extends Component {
 												/>	
 											</div>
 										</div>	
-										<small className="text-center">By clicking 'Continue' you agree to the <span><a>Terms</a></span> and <span><a>Privacy Policy</a></span></small>
+										<small className="display-block text-center">By clicking 'Continue' you agree to the <span><a>Terms</a></span> and <span><a>Privacy Policy</a></span></small>
 										<div className="">
 											<div className="">
 												<button className="btn btn-auth" disabled={!this.state.formValid} onClick={this.handleSubmit} type="submit">Continue</button>
@@ -280,7 +280,7 @@ class Signup extends Component {
 												/>	
 											</div>
 										</div>	
-										<small className="text-center">By clicking 'Continue' you agree to the <span><a>Terms</a></span> and <span><a>Privacy Policy</a></span></small>
+										<small className="display-block text-center">By clicking 'Continue' you agree to the <span><a>Terms</a></span> and <span><a>Privacy Policy</a></span></small>
 										<div className="">
 											<div className="">
 												<button className="btn btn-auth" disabled={!this.state.formValid} onClick={this.handleSubmit} type="submit">Continue</button>

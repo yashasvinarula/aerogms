@@ -1,18 +1,16 @@
-import React, { Component } from 'react';
-import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, Image, Button, ButtonGroup, Modal } from 'react-bootstrap/lib/';
+import React, { Component } from "react";
+import Glyphicon from "react-bootstrap/lib/Glyphicon";
+import { Navbar, Nav,NavItem, Image, Button, Modal, DropdownButton, MenuItem } from "react-bootstrap/lib/";
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {createProject, getProjects} from '../../actions';
 import _ from 'lodash';
 import axios from 'axios';
-
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
 import ProjectItem from './project';
 
 class UserNavs extends Component {
-    
     render() {
         return (
             <div>
@@ -33,19 +31,16 @@ class UserNavs extends Component {
 }
 
 class UserDashboard extends Component {
-    constructor(props){
-        super(props);  
-        this.state = {
-            showUserMenu : false,
-            showmodal : false,
-            projectName : '',
-        } 
+  constructor(props) {
+    super(props);
+    this.state = {
+      showUserMenu: false,
+      showmodal: false,
+      projectName: "",
+    };
 
-        this.showModal = this.showModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.showMenu = this.showMenu.bind(this);
-        this.closeMenu = this.closeMenu.bind(this);
         this.logOut = this.logOut.bind(this);
         this.renderProjects = this.renderProjects.bind(this);
         this.createProject = this.createProject.bind(this);
@@ -58,33 +53,13 @@ class UserDashboard extends Component {
         }
     }
 
-    showModal() {
-        this.setState({ showmodal : true });
-    }
-
     closeModal() {
         this.setState({ showmodal : false });
     }
 
     handleChange(event) {
-        const value = event.target.value;
-        this.setState({projectName : value});
-    }
-
-    showMenu(event) {
-        event.preventDefault();
-        this.setState({showUserMenu : true});
-        //     , () => {
-        //     document.addEventListener('click', this.closeMenu);
-        // });
-    }
-
-    closeMenu(event) {
-        if(!this.dropdownMenu.contains(event.target)) {
-            this.setState({showUserMenu : false}, () => {
-                document.removeEventListener('click', this.closeMenu);  
-            });
-        }
+      const value = event.target.value;
+      this.setState({ projectName: value });
     }
 
     logOut(){
@@ -96,9 +71,12 @@ class UserDashboard extends Component {
     createProject(){
         debugger
         let pro_name = this.state.projectName;
+        if(pro_name === null || pro_name ===''){
+            return alert('Please enter name for project!');
+        }
         let email = this.props.userDetails.email;
-        axios.post('/api/pro_name_exists', {pro_name:pro_name, owner_email:email}).
-        then(response => {
+        axios.post('/api/pro_name_exists', {pro_name:pro_name, owner_email:email})
+        .then(response => {
             if(response.data.pro_id == null ){
                 this.props.createProject(pro_name, email);
                 this.setState({projectName:''})
@@ -107,8 +85,8 @@ class UserDashboard extends Component {
             else{
                 alert('Project name is already exists!');
             }
-        }).
-        catch(err=>{
+        })
+        .catch(err=>{
             console.log(err);
         })
     }
@@ -155,33 +133,37 @@ class UserDashboard extends Component {
                             </Modal>
                         </NavItem>
                         <NavItem>
-                            <div className="circular-icon text-center" onClick={this.showMenu}>
-                                <span>{this.props.userDetails.username.charAt(0)}</span>
-                            </div>
-                            {
-                                this.state.showUserMenu
-                                    ? ( <div className="user-icon-menu row" ref={(element) => {this.dropdownMenu = element}}>
-                                            <div className="circular-icon-menu text-center col-md-3">
-                                                <span>{this.props.username}</span>
-                                            </div>
-                                            <div className="col-md-9">
-                                                <p>{this.props.userDetails.username}</p>
-                                                <p>{this.props.userDetails.email}</p>
-                                                <ButtonGroup>
-                                                    <style type="text/css">{`
-                                                        .btn {
-                                                            padding : 3px 6px;
-                                                        }
-                                                    `}
-                                                    </style>
-                                                    <Button className="">Profile</Button>
-                                                    <Button className="" pullRight onClick={this.logOut}>Logout</Button>
-                                                </ButtonGroup>
-                                            </div>
-                                        </div>
-                                    )
-                                    : (null) 
-                            }
+                            <DropdownButton id="ddb"
+                                title={this.props.userDetails.username.charAt(0)}
+                                noCaret
+                                className="circular-icon text-center row"
+                              >
+                                <MenuItem className="circular-icon-menu text-center col-md-2">
+                                  <span>{this.props.userDetails.username.charAt(0)}</span>
+                                </MenuItem>
+                                <div className="row col-md-10">
+                                  <MenuItem className="col-md-12">
+                                    <p>
+                                      {this.props.userDetails.username}
+                                    </p>
+                                  </MenuItem>
+                                  <MenuItem className="col-md-12">
+                                    <p>
+                                      {this.props.userDetails.email}
+                                    </p>
+                                  </MenuItem>
+                                  <MenuItem>
+                                    <Button className="col-md-6">Profile</Button>
+                                  </MenuItem>
+                                  <MenuItem>
+                                    <Button className="col-md-6" pullRight
+                                      onClick={this.props.doLogout}
+                                    >
+                                      Logout
+                                    </Button>
+                                  </MenuItem>
+                                  </div>
+                              </DropdownButton>
                         </NavItem>
                     </Nav>
                 </Navbar>
@@ -191,9 +173,9 @@ class UserDashboard extends Component {
                         {this.renderProjects()}
                     </div>
                 </div>
-            </div>
-        );
-    }
+        </div>
+    );
+  }
 }
 
 function mapStateToProps({projects})
