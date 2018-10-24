@@ -332,3 +332,97 @@ module.exports.toggleUserStatus = function(req, res){
     return res.status(400).send(error);
     });
     }
+
+    module.exports.create_project = function(req, res){
+        db.func('public.sp_aerogms', ['create_project', [req.body.pro_name, req.body.owner_email]])
+        .then(result => {
+        if(result[0].sp_aerogms)
+        {
+            console.log(result[0].sp_aerogms);
+            let date_time =new Date().toLocaleString();//new Date().toString().replace(/T/, ' ').replace(/\..+/, '');
+            return res.status(200).send({pro_id:result[0].sp_aerogms,pro_name:req.body.pro_name, date_time:date_time});
+            //return res.status(200).send({message:'User removed successfully!'});
+        }
+        else
+        {
+            return res.status(200).send({message:'Problem in creating new project!'});
+        }
+        })
+        .catch(error => {
+        console.log('ERROR:', error); // print the error;
+        return res.status(400).send(error);
+        });
+    }
+
+    module.exports.get_projects = function(req, res){
+        db.func('public.sp_getprojectlist', [req.body.owner_email])
+        .then(result => {
+        if(result)
+        {
+            return res.status(200).send(result);
+        }
+        else
+        {
+            return res.status(200).send({message:'Problem in fetching project list!'});
+        }
+        })
+        .catch(error => {
+        console.log('ERROR:', error); // print the error;
+        return res.status(400).send(error);
+        });
+    }
+
+    module.exports.delete_project = function(req, res){
+        db.func('public.sp_aerogms', ['delete_project', [req.body.pro_id.toString()]])
+        .then(result => {
+        if(result[0].sp_aerogms)
+        {
+            return res.status(200).send(result[0].sp_aerogms);
+        }
+        else
+        {
+            return res.status(200).send({message:'Problem in deleting project!'});
+        }
+        })
+        .catch(error => {
+        console.log('ERROR:', error); // print the error;
+        return res.status(400).send(error);
+        });
+    }
+
+    module.exports.rename_project = function(req, res){
+        db.func('public.sp_aerogms', ['rename_project', [req.body.pro_id.toString(), req.body.pro_name]])
+        .then(result => {
+        if(result[0].sp_aerogms)
+        {
+            return res.status(200).send({pro_id:result[0].sp_aerogms, pro_name:req.body.pro_name});
+        }
+        else
+        {
+            return res.status(200).send({message:'Problem in renaming project!'});
+        }
+        })
+        .catch(error => {
+        console.log('ERROR:', error); // print the error;
+        return res.status(400).send(error);
+        });
+    }
+
+    module.exports.pro_name_exists = function(req, res){
+        db.func('public.sp_aerogms', ['pro_name_exists', [req.body.pro_name, req.body.owner_email]])
+        .then(result => {
+        if(result[0])
+        {
+            return res.status(200).send({pro_id:result[0].sp_aerogms});
+        }
+        else
+        {
+            return res.status(200).send({message:'Problem in checking project name!'});
+        }
+        })
+        .catch(error => {
+        console.log('ERROR:', error); // print the error;
+        return res.status(400).send(error);
+        });
+    }
+

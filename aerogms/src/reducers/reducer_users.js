@@ -3,7 +3,8 @@ import _ from 'lodash';
 
 export default function(state={}, action){
     debugger
-    if(action.error){
+    if(type.GET_USERS === action.type || type.REMOVE_USER === action.type || type.TOGGLE_USER_STATUS === action.type){
+        if(action.error )
         action.type = 'error';
     }
 switch(action.type)

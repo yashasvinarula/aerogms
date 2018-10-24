@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { Navbar, Nav, NavItem, Image, Button, ButtonGroup, Modal } from 'react-bootstrap/lib/';
-// import {Redirect} from 'react-router-dom';
-// import axios from 'axios';
+import {Redirect} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {createProject, getProjects} from '../../actions';
+import _ from 'lodash';
+import axios from 'axios';
+
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
-import mapThumbnail from '../../images/map_thumbnail.jpeg';
+import ProjectItem from './project';
 
 class UserNavs extends Component {
-    // constructor(props) {
-    //     super(props);
-    // }
+    
     render() {
         return (
             <div>
@@ -25,60 +27,6 @@ class UserNavs extends Component {
                         </span>
                     </NavItem>
                 </Nav>
-            </div>
-        );
-    }
-}
-
-class ProjectThumbnail extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showMenu : false
-        }
-        this.showMenu = this.showMenu.bind(this);   
-        this.closeMenu = this.closeMenu.bind(this);
-    }
-
-    showMenu(event) {
-        event.preventDefault();
-        this.setState({showMenu : true}, () => {
-            document.addEventListener('click', this.closeMenu);
-        });
-    }
-
-    closeMenu(event) {
-        if(!this.dropdownMenu.contains(event.target)) {
-            this.setState({showMenu : false}, () => {
-                document.removeEventListener('click', this.closeMenu);  
-            });
-        }
-    }
-
-    render() {
-        return (
-            <div className="project">
-                <div className="md">
-                    <Image src={mapThumbnail} className="map-thumbnail"/>
-                </div>
-                <div className="drawing-bottom">
-                    <span className="pos-drawing drawing-left">Drawing 1</span>
-                    <span className="pos-drawing drawing-right">
-                        <Glyphicon onClick={this.showMenu} glyph="option-vertical"></Glyphicon>
-                        {
-                            this.state.showMenu
-                                ? ( <div className="menu" ref={(element) => {this.dropdownMenu = element}}>
-                                        <ButtonGroup>
-                                            <Button className="menuItem text-center">Delete</Button>
-                                            <Button className="menuItem text-center">Share</Button>
-                                            <Button className="menuItem text-center">Details</Button>
-                                        </ButtonGroup>   
-                                    </div>
-                                )
-                                : (null) 
-                        }
-                    </span>
-                </div>
             </div>
         );
     }
@@ -99,6 +47,15 @@ class UserDashboard extends Component {
         this.showMenu = this.showMenu.bind(this);
         this.closeMenu = this.closeMenu.bind(this);
         this.logOut = this.logOut.bind(this);
+        this.renderProjects = this.renderProjects.bind(this);
+        this.createProject = this.createProject.bind(this);
+    }
+
+    componentDidMount(){
+        if(Object.keys(this.props.projects).length === 0)
+        {
+            this.props.getProjects(this.props.userDetails.email);
+        }
     }
 
     showModal() {
@@ -107,7 +64,7 @@ class UserDashboard extends Component {
 
     closeModal() {
         this.setState({ showmodal : false });
-    } 
+    }
 
     handleChange(event) {
         const value = event.target.value;
@@ -131,15 +88,48 @@ class UserDashboard extends Component {
     }
 
     logOut(){
+        debugger
         this.setState({showUserMenu : false});
         this.props.doLogout();
     }
 
+    createProject(){
+        debugger
+        let pro_name = this.state.projectName;
+        let email = this.props.userDetails.email;
+        axios.post('/api/pro_name_exists', {pro_name:pro_name, owner_email:email}).
+        then(response => {
+            if(response.data.pro_id == null ){
+                this.props.createProject(pro_name, email);
+                this.setState({projectName:''})
+                this.closeModal();
+            }
+            else{
+                alert('Project name is already exists!');
+            }
+        }).
+        catch(err=>{
+            console.log(err);
+        })
+    }
+
+    renderProjects(){
+        debugger
+        if(Object.keys(this.props.projects).length>0){
+            return _.map(this.props.projects, project=>{
+                return (<ProjectItem key={project.pro_id}  prodetails={project} email={this.props.userDetails.email} />)
+            })
+        }
+    }
+
+
     render() {
-        // if(!this.props.userDetails.isLoggedIn)
-        // {
-        //   return <Redirect to={{pathname:'/login'}}/>
-        // }
+        debugger
+        if(!this.props.userDetails.isLoggedIn)
+        {
+          return <Redirect to={{pathname:'/login'}}/>
+        }
+        
         return (
             <div>
                 <Navbar className="navbar-css">
@@ -160,7 +150,7 @@ class UserDashboard extends Component {
                                 <Modal.Body> 
                                     <label htmlFor="project-name">Enter Project Title</label>
                                     <input type="text" name="projectName" value={this.state.projectName} onChange={this.handleChange}></input>
-                                    <button type="submit">Save</button>
+                                    <button type="submit" onClick={this.createProject}>Save</button>
                                 </Modal.Body>
                             </Modal>
                         </NavItem>
@@ -197,11 +187,18 @@ class UserDashboard extends Component {
                 </Navbar>
                 <div className="container">
                     <UserNavs />
-                    <ProjectThumbnail />
+                    <div className="row">
+                        {this.renderProjects()}
+                    </div>
                 </div>
             </div>
         );
     }
 }
 
-export default UserDashboard;
+function mapStateToProps({projects})
+{
+    return {projects}
+}
+
+export default connect(mapStateToProps, {createProject, getProjects})(UserDashboard);

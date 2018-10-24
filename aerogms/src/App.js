@@ -27,7 +27,7 @@ const App = ({userDetails, doLogin, doLogout}) =>(
         <Switch>
         <Route path="/" exact={true} render={() => <div><h1>Coming soon...</h1></div>}  />
         <Route path="/dashboard" render={() => <Dashboard doLogout={doLogout} userDetails={userDetails} />}  />
-        <Route path="/userDashboard" render={() => <UserDashboard doLogout={doLogout} userDetails={userDetails} />}></Route>
+        <Route path="/userDashboard" render={() => <UserDashboard doLogout={doLogout} userDetails={userDetails} />} />
         <Route path="/login" render={(props) => <Login doLogin={doLogin} doLogout={doLogout} userDetails={userDetails}/>} />
         <Route path="/forgot" render={() => <Forgot />} />
         <Route path="/reset" render={() => <Reset />} />

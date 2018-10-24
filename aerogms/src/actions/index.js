@@ -70,3 +70,51 @@ export function toggleUserStatus(u_id){
         payload:request
     }
 }
+
+export function createProject(pro_name, owner_email){
+    const request = axios.post(`${type.ROOT_URL}/create_project`, {
+        pro_name:pro_name,
+        owner_email:owner_email
+    })
+
+    return{
+        type:type.CREATE_PROJECT,
+        payload:request
+    }
+}
+
+export function getProjects(owner_email){
+    const request = axios.post(`${type.ROOT_URL}/get_projects`, {
+        owner_email:owner_email
+    })
+
+    return{
+        type:type.GET_PROJECTS,
+        payload:request
+    }
+}
+
+export function deleteProject(pro_id){
+    debugger
+    const request = axios.post(`${type.ROOT_URL}/delete_project`, {
+        pro_id:pro_id
+    })
+
+    return{
+        type:type.DELETE_PROJECT,
+        payload:request
+    }
+}
+
+export function renameProject(pro_id, pro_name){
+    debugger
+    const request = axios.post(`${type.ROOT_URL}/rename_project`, {
+        pro_id:pro_id,
+        pro_name:pro_name
+    })
+
+    return{
+        type:type.RENAME_PROJECT,
+        payload:request
+    }
+}

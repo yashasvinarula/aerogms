@@ -81,7 +81,7 @@ class Login extends Component {
                 return <Redirect to='/userDashboard' />
             }
             else{
-                {this.props.doLogout()};
+                this.props.doLogout();
                 return  <Redirect to='/usernotactivated' />
             }
         }

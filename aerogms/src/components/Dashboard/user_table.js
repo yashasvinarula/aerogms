@@ -56,8 +56,8 @@ class TableRow extends Component{
     <tr>
         <td>{user.u_id}</td>
         <td>{user.name}</td>
-        <td>  {`${user.date_time.split('T')[0]} ${user.date_time.split('T')[1].split('.')[0]}`}</td>
-        <td>{user.status == true ? 'Enabled': 'Disabled' }</td>
+        <td>{user.date_time}</td>
+        <td>{user.status === true ? 'Enabled': 'Disabled' }</td>
         <td>
         <span bsSize="small">
         <Glyphicon  id={user.u_id} className="align-vertical" onClick={this.showMenu}  glyph="option-vertical" />
