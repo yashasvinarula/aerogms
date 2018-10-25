@@ -16,6 +16,7 @@ import Help from './components/help';
 import FAQ from './components/faq';
 import Feedback from './components/feedback';
 import UserDashboard from './components/Dashboard/user-dashboard';
+import ProjectView from './components/projectview';
 
 import {connect} from 'react-redux';
 //import {bindActionCreators} from 'redux';
@@ -38,6 +39,7 @@ const App = ({userDetails, doLogin, doLogout}) =>(
         <Route path="/faq" render={() => <FAQ />} />
         <Route path="/feedback" render={() => <Feedback />} />
         <Route path="/usernotactivated" component={() => <div>User account is not activated now. Please try again later!</div>} />
+        <Route path="/ProjectView" render={()=><ProjectView/>}/>
         <Route component={() => <div>No Such Page!!</div>} />
         </Switch>
       </Router>
