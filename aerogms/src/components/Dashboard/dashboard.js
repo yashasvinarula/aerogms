@@ -3,7 +3,7 @@ import _ from 'lodash';
 // import axios from 'axios';
 // import NavbarAdmin from './navbar-dashboard-admin';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, FormControl, Image, Button, Table, Pager } from 'react-bootstrap/lib/';
+import { Navbar, Nav, NavItem, FormControl, Image, Button, Table } from 'react-bootstrap/lib/';
 import {Redirect} from 'react-router-dom';
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';

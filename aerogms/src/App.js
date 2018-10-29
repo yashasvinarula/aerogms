@@ -16,7 +16,7 @@ import Help from './components/help';
 import FAQ from './components/faq';
 import Feedback from './components/feedback';
 import UserDashboard from './components/Dashboard/user-dashboard';
-import ProjectView from './components/projectview';
+import ProjectView from './components/Project/projectview';
 
 import {connect} from 'react-redux';
 //import {bindActionCreators} from 'redux';
