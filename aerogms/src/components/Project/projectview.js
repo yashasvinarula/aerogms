@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Image, Modal, DropdownButton, MenuItem } from 'react-bootstrap/lib';
+import { Image, DropdownButton, MenuItem, Modal, Button } from 'react-bootstrap/lib';
 import Layer from './layer';
 import '../../css/project.css';
 import addLayer from '../../images/AddLayerPNG.png';
@@ -16,6 +16,45 @@ import importLayer from '../../images/ImportLayerPNG.png';
 //     }
 // }
 class ProjectView extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            showImportModal : false,
+            showAddLayerModal : false,
+            layerType : '',
+            layers : [],
+        }
+        
+        this.closeImportModal = this.closeImportModal.bind(this);
+        this.closeAddLayerModal = this.closeAddLayerModal.bind(this);
+        this.addLayer = this.addLayer.bind(this);
+    }
+
+    closeImportModal() {
+        this.setState({ showImportModal : false});
+    }
+
+    closeAddLayerModal() {
+        this.setState({ showAddLayerModal : false });
+    }
+    addLayer() {
+        let newLayerTitle = document.getElementById('layer-title').value;
+        this.setState({ layers : this.state.layers.push({ 
+            active : true,
+            title : newLayerTitle,
+            type : this.state.layerType,
+            color : '4D4D4D',
+            strokeColor : 'B3B3B3',
+        })});
+        this.closeAddLayerModal();
+    }
+    renderLayers() {
+        if(this.state.layers.length === 0) {
+            this.state.layers.map((layer) => {
+                <Layer {...layer}/>
+            })
+        }
+    }
 
     render(){
         return (
@@ -26,19 +65,43 @@ class ProjectView extends Component{
                     </div>
                     <hr className="separator-line"></hr>
                     <div className="row">
-                        <div className="icons-display col-lg-6 left-padding">
+                        <div className="icons-display on-hover col-lg-6 left-padding" onClick={() => this.setState({ showImportModal : true })}>
                             <Image src={importLayer} className="add-import-icons " />
                             <span className="margin-outside">Import Layer</span>
                         </div>
+                        <Modal
+                            show={this.state.showImportModal}
+                            onHide={this.closeImportModal}
+                            container={this}
+                        >
+                            <Modal.Header closeButton>Choose a file to import</Modal.Header>
+                            <Modal.Body>
+                                <Button onClick={(e) => this.myInput.click() }>Select a file from your computer</Button>
+                                <input id="myInput" type="file" ref={(ref) => this.myInput = ref} style={{ display: 'none' }} />
+                            </Modal.Body>
+                        </Modal>
                         <DropdownButton nocaret title={AddLayer}>
-                            <MenuItem>Point</MenuItem>
-                            <MenuItem>Line</MenuItem>
-                            <MenuItem>Polygon</MenuItem>
+                            <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Point' })}>Point</MenuItem>
+                            <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Line' })}>Line</MenuItem>
+                            <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Polygon' })}>Polygon</MenuItem>
+                            <Modal
+                                show={this.state.showAddLayerModal}
+                                onHide={this.closeAddLayerModal}
+                                container={this}
+                            >
+                                <Modal.Header closeButton>Enter Layer Title</Modal.Header>
+                                <Modal.Body>
+                                    <label htmlFor="layerTitle">Enter Title</label>
+                                    <input type="text" id="layer-title"/>
+                                    <Button onClick={this.addLayer}>Save</Button>
+                                </Modal.Body>
+                            </Modal>
                         </DropdownButton>
                     </div>
                     <hr className="separator-line"></hr>
                     <div>
-                        <Layer />
+                        {this.renderLayers}
+                        {/* <Layer /> */}
                     </div>
                 </div>
             </div>

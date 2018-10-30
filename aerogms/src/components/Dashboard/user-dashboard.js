@@ -100,13 +100,12 @@ class UserDashboard extends Component {
         }
     }
 
-
     render() {
-        debugger
-        if(!this.props.userDetails.isLoggedIn)
-        {
-          return <Redirect to={{pathname:'/login'}}/>
-        }
+        // debugger
+        // if(!this.props.userDetails.isLoggedIn)
+        // {
+        //   return <Redirect to={{pathname:'/login'}}/>
+        // }
         
         return (
             <div>

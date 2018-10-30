@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Image, Button, Glyphicon  } from 'react-bootstrap/lib';
-import { SketchPicker } from 'react-color';
+import { Image, Button, Glyphicon, Tooltip } from 'react-bootstrap/lib';
+import { CompactPicker } from 'react-color';
 import layerActive from '../../images/LayerActive.png';
 import layerNotActive from '../../images/LayerNotActive.png';
 import MenuIcon from '../../images/MenuIcon.png';
@@ -16,6 +16,7 @@ class Layer extends Component {
         this.makeLayerActive = this.makeLayerActive.bind(this);
         this.makeLayerInactive = this.makeLayerInactive.bind(this);
         this.showColorPicker = this.showColorPicker.bind(this);
+        this.removeColorPicker = this.removeColorPicker.bind(this);
     };
 
     showColorPicker() {
@@ -40,30 +41,39 @@ class Layer extends Component {
             <div className="layer"> 
                 {
                     this.state.layerActive 
-                    ? <Image src={layerActive} onClick={this.makeLayerInactive} className="layer-on-off inline-display margin-outside" />
-                    : <Image src={layerNotActive} onClick={this.makeLayerActive} className="layer-on-off inline-display margin-outside" />
+                    ? <Image src={layerActive} onClick={this.makeLayerInactive} className="layer-on-off on-hover inline-display margin-outside" />
+                    : <Image src={layerNotActive} onClick={this.makeLayerActive} className="layer-on-off on-hover inline-display margin-outside" />
                 }
-                <div onClick={this.showColorPicker} className="color-rectangle inline-display margin-outside"></div>
+                <div onClick={this.showColorPicker} className="color-rectangle on-hover inline-display margin-outside"></div>
                 <div className="inline-display">
-                    <h4 className="layer-title margin-outside">Layer Title</h4>
-                    <h6 className="layer-type margin-outside">(Layer Type)</h6>
+                    <h4 className="layer-title on-hover margin-outside"> {this.props.layer.title}</h4>
+                    <h6 className="layer-type margin-outside">{'(' + this.props.layer.type + ')'}</h6>
                 </div>
                 {/* <Image src={MenuIcon} className="menu-icon inline-display margin-outside" /> */}
                 <div class="dropdown">
-                    <Glyphicon className="menu-icon inline-display margin-outside" glyph="option-vertical" />
-                    <div class="dropdown-content">
+                    {/* <Glyphicon className="menu-icon inline-display margin-outside" glyph="option-vertical" /> */}
+                    <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />
+                        <div class="dropdown-content">
+                            <a href="#">Download</a>
+                            <a href="#">Table</a>
+                            <a href="#">Delete</a>
+                        </div>
+                </div>
+                {/* <div className="tooltip">
+                    <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />
+                    <Glyphicon className="menu-icon inline-display margin-outside" glyph="option-vertical" />Hello
+                    <span className="tooltiptext">
                         <a href="#">Download</a>
                         <a href="#">Table</a>
                         <a href="#">Delete</a>
-                    </div>
-                </div>
+                    </span>
+                </div> */}
                 <hr className="layer-separator" />
             </div>
-            <CircularColor />
+            {/* <CircularColor /> */}
             {
-                this.state.colorPicker ? (<SketchPicker />) : null
+                this.state.colorPicker ? (<CompactPicker />) : null
             }
-            
             </div>
         );
     }
