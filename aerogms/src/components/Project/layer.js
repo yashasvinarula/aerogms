@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Image, Button, Glyphicon, Tooltip } from 'react-bootstrap/lib';
+import { Image, } from 'react-bootstrap/lib';
 import { CompactPicker } from 'react-color';
 import layerActive from '../../images/LayerActive.png';
 import layerNotActive from '../../images/LayerNotActive.png';
 import MenuIcon from '../../images/MenuIcon.png';
 import '../../css/layer.css';
-import CircularColor from 'react-circular-color';
+// import CircularColor from 'react-circular-color';
 class Layer extends Component {
     constructor(props) {
         super(props);
@@ -36,6 +36,7 @@ class Layer extends Component {
     }
 
     render() {
+        debugger;
         return (
             <div>
             <div className="layer"> 
@@ -54,9 +55,9 @@ class Layer extends Component {
                     {/* <Glyphicon className="menu-icon inline-display margin-outside" glyph="option-vertical" /> */}
                     <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />
                         <div class="dropdown-content">
-                            <a href="#">Download</a>
-                            <a href="#">Table</a>
-                            <a href="#">Delete</a>
+                            <a href="">Download</a>
+                            <a href="">Table</a>
+                            <a href="">Delete</a>
                         </div>
                 </div>
                 {/* <div className="tooltip">

@@ -7,8 +7,8 @@
 .color-rectangle {
     width: 15px;
 	height: 30px;
-    background-color: #49494a;
-    outline: #000 solid 4px;
+    background-color: #4D4D4D;
+    outline: #B3B3B3 solid 4px;
 }
 .inline-display {
     display: inline-block;

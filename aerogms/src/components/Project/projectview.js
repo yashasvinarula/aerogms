@@ -9,7 +9,7 @@ import importLayer from '../../images/ImportLayerPNG.png';
     const AddLayer = 
         (
             <div className="icons-display col-lg-6">
-                <Image src={addLayer} className="add-import-icons" /> 
+                <Image src={addLayer} className="add-import-icons" />
                 <span className="margin-outside">Add Layer</span>
             </div>
         );
@@ -22,37 +22,41 @@ class ProjectView extends Component{
             showImportModal : false,
             showAddLayerModal : false,
             layerType : '',
+            layer : {active : '', title : '', type : '', color : '', strokeColor : ''},
             layers : [],
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
         this.closeAddLayerModal = this.closeAddLayerModal.bind(this);
         this.addLayer = this.addLayer.bind(this);
+        this.renderLayers = this.renderLayers.bind(this);
     }
 
     closeImportModal() {
         this.setState({ showImportModal : false});
     }
-
     closeAddLayerModal() {
         this.setState({ showAddLayerModal : false });
     }
     addLayer() {
         let newLayerTitle = document.getElementById('layer-title').value;
-        this.setState({ layers : this.state.layers.push({ 
-            active : true,
-            title : newLayerTitle,
-            type : this.state.layerType,
-            color : '4D4D4D',
-            strokeColor : 'B3B3B3',
-        })});
+        let newLayer = this.state.layer;
+            newLayer.active = true;
+            newLayer.title = newLayerTitle;
+            newLayer.type = this.state.layerType;
+            newLayer.backgroundColor = '4D4D4D';
+            newLayer.outline = 'B3B3B3';
+        this.setState({ layer : newLayer });
+        let newLayers = this.state.layers;
+        newLayers.push(newLayer);
+        this.setState({ layers : newLayers });
         this.closeAddLayerModal();
     }
     renderLayers() {
-        if(this.state.layers.length === 0) {
-            this.state.layers.map((layer) => {
-                <Layer {...layer}/>
-            })
+        if(this.state.layers.length !== 0) {
+            return this.state.layers.map((layer) => {
+               return (<Layer layer={layer}/>);
+            });
         }
     }
 
@@ -80,7 +84,11 @@ class ProjectView extends Component{
                                 <input id="myInput" type="file" ref={(ref) => this.myInput = ref} style={{ display: 'none' }} />
                             </Modal.Body>
                         </Modal>
-                        <DropdownButton nocaret title={AddLayer}>
+                        <DropdownButton 
+                            bsStyle="default"
+                            nocaret="true" 
+                            title={AddLayer}
+                            id="dropdown-no-caret" >
                             <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Point' })}>Point</MenuItem>
                             <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Line' })}>Line</MenuItem>
                             <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Polygon' })}>Polygon</MenuItem>
@@ -100,7 +108,7 @@ class ProjectView extends Component{
                     </div>
                     <hr className="separator-line"></hr>
                     <div>
-                        {this.renderLayers}
+                        {this.renderLayers()}
                         {/* <Layer /> */}
                     </div>
                 </div>

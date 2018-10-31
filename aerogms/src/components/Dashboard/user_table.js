@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {removeUser,toggleUserStatus} from '../../actions';
 
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Button, ButtonGroup } from 'react-bootstrap/lib/';
+import { Button, ButtonGroup, } from 'react-bootstrap/lib/';
 
 class TableRow extends Component{
     constructor(props){
@@ -52,28 +52,36 @@ class TableRow extends Component{
     
     render(){
     const {user} = this.props;
-    return(
-    <tr>
-        <td>{user.u_id}</td>
-        <td>{user.name}</td>
-        <td>{user.date_time}</td>
-        <td>{user.status === true ? 'Enabled': 'Disabled' }</td>
-        <td>
-        <span bsSize="small">
-        <Glyphicon  id={user.u_id} className="align-vertical" onClick={this.showMenu}  glyph="option-vertical" />
-         { this.state.showMenu ? 
-            (<div className="menu" ref={(element) => {this.dropdownMenu = element}}>
-            <ButtonGroup id={user.u_id} >
-                {/* <Button name="edit" className="menuItem">Edit</Button> */}
-                <Button name="remove" className="menuItem" onClick={this.deleteUser}>Remove</Button>
-                <Button name="toggleStatus" onClick={this.toggleUserStatus}  className="menuItem">Toggle Status</Button>
-                {/* <Button name="details" className="menuItem">Details</Button> */}
-            </ButtonGroup>
-            </div>) : null  }
-        </span>
-        </td>
-    </tr>
-        )
+    // !== "unauthorised"
+        if(user ) {
+            return (
+                <tr>
+                    <td>{user.u_id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.date_time}</td>
+                    <td>{user.status === true ? 'Enabled': 'Disabled' }</td>
+                    <td>
+                    <span bsSize="small">
+                    <Glyphicon  id={user.u_id} className="align-vertical" onClick={this.showMenu}  glyph="option-vertical" />
+                     { this.state.showMenu ? 
+                        (<div className="menu" ref={(element) => {this.dropdownMenu = element}}>
+                        <ButtonGroup id={user.u_id} >
+                            {/* <Button name="edit" className="menuItem">Edit</Button> */}
+                            <Button name="remove" className="menuItem" onClick={this.deleteUser}>Remove</Button>
+                            <Button name="toggleStatus" className="menuItem" onClick={this.toggleUserStatus}>Toggle Status</Button>
+                            <Button name="analytics">Analytics</Button>
+                            <Button name="map">Map</Button>
+                            <Button name="validation">Validation</Button>
+                            {/* <Button name="details" className="menuItem">Details</Button> */}
+                        </ButtonGroup>
+                        </div>) : null  }
+                    </span>
+                    </td>
+                </tr>
+                    );
+        } else {
+            return null
+        }
     }
 }
 
