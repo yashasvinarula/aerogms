@@ -42,7 +42,7 @@ export function getUsers(){
   
 
 export function removeUser(u_id){
-    debugger
+    // debugger
     // return function(dispatch){
     //     axios.delete(`${type.ROOT_URL}/removeUser`, {params:{u_id}})
     //     .then((result)=>{

@@ -89,6 +89,10 @@ class ProjectView extends Component{
                             nocaret="true" 
                             title={AddLayer}
                             id="dropdown-no-caret" >
+                            <style type="text/css">{`
+                                        .dropdown {
+                                           float : none !important;
+                                    `}</style>
                             <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Point' })}>Point</MenuItem>
                             <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Line' })}>Line</MenuItem>
                             <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Polygon' })}>Polygon</MenuItem>

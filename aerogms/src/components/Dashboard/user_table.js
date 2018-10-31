@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import {removeUser,toggleUserStatus} from '../../actions';
-
+import MediaQuery from 'react-responsive';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Button, ButtonGroup, } from 'react-bootstrap/lib/';
+import { Button, ButtonGroup, DropdownButton, MenuItem, Image } from 'react-bootstrap/lib/';
+import EnableLogo from '../../images/LayerActive.png';
+import DisableLogo from '../../images/LayerNotActive.png';
+
+const UserMenuIcon = (
+    <Glyphicon  className="align-vertical btn-menu" onClick={this.showMenu}  glyph="option-vertical" />
+);
 
 class TableRow extends Component{
     constructor(props){
@@ -55,30 +62,54 @@ class TableRow extends Component{
     // !== "unauthorised"
         if(user ) {
             return (
-                <tr>
-                    <td>{user.u_id}</td>
-                    <td>{user.name}</td>
-                    <td>{user.date_time}</td>
-                    <td>{user.status === true ? 'Enabled': 'Disabled' }</td>
-                    <td>
-                    <span bsSize="small">
-                    <Glyphicon  id={user.u_id} className="align-vertical" onClick={this.showMenu}  glyph="option-vertical" />
-                     { this.state.showMenu ? 
-                        (<div className="menu" ref={(element) => {this.dropdownMenu = element}}>
-                        <ButtonGroup id={user.u_id} >
-                            {/* <Button name="edit" className="menuItem">Edit</Button> */}
-                            <Button name="remove" className="menuItem" onClick={this.deleteUser}>Remove</Button>
-                            <Button name="toggleStatus" className="menuItem" onClick={this.toggleUserStatus}>Toggle Status</Button>
-                            <Button name="analytics">Analytics</Button>
-                            <Button name="map">Map</Button>
-                            <Button name="validation">Validation</Button>
-                            {/* <Button name="details" className="menuItem">Details</Button> */}
-                        </ButtonGroup>
-                        </div>) : null  }
-                    </span>
-                    </td>
-                </tr>
-                    );
+                <MediaQuery maxWidth={768}>
+                    {(matches) => {
+                        if(matches){
+                            return (
+                                <tr className="row">
+                                <td className="col-sm-3 td-admin-mobile">{user.u_id}</td>
+                                <td className="col-sm-3 td-admin-mobile">{user.name}</td>
+                                <td className="col-sm-3 td-admin-mobile">{user.date_time}</td>
+                                <td className="col-sm-3 td-admin-mobile">{user.status === true ? 
+                                    <Image src={EnableLogo} onClick={this.makeLayerInactive} className="layer-on-off on-hover inline-display margin-outside" />
+                                    : <Image src={DisableLogo} onClick={this.makeLayerInactive} className="layer-on-off on-hover inline-display margin-outside" />
+                                     }
+                                <DropdownButton
+                                        noCaret
+                                        title={UserMenuIcon}    
+                                        id={user.u_id}
+                                        pullRight
+                                    >
+                                        <MenuItem name="toggleStatus" className="" onClick={this.toggleUserStatus}>Toggle Status</MenuItem>
+                                        <MenuItem name="remove" className="" onClick={this.deleteUser}>Remove</MenuItem>
+                                    </DropdownButton>
+                                </td>
+                            </tr>
+                            );
+                        } else {
+                            return (
+                                <tr className="">
+                                <td className="">{user.u_id}</td>
+                                <td className="">{user.name}</td>
+                                <td className="">{user.date_time}</td>
+                                <td className="">{user.status === true ? 'Enabled': 'Disabled' }
+                                <DropdownButton
+                                        noCaret
+                                        title={UserMenuIcon}    
+                                        id={user.u_id}
+                                        pullRight
+                                    >
+                                        <MenuItem name="toggleStatus" className="" onClick={this.toggleUserStatus}>Toggle Status</MenuItem>
+                                        <MenuItem name="remove" className="" onClick={this.deleteUser}>Remove</MenuItem>
+                                    </DropdownButton>
+                                </td>
+                            </tr>
+                            );
+                        }
+                    }}
+                </MediaQuery>
+               
+            );
         } else {
             return null
         }

@@ -8,6 +8,14 @@
     width: 40px;
     height : 40px;
 }
+.circular-icon-mobile {
+    border-radius: 50%;
+    background-color: #036;
+    color: white;
+    width: 25px;
+    height : 25px;
+    float: none;
+}
 .bell-parent {
     position: relative;
 }
@@ -30,7 +38,9 @@
     /* vertical-align: middle; */
     width : 250px;
 }
-
+.header-logo-admin-mobile {
+    width : 80px !important;
+}
 .center-align {
     margin : auto;
 }
@@ -68,7 +78,7 @@
     box-shadow: 0 0 8px 0 gray; 
 }
 .align-vertical {
-    vertical-align: middle;
+    vertical-align: middle !important;
 }
 .project {
     position: relative;
@@ -112,4 +122,23 @@ ul {
 }
 .project-Item{
     margin-bottom: 25px;
+}
+.th-admin {
+    font-size: 12px;
+}
+.td-admin-mobile {
+    font-size: 12px !important;
+}
+.sort-glyph {
+    font-size:  14px !important;
+}
+.btn {
+    padding: 0 !important;
+}
+.top-padding {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.dropdown-custom {
+    /* float: none !important; */
 }
