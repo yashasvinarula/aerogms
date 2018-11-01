@@ -256,7 +256,6 @@ function sendMail(req, res, from, to, sub, content, message) {
     });
   }
 
-
 module.exports.getUserlist = function(req, res){
    
     db.func('public.sp_getuserslist', ['userlist', 0])
@@ -333,7 +332,7 @@ module.exports.toggleUserStatus = function(req, res){
     });
     }
 
-    module.exports.create_project = function(req, res){
+module.exports.create_project = function(req, res){
         db.func('public.sp_aerogms', ['create_project', [req.body.pro_name, req.body.owner_email]])
         .then(result => {
         if(result[0].sp_aerogms)
@@ -354,7 +353,7 @@ module.exports.toggleUserStatus = function(req, res){
         });
     }
 
-    module.exports.get_projects = function(req, res){
+module.exports.get_projects = function(req, res){
         db.func('public.sp_getprojectlist', [req.body.owner_email])
         .then(result => {
         if(result)
@@ -372,7 +371,7 @@ module.exports.toggleUserStatus = function(req, res){
         });
     }
 
-    module.exports.delete_project = function(req, res){
+module.exports.delete_project = function(req, res){
         db.func('public.sp_aerogms', ['delete_project', [req.body.pro_id.toString()]])
         .then(result => {
         if(result[0].sp_aerogms)
@@ -390,7 +389,7 @@ module.exports.toggleUserStatus = function(req, res){
         });
     }
 
-    module.exports.rename_project = function(req, res){
+module.exports.rename_project = function(req, res){
         db.func('public.sp_aerogms', ['rename_project', [req.body.pro_id.toString(), req.body.pro_name]])
         .then(result => {
         if(result[0].sp_aerogms)
@@ -408,7 +407,7 @@ module.exports.toggleUserStatus = function(req, res){
         });
     }
 
-    module.exports.pro_name_exists = function(req, res){
+module.exports.pro_name_exists = function(req, res){
         db.func('public.sp_aerogms', ['pro_name_exists', [req.body.pro_name, req.body.owner_email]])
         .then(result => {
         if(result[0])
@@ -425,4 +424,3 @@ module.exports.toggleUserStatus = function(req, res){
         return res.status(400).send(error);
         });
     }
-

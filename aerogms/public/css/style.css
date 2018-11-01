@@ -1,0 +1,41 @@
+html { height: 100% ;    overflow: hidden;}
+    body { height: 100%; margin: 0; padding: 0; }
+    #map{ height: 100% }
+      
+    .upStuff{
+        display:none;
+	}
+    .loader{
+	    position: absolute;
+		opacity: 0.7;
+		height: 100%;
+		width: 100%;
+		display:none;
+		background-color: white;
+		z-index: 10000;
+	}
+	.loaderImg{
+		position: absolute;
+		z-index: 999;
+		width: 120px;
+		height: 120px;
+		margin: 21% 47%;
+	}
+	  
+	.IconImg{
+		position: absolute;
+		z-index: 9999;
+		width: 48px;
+		height: 48px;
+		/*margin: 23.2% 49.5%;*/
+	}
+	
+	.btnHeigh{
+		height:9%;
+		width:15%;
+	}
+	.form {
+		margin: 0 0 -8px;
+	}
+	
+	

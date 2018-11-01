@@ -18,5 +18,5 @@ const pool = new pg.Pool(config);
 const geocred='admin:geoserver';
 
 module.exports = {
-    db, pg, pool
+    pgp, db, pg, pool, geocred
 };
