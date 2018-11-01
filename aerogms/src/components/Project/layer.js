@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Image, } from 'react-bootstrap/lib';
+import { Image, Glyphicon } from 'react-bootstrap/lib';
 import { CompactPicker } from 'react-color';
+import Check from '../../images/check.png';
 import layerActive from '../../images/LayerActive.png';
 import layerNotActive from '../../images/LayerNotActive.png';
 import MenuIcon from '../../images/MenuIcon.png';
@@ -44,42 +45,43 @@ class Layer extends Component {
                 <div className="layer"> 
                     {
                         this.state.layerActive 
-                        ? <Image src={layerActive} onClick={this.makeLayerInactive} className="layer-on-off on-hover inline-display margin-outside" />
-                        : <Image src={layerNotActive} onClick={this.makeLayerActive} className="layer-on-off on-hover inline-display margin-outside" />
+                        ? <Image src={Check} onClick={this.makeLayerInactive} style={{visibility : "visible"}} className="layer-on-off on-hover inline-display margin-outside" />
+                        : <Image src={Check} onClick={this.makeLayerActive} style={{visibility : "hidden"}} className="layer-on-off on-hover inline-display margin-outside" />
+                        // <Image src={} onClick={this.makeLayerActive} className="layer-on-off on-hover inline-display margin-outside" />
                     }
-                    <div onClick={this.showColorPicker} className="color-rectangle on-hover inline-display margin-outside"></div>
-                    <div className="inline-display">
+                    
+                    <div className="inline-display align-vertical">
                         {/* <h4 className="layer-title on-hover margin-outside"> {this.props.layer.title}</h4>
                         <h6 className="layer-type margin-outside">{'(' + this.props.layer.type + ')'}</h6> */}
                         <h4 className="layer-title on-hover margin-outside">Layer Title</h4>
                         <h6 className="layer-type margin-outside">(Layer Type)</h6>
                     </div>
+                    <div onClick={this.showColorPicker} className="color-rectangle on-hover inline-display"></div>
                     {/* <Image src={MenuIcon} className="menu-icon inline-display margin-outside" /> */}
                     <div className="dropdown">
                         {/* <Glyphicon className="menu-icon inline-display margin-outside" glyph="option-vertical" /> */}
                         <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />
                             <div className="dropdown-content">
-                                <a href="">Download</a>
-                                <a href="">Table</a>
-                                <a href="">Delete</a>
+                                <a >Download</a>
+                                <a >Table</a>
+                                <a >Delete</a>
                             </div>
                     </div>
                     {/* <div className="tooltip">
                         <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />
                         <Glyphicon className="menu-icon inline-display margin-outside" glyph="option-vertical" />Hello
                         <span className="tooltiptext">
-                            <a href="#">Download</a>
-                            <a href="#">Table</a>
-                            <a href="#">Delete</a>
+                            <a >Download</a>
+                            <a >Table</a>
+                            <a >Delete</a>
                         </span>
-                    </div> */}
+                    </div>  */}
                     <hr className="layer-separator" />
                 </div>
-                {/* <CircularColor /> */}
                 {
                     this.state.colorPicker ? (<CompactPicker />) : null
                 }
-                <Feature />
+                {/* <Feature /> */}
             </div>
         );
     }
