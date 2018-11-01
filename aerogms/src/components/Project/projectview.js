@@ -8,7 +8,7 @@ import importLayer from '../../images/ImportLayerPNG.png';
 //     render() {
     const AddLayer = 
         (
-            <div className="icons-display col-lg-6">
+            <div className="icons-display text-center col-xs-6">
                 <Image src={addLayer} className="add-import-icons" />
                 <span className="margin-outside">Add Layer</span>
             </div>
@@ -69,7 +69,7 @@ class ProjectView extends Component{
                     </div>
                     <hr className="separator-line"></hr>
                     <div className="row">
-                        <div className="icons-display on-hover col-lg-6 left-padding" onClick={() => this.setState({ showImportModal : true })}>
+                        <div className="icons-display on-hover text-center col-xs-6 left-padding" onClick={() => this.setState({ showImportModal : true })}>
                             <Image src={importLayer} className="add-import-icons " />
                             <span className="margin-outside">Import Layer</span>
                         </div>
@@ -86,12 +86,16 @@ class ProjectView extends Component{
                         </Modal>
                         <DropdownButton 
                             bsStyle="default"
-                            nocaret="true" 
+                            noCaret
                             title={AddLayer}
                             id="dropdown-no-caret" >
                             <style type="text/css">{`
+                                        .btn-default {
+                                            border-color : #fff;
+                                        }
                                         .dropdown {
                                            float : none !important;
+                                        }
                                     `}</style>
                             <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Point' })}>Point</MenuItem>
                             <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Line' })}>Line</MenuItem>
@@ -112,8 +116,8 @@ class ProjectView extends Component{
                     </div>
                     <hr className="separator-line"></hr>
                     <div>
-                        {this.renderLayers()}
-                        {/* <Layer /> */}
+                        {/* {this.renderLayers()} */}
+                        <Layer />
                     </div>
                 </div>
             </div>

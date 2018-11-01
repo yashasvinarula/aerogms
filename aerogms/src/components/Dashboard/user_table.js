@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 import {removeUser,toggleUserStatus} from '../../actions';
 import MediaQuery from 'react-responsive';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Button, ButtonGroup, DropdownButton, MenuItem, Image } from 'react-bootstrap/lib/';
-import EnableLogo from '../../images/LayerActive.png';
+import { DropdownButton, MenuItem, Image } from 'react-bootstrap/lib/';
+import EnableLogo from '../../images/LayerOn.png';
 import DisableLogo from '../../images/LayerNotActive.png';
 
 const UserMenuIcon = (
@@ -16,7 +16,8 @@ class TableRow extends Component{
     constructor(props){
         super(props)
         this.state = {
-            showMenu : false
+            showMenu : false,
+            enableUser : false,
         }
         this.showMenu = this.showMenu.bind(this);   
         this.closeMenu = this.closeMenu.bind(this);
@@ -59,8 +60,7 @@ class TableRow extends Component{
     
     render(){
     const {user} = this.props;
-    // !== "unauthorised"
-        if(user ) {
+        if(user !== "unauthorised" ) {
             return (
                 <MediaQuery maxWidth={768}>
                     {(matches) => {
@@ -71,16 +71,16 @@ class TableRow extends Component{
                                 <td className="col-sm-3 td-admin-mobile">{user.name}</td>
                                 <td className="col-sm-3 td-admin-mobile">{user.date_time}</td>
                                 <td className="col-sm-3 td-admin-mobile">{user.status === true ? 
-                                    <Image src={EnableLogo} onClick={this.makeLayerInactive} className="layer-on-off on-hover inline-display margin-outside" />
-                                    : <Image src={DisableLogo} onClick={this.makeLayerInactive} className="layer-on-off on-hover inline-display margin-outside" />
+                                    <Image src={EnableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
+                                    : <Image src={DisableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
                                      }
-                                <DropdownButton
+                                    <DropdownButton
                                         noCaret
                                         title={UserMenuIcon}    
                                         id={user.u_id}
                                         pullRight
                                     >
-                                        <MenuItem name="toggleStatus" className="" onClick={this.toggleUserStatus}>Toggle Status</MenuItem>
+                                        {/* <MenuItem name="toggleStatus" className="" onClick={this.toggleUserStatus}>Toggle Status</MenuItem> */}
                                         <MenuItem name="remove" className="" onClick={this.deleteUser}>Remove</MenuItem>
                                     </DropdownButton>
                                 </td>
@@ -92,14 +92,17 @@ class TableRow extends Component{
                                 <td className="">{user.u_id}</td>
                                 <td className="">{user.name}</td>
                                 <td className="">{user.date_time}</td>
-                                <td className="">{user.status === true ? 'Enabled': 'Disabled' }
+                                <td className="">{user.status === true ? 
+                                    <Image src={EnableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
+                                    : <Image src={DisableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
+                                     }
                                 <DropdownButton
                                         noCaret
                                         title={UserMenuIcon}    
                                         id={user.u_id}
                                         pullRight
                                     >
-                                        <MenuItem name="toggleStatus" className="" onClick={this.toggleUserStatus}>Toggle Status</MenuItem>
+                                        {/* <MenuItem name="toggleStatus" className="" onClick={this.toggleUserStatus}>Toggle Status</MenuItem> */}
                                         <MenuItem name="remove" className="" onClick={this.deleteUser}>Remove</MenuItem>
                                     </DropdownButton>
                                 </td>

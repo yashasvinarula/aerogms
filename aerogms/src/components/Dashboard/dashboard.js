@@ -12,12 +12,7 @@ import AeroLogo from '../../images/AeroLOGO.png';
 import TableRow from './user_table';
 import {connect} from 'react-redux';
 import {getUsers} from '../../actions';
-const usernew = [{
-    u_id : 1234,
-    name : 'Parveen Sahrawat',
-    date_time : '26 Jun, 2018',
-    status : true
-}];
+
 class Dashboard extends Component {
     constructor(props){
         super(props);
@@ -61,7 +56,7 @@ class Dashboard extends Component {
     }
 
     renderUsers(){
-    return _.map(usernew, user => {
+    return _.map(this.props.users, user => {
             return (
                <TableRow key={user.u_id} user={user}/>
                 )
@@ -73,22 +68,22 @@ class Dashboard extends Component {
 
     render()
     {
-        // debugger;
-        // if(!this.props.userDetails.isLoggedIn)
-        // {
-        //   return <Redirect to={{pathname:'/login'}}/>
-        // }
-        // if(this.props.userDetails.isadmin === "false")
-        // {
-        //     return <Redirect to={{pathname:'/userDashboard'}}/>
-        // }
-        // if(this.props.users['error']){
-        //     debugger
-        //     alert('Your session is expired. Please login!')
-        //     console.log('error session out!');
-        //     this.props.doLogout();
-        //     return <Redirect to='/login' />
-        // }
+        debugger;
+        if(!this.props.userDetails.isLoggedIn)
+        {
+          return <Redirect to={{pathname:'/login'}}/>
+        }
+        if(this.props.userDetails.isadmin === "false")
+        {
+            return <Redirect to={{pathname:'/userDashboard'}}/>
+        }
+        if(this.props.users['error']){
+            debugger
+            alert('Your session is expired. Please login!')
+            console.log('error session out!');
+            this.props.doLogout();
+            return <Redirect to='/login' />
+        }
        
         return (
             <MediaQuery maxWidth={768}>
@@ -99,7 +94,7 @@ class Dashboard extends Component {
                         <Navbar className="row"  >
                             <Navbar.Header className="col-sm-3">
                                 <Navbar.Brand>
-                                    <a href="#"><Image src={AeroLogo} alt="Aero Logo" responsive className="header-logo-admin-mobile" /></a>
+                                    <a href=""><Image src={AeroLogo} alt="Aero Logo" responsive className="header-logo-admin-mobile" /></a>
                                 </Navbar.Brand>
                             </Navbar.Header>
                             <Nav pullRight className="col-sm-9 row">
@@ -166,7 +161,7 @@ class Dashboard extends Component {
                         <Navbar className="show-grid" fixedTop >
                             <Navbar.Header>
                                 <Navbar.Brand>
-                                    <a href="#"><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
+                                    <a href=""><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
                                 </Navbar.Brand>
                             </Navbar.Header>
                                 <Nav pullRight>

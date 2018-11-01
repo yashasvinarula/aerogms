@@ -2,9 +2,11 @@
     width: 100%;
 	height: 1px;
 	background-color: #cbdbdb;
-	-webkit-box-shadow: 1px 2px 2px rgba(0,0,0,.75);
-	-moz-box-shadow: 1px 2px 2px rgba(0,0,0,.75);
-	box-shadow: 1px 2px 2px rgba(0,0,0,.75);
+	-webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.75);
+	-moz-box-shadow: 1px 1px 1px rgba(0,0,0,.75);
+    box-shadow: 1px 1px 1px rgba(0,0,0,.75);
+    margin-top: 3px;
+    margin-bottom: 5px;
 }
 .add-import-icons {
     width: 22px;
@@ -36,6 +38,12 @@
 	width: 300px;
     height: 719px;
 }
-.dropdown {
-    /* float: none !important; */
+@media only screen and (max-width : 768px) {
+    .project-layer-box {
+        position: relative;
+        /* top: 60px; */
+        /* left: 0; */
+        width: 100%;
+        /* height: 100%; */
+    }
 }
