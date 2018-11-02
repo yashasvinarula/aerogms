@@ -9,7 +9,8 @@
 .color-rectangle {
     width: 15px;
     height: 30px;
-    margin: 0 15px;
+    margin: 0 50px;
+    padding: 10px 0;
     float: right;
     background-color: #4D4D4D;
     outline: #B3B3B3 solid 4px;
@@ -20,7 +21,7 @@
 .menu-icon {
     width: 25px;
     height: 25px;
-    float: right;
+    /* float: right; */
     vertical-align: middle;
 }
 .layer-title {

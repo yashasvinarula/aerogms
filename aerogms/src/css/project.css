@@ -28,6 +28,10 @@
 .on-hover:hover {
     cursor: pointer;
 }
+
+.navbar-default .navbar-nav>li>a {
+    color: #fff;
+}
 .project-layer-box {
     -webkit-box-shadow: 1px 2px 5px rgba(0,0,0,.75);
 	-moz-box-shadow: 1px 2px 5px rgba(0,0,0,.75);
@@ -38,6 +42,11 @@
 	width: 300px;
     height: 719px;
 }
+
+.green-back {
+    /* background-color: green; */
+}
+
 @media only screen and (max-width : 768px) {
     .project-layer-box {
         position: relative;
@@ -46,4 +55,56 @@
         width: 100%;
         /* height: 100%; */
     }
+    .project-menu {
+        background-color: gray;
+        display: inline-block;
+        z-index: 1000;
+    }
+    .project-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #036 !important;
+        width: 100%;
+        height: 50px;
+    }
+    .menu-item {
+        color: #fff;
+    }
+    /* Position and sizing of burger button */
+    .bm-burger-button {
+        position: relative;
+        width: 26px;
+        height: 20px;
+        left: 16px;
+        top: 16px;
+    }
+    
+    /* Color/shape of burger icon bars */
+    .bm-burger-bars {
+        background: white;
+    }
+    /* Color/shape of close button cross */
+    .bm-cross {
+        background: black;
+    }
+      /* Wrapper for item list */
+    .bm-item-list {
+        color: #b8b7ad;
+        padding: 1em;
+    }
+    .layers-image {
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+        position: absolute;
+        right: 16px;
+        top: 16px; 
+    }
+    .bottom-layers-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+    }
+    
 }

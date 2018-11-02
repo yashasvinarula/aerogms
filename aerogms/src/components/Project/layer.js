@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Image, Glyphicon } from 'react-bootstrap/lib';
+import { Image, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap/lib';
 import { CompactPicker } from 'react-color';
 import Check from '../../images/check.png';
 import layerActive from '../../images/LayerActive.png';
 import layerNotActive from '../../images/LayerNotActive.png';
-import MenuIcon from '../../images/MenuIcon.png';
+import MenuIcon from '../../images/Menu.png';
 import '../../css/layer.css';
 // import CircularColor from 'react-circular-color';
 import Feature from './featureInfo';
+
+const MenuImage = ( <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />);
 
 class Layer extends Component {
     constructor(props) {
@@ -42,11 +44,12 @@ class Layer extends Component {
         // debugger;
         return (
             <div>
+
                 <div className="layer"> 
                     {
-                        this.state.layerActive 
-                        ? <Image src={Check} onClick={this.makeLayerInactive} style={{visibility : "visible"}} className="layer-on-off on-hover inline-display margin-outside" />
-                        : <Image src={Check} onClick={this.makeLayerActive} style={{visibility : "hidden"}} className="layer-on-off on-hover inline-display margin-outside" />
+                        // this.state.layerActive 
+                        // ? <Image src={Check} onClick={this.makeLayerInactive} style={{visibility : "visible"}} className="layer-on-off on-hover inline-display margin-outside" />
+                        // : <Image src={Check} onClick={this.makeLayerActive} style={{visibility : "hidden"}} className="layer-on-off on-hover inline-display margin-outside" />
                         // <Image src={} onClick={this.makeLayerActive} className="layer-on-off on-hover inline-display margin-outside" />
                     }
                     
@@ -58,15 +61,25 @@ class Layer extends Component {
                     </div>
                     <div onClick={this.showColorPicker} className="color-rectangle on-hover inline-display"></div>
                     {/* <Image src={MenuIcon} className="menu-icon inline-display margin-outside" /> */}
-                    <div className="dropdown">
-                        {/* <Glyphicon className="menu-icon inline-display margin-outside" glyph="option-vertical" /> */}
+                    {/* <div className="dropdown">
+                        <Glyphicon className="menu-icon inline-display margin-outside" glyph="option-vertical" />
                         <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />
                             <div className="dropdown-content">
                                 <a >Download</a>
                                 <a >Table</a>
                                 <a >Delete</a>
                             </div>
-                    </div>
+                    </div> */}
+                    <DropdownButton
+                      title={MenuImage}
+                      noCaret
+                      pullRight
+                    >
+                      <MenuItem>Download</MenuItem>
+                      <MenuItem>Table</MenuItem>
+                      <MenuItem>Delete</MenuItem>
+                    </DropdownButton>
+
                     {/* <div className="tooltip">
                         <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />
                         <Glyphicon className="menu-icon inline-display margin-outside" glyph="option-vertical" />Hello
