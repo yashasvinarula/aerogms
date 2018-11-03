@@ -5,10 +5,12 @@ import MediaQuery from 'react-responsive';
 import Layer from './layer';
 import Analytics from './analytics';
 import Validation from './validation';
-import LayersPNG from '../../images/NewLayer.png';
+import LayersPNG from '../../images/layers.png';
+import LeftArrow from '../../images/LeftArrow.png';
 import '../../css/project.css';
 import addLayer from '../../images/AddLayerPNG.png';
 import importLayer from '../../images/ImportLayerPNG.png';
+
 // class AddLayer extends Component {
 //     render() {
     const AddLayer = 
@@ -32,7 +34,9 @@ class ProjectView extends Component{
             layerList : false,
             analytics : false,
             validation : false,
-            map : false,
+            info : true,
+            showVisibles : false,
+            // map : false,
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -75,21 +79,35 @@ class ProjectView extends Component{
                 {(matches) => {
                     if(matches) {
                         return (
-                            <div className="green-back">
+                            <div className="">
                                 <div className="project-nav">
-                                    <Menu className="project-menu" width={'40%'}>
-                                        <a id="home" className="menu-item" href="/dashboard">Users</a>
-                                        <a id="home" className="menu-item"
-                                            onClick={() => this.setState({analytics : true, validation : false})} 
-                                        >Analytics</a>
-                                        <a id="home" className="menu-item" 
-                                            onClick={() => this.setState({validation : true, analytics : false})} 
-                                        >Validation</a>
-                                        <a id="home" className="menu-item" 
-                                            onClick={() => this.setState({map : true, layerList : false, validation : false, analytics : false})}
-                                        >Map</a>
-                                    </Menu>
-                                    <Image src={LayersPNG} onClick={() => this.setState({layerList : true, validation : false, analytics : false})} className="layers-image" />
+                                    {
+                                        this.state.layerList ?
+                                        (<Image src={LeftArrow} onClick={() => this.setState({ layerList : false})} className="image-left menu-item"/>)
+                                        : ''
+                                    }
+                                    {
+                                        !this.state.layerList ? 
+                                        (<div>
+                                            <Menu className="project-menu" width={'40%'}>
+                                                <a id="home" className="menu-item" href="/dashboard">Users</a>
+                                                <a id="home" className="menu-item"
+                                                    onClick={() => this.setState({analytics : true, validation : false})} 
+                                                >Analytics</a>
+                                                <a id="home" className="menu-item" 
+                                                    onClick={() => this.setState({validation : true, analytics : false})} 
+                                                >Validation</a>
+                                                <a id="home" className="menu-item" 
+                                                    onClick={() => this.setState({map : true, layerList : false, validation : false, analytics : false})}
+                                                >Map</a>
+                                            </Menu>
+                                            <Image src={LayersPNG} 
+                                                onClick={() => this.setState({layerList : true, validation : false, analytics : false})} 
+                                                className="image layers-image" 
+                                            />
+                                        </div>) 
+                                        : ''
+                                    }
                                 </div>
                                 {
                                     this.state.layerList ? 
@@ -104,16 +122,16 @@ class ProjectView extends Component{
                                                 <span className="margin-outside">Import Layer</span>
                                             </div>
                                             <Modal
-                                        show={this.state.showImportModal}
-                                        onHide={this.closeImportModal}
-                                        container={this}
-                                    >
-                                        <Modal.Header closeButton>Choose a file to import</Modal.Header>
-                                        <Modal.Body>
-                                            <Button onClick={(e) => this.myInput.click() }>Select a file from your computer</Button>
-                                            <input id="myInput" type="file" ref={(ref) => this.myInput = ref} style={{ display: 'none' }} />
-                                        </Modal.Body>
-                                    </Modal>
+                                                show={this.state.showImportModal}
+                                                onHide={this.closeImportModal}
+                                                container={this}
+                                            >
+                                                <Modal.Header closeButton>Choose a file to import</Modal.Header>
+                                                <Modal.Body>
+                                                    <Button onClick={(e) => this.myInput.click() }>Select a file from your computer</Button>
+                                                    <input id="myInput" type="file" ref={(ref) => this.myInput = ref} style={{ display: 'none' }} />
+                                                </Modal.Body>
+                                            </Modal>
                                             <DropdownButton 
                                         bsStyle="default"
                                         noCaret
@@ -149,16 +167,16 @@ class ProjectView extends Component{
                                             {/* <ul>
                                                 {this.renderLayers()}
                                             </ul> */}
-                                            <ul id="group1">
-                                                <li><input type="radio" name="group1" /><Layer /></li>
-                                                <li><input type="radio" name="group1" /><Layer /></li>
-                                                <li><input type="radio" name="group1" /><Layer /></li>
+                                            <ul id="group1" className="">
+                                                <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
+                                                <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
+                                                <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
                                             </ul>
                                         </div>
                                         <div className="bottom-layers-panel">
-                                            <ul className="">
-                                                <li className="">Info</li>
-                                                <li className="">Visibility</li>
+                                            <ul className="row">
+                                                <li className="col-xs-6" onClick={() => this.setState({info : true})} >Info</li>
+                                                <li className="col-xs-6" onClick={() => this.setState({info : false})} >Visibility</li>
                                             </ul>
                                         </div>
                                     </div>)
@@ -178,7 +196,7 @@ class ProjectView extends Component{
                         );
                     } else {
                         return (
-                            <div className="green-back">
+                            <div className="">
                             <div className="project-layer-box">
                                 <div>
                                     <h4 className="text-center">Project Title</h4>
@@ -236,9 +254,9 @@ class ProjectView extends Component{
                                         {this.renderLayers()}
                                     </ul> */}
                                     <ul id="group1">
-                                        <li><input type="radio" name="group1" /><Layer /></li>
-                                        <li><input type="radio" name="group1" /><Layer /></li>
-                                        <li><input type="radio" name="group1" /><Layer /></li>
+                                        <li><Layer /></li>
+                                        <li><Layer /></li>
+                                        <li><Layer /></li>
                                     </ul>
                                 </div>
                             </div>
