@@ -17,6 +17,8 @@ class Layer extends Component {
             layerVisible : true,
             colorPicker : false,
             showTable : false,
+            attributeType : '',
+            attributeName : '',
             attributes : [1,2,3],
             showAttrForm : false,
         }
@@ -25,6 +27,9 @@ class Layer extends Component {
         this.showColorPicker = this.showColorPicker.bind(this);
         this.removeColorPicker = this.removeColorPicker.bind(this);
         this.closeTableModal = this.closeTableModal.bind(this);
+        this.handleRadioChange = this.handleRadioChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     };
 
     showColorPicker() {
@@ -48,6 +53,20 @@ class Layer extends Component {
     }
     makeLayerInvisible() {
         this.setState({ layerVisible : false });
+    }
+    handleChange(event) {
+        this.setState({attributeName : event.target.value});
+    }
+    handleRadioChange(event) {
+        this.setState({attributeType : event.target.value});
+    }
+    handleSubmit(event) {
+        event.preventDefault();
+        let newAttribute = {name: '', type: ''};
+        newAttribute.name = this.state.attributeName;
+        newAttribute.type = this.state.attributeType;
+        
+
     }
 
     render() {
@@ -93,15 +112,30 @@ class Layer extends Component {
                                                 </ul>
                                                 {
                                                     this.state.showAttrForm ? 
-                                                    (<form>
-                                                        <label>Title</label>
-                                                        <input type="text" id="attr-title"/>
+                                                    (<form onSubmit={this.handleSubmit}>
+                                                        <label>Name
+                                                        <input type="text" id="attr-title" onChange={this.handleChange} placeholder="Enter attribute name" />
+                                                        </label>
                                                         <label>Type</label>
-                                                        <ul id="group2">
-                                                            <input name="group2" type="radio" value="number" defaultChecked  />Numeric
-                                                            <input name="group2" type="radio" value="text" />Text   
+                                                        <ul>
+                                                            <li>
+                                                                <label>
+                                                                    <input 
+                                                                    type="radio" value="text"
+                                                                    onChange={this.handleRadioChange} 
+                                                                    checked={this.state.attributeType === "text"} />Text
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input 
+                                                                    type="radio" value="number"
+                                                                    onChange={this.handleRadioChange} 
+                                                                    checked={this.state.attributeType === "number"} />Numeric
+                                                                </label>
+                                                            </li>
                                                         </ul>
-                                                        <Button>Submit</Button>
+                                                        <Button type="submit">Submit</Button>
                                                     </form>)
                                                     : ''
                                                 }
