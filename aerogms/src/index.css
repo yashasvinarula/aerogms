@@ -4,3 +4,8 @@ body {
   font-family: sans-serif;
   /* background-color: rgb(220, 220, 220); */
 }
+#map {
+  position: relative;
+  top: 50px;
+  left: 0px;
+}

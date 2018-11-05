@@ -28,6 +28,10 @@
 .on-hover:hover {
     cursor: pointer;
 }
+
+.navbar-default .navbar-nav>li>a {
+    color: #fff;
+}
 .project-layer-box {
     -webkit-box-shadow: 1px 2px 5px rgba(0,0,0,.75);
 	-moz-box-shadow: 1px 2px 5px rgba(0,0,0,.75);
@@ -42,16 +46,12 @@
     position: absolute;
 
 }
-@media only screen and (max-width : 768px) {
-    .project-layer-box {
-        position: relative;
-        /* top: 60px; */
-        /* left: 0; */
-        width: 100%;
-        /* height: 100%; */
-    }
+input[type=radio] {
+    width: 15px;
 }
-
+.input-layer {
+    display: inline-block;
+}
 .modal-custom{
     position: fixed;
     top: 10%;
@@ -62,4 +62,85 @@
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
+}
+
+@media only screen and (max-width : 768px) {
+    .project-layer-box {
+        -webkit-box-shadow: none;
+	    -moz-box-shadow: none;
+        box-shadow: none;
+        position: relative;
+        /* top: 60px; */
+        /* left: 0; */
+        width: 100%;
+        height: 100%;
+    }
+    .project-menu {
+        background-color: gray;
+        display: inline-block;
+        z-index: 1000;
+    }
+    .project-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #036 !important;
+        width: 100%;
+        height: 50px;
+        z-index: 1000;
+    }
+    .menu-item {
+        color: #fff;
+    }
+    /* Position and sizing of burger button */
+    .bm-burger-button {
+        position: relative;
+        width: 26px;
+        height: 20px;
+        left: 16px;
+        top: 16px;
+    }
+    
+    /* Color/shape of burger icon bars */
+    .bm-burger-bars {
+        background: white;
+    }
+    /* Color/shape of close button cross */
+    .bm-cross {
+        background: black;
+    }
+      /* Wrapper for item list */
+    .bm-item-list {
+        color: #b8b7ad;
+        padding: 1em;
+    }
+    .image-left {
+        position: relative;
+        width: 30px;
+        height: 20px;
+        left: 16px;
+        top: 16px;
+    }
+    .layers-image {
+        width: 26px;
+        height: 28px;
+        display: inline-block;
+        position: absolute;
+        right: 16px;
+        top: 12px; 
+    }
+    .bottom-layers-panel {
+        position: fixed;
+        width: 100%;
+        background-color: rgb(217, 222, 224);
+        bottom: 20px;
+        left: 0;
+        z-index: 1000;
+    }
+    .bottom-layers-panel>ul {
+        display: block;
+    }
+    .bottom-layers-panel>ul>li {
+        display: inline-block;
+    }
 }
