@@ -166,7 +166,6 @@ function initMap()
                                 bounds = L.latLngBounds(corner1, corner2);
                                 m.fitBounds(bounds);
                             }
-                          
                             //alert('Layer is saved and published successfully.');
                         }
                         else if(responseText[0].sp_add_new_table == 'EXISTS')
@@ -295,47 +294,148 @@ function initMap()
           }
     }
 
+    var type;
     function createNewLayer(layer_type){
-        let type = layer_type;
-        switch(type){
-            case 'point':
-                currentLayer = new L.featureGroup([]).addTo(m);
-                break;
-            case 'polyline':
-                currentLayer = new L.Polyline([]).addTo(m);
-                break;
-            case 'polygon':
-                currentLayer = new L.Polygon([]).addTo(m);
-                break;
-            default:
-                break;
+        type = layer_type;
+        if(currentLayer === null){
+            switch(type){
+                case 'Point':
+                    currentLayer = new L.featureGroup([]).addTo(m);
+                    break;
+                case 'Line':
+                    currentLayer = new L.featureGroup([]).addTo(m);
+                    break;
+                case 'Polygon':
+                    currentLayer = new L.featureGroup([]).addTo(m);
+                    break;
+                default:
+                    break;
+            }
+            layControl.addOverlay(currentLayer, type);
+            currentLayer.on('click', function(e){
+                e.target.getLayers().map(layer => {layer.editing.disable()});
+                e.sourceTarget.editing.enable();
+                selFeature =  e.sourceTarget._leaflet_id;
+                if(currentLayer)
+                $('#removeFeature').css('visibility', 'visible');
+            })
         }
     }
-   
-    function makePointLayer(){
-        debugger
-        L.DomUtil.addClass(m._container,'crosshair-cursor-enabled');
-        m.on("click", function(e)
-        {
-            let pointMarker = new L.Marker([e.latlng.lat, e.latlng.lng]);
-            //pointArrayLL.push([e.latlng.lat, e.latlng.lng]);
-            //pointMarker.addTo(currentLayer);
-            currentLayer.addLayer(pointMarker);
-            m.off("click")
-            L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
-         })
 
+    var selFeature = null;
+    function removeSelFeature(){
+        if(selFeature !== null  && currentLayer !== null ){
+            currentLayer.removeLayer(currentLayer._layers[selFeature]);
+        }
+        $('#removeFeature').css('visibility', 'hidden');
     }
 
-    function makePolyLineLayer(){
+    
+    function addPoint(){
         debugger
-        L.DomUtil.addClass(m._container,'crosshair-cursor-enabled');
-        m.on("click", function(e)
-        {
-            let pointMarker = new L.Marker([e.latlng.lat, e.latlng.lng]);
-            currentLayer.addLatlng([e.latlng.lat, e.latlng.lng]);
-            currentLayer.addLayer(pointMarker);
-            m.off("click")
+        if(type === 'Point' && currentLayer !== null){
+            L.DomUtil.addClass(m._container,'crosshair-cursor-enabled');
+            if(currentLayer.getLayers().length === 0){
+                m.on("click", function(e)
+                {
+                    let pointMarker = new L.Marker([e.latlng.lat, e.latlng.lng]);
+                    //pointArrayLL.push([e.latlng.lat, e.latlng.lng]);
+                    currentLayer.addLayer(pointMarker);
+                    //L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
+                 })
+            }
+         
+        }
+    }
+
+    function addLine(){
+        debugger
+        if(type === 'Line' && currentLayer !== null){
+            L.DomUtil.addClass(m._container,'crosshair-cursor-enabled');
+            var polyLineLayer = new L.Polyline([], {color: 'red',  weight: 4, dashArray: '10,5',}).addTo(m);
+            m.on("click", function(e)
+            {
+                polyLineLayer.addLatLng(e.latlng);
+                //currentLayer.addLayer(pointMarker);
+             })
+
+             m.on("dblclick", function(e){
+                m.removeLayer(currentLayer);
+                m.off("click");
+                m.off("dblclick");
+                L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
+                currentLayer.addLayer(polyLineLayer);
+                m.removeLayer(polyLineLayer);
+                polyLineLayer=null;
+                currentLayer.addTo(m);
+             })
+        }
+    }
+
+    function addPolygon(){
+        debugger
+        if(type === 'Polygon' && currentLayer !== null){
+            L.DomUtil.addClass(m._container,'crosshair-cursor-enabled');
+            var polygonLayer = new L.Polygon([], {color: 'red', weight: 4}).addTo(m);
+
+            m.on("click", function(e)
+            {
+                polygonLayer.addLatLng(e.latlng);
+                //currentLayer.addLayer(pointMarker);
+             })
+             m.on("dblclick", function(e){
+                m.removeLayer(currentLayer);
+                m.off("click");
+                m.off("dblclick");
+                L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
+                currentLayer.addLayer(polygonLayer);
+                m.removeLayer(polygonLayer);
+                polygonLayer=null;
+                currentLayer.addTo(m);
+             })
+        }
+    }
+
+    function saveLayer(type, name){
+        alert(type);
+        $('#removeFeature').css('visibility', 'hidden');
+        if(type === 'Point' && currentLayer !== null){
             L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
-         })
+            let markerPoints = currentLayer.getLayers();
+            let latlngs =[];
+            markerPoints.map(marker => {
+                latlngs.push([marker._latlng.lat, marker._latlng.lng]);
+            })
+            //alert(latlngs);
+            console.log(latlngs);
+            m.off("click");
+            currentLayer.off('click');
+            currentLayer = null;
+            markerPoints = null;
+            return { layer_name:name, type:type, latlngs:latlngs};
+        }
+        else if(type === 'Line' && currentLayer !== null){
+            //debugger
+            let latlngs =[];
+            latlngs = currentLayer.getLayers().map(line => {
+                line.editing.disable();
+                return line.getLatLngs();
+            })
+            console.log(latlngs);
+            currentLayer.off('click');
+            currentLayer = null;
+            return { layer_name:name, type:type, latlngs:latlngs};
+        }
+        else if(type === 'Polygon' && currentLayer !== null){
+            let latlngs =[];
+            latlngs = currentLayer.getLayers().map(polygon => {
+                polygon.editing.disable();
+                return polygon.getLatLngs();
+                //latlngs.push(polygon.getLatLngs());
+            })
+            console.log(latlngs);
+            currentLayer.off('click');
+            currentLayer = null;
+            return { layer_name:name, type:type, latlngs:latlngs};
+        }
     }

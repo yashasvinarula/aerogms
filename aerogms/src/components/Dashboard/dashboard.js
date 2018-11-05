@@ -3,11 +3,12 @@ import _ from 'lodash';
 // import axios from 'axios';
 // import NavbarAdmin from './navbar-dashboard-admin';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, FormControl, Image, Button, Table, Pager } from 'react-bootstrap/lib/';
+import { Navbar, Nav, NavItem, FormControl, Image, Button, Table, MenuItem, NavDropdown } from 'react-bootstrap/lib/';
+import MediaQuery from 'react-responsive';
 import {Redirect} from 'react-router-dom';
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
-
+import AeroLogo from '../../images/AeroLOGO.png';
 import TableRow from './user_table';
 import {connect} from 'react-redux';
 import {getUsers} from '../../actions';
@@ -26,7 +27,7 @@ class Dashboard extends Component {
     }
 
     componentDidMount(){
-        debugger
+        // debugger
         if(Object.keys(this.props.users).length === 0)
         {
             this.props.getUsers();
@@ -54,13 +55,16 @@ class Dashboard extends Component {
         this.props.doLogout();
     }
 
-
     renderUsers(){
     return _.map(this.props.users, user => {
             return (
                <TableRow key={user.u_id} user={user}/>
                 )
         })}
+
+    gotomap() {
+        return <Redirect to={{pathname : '/Projectview'}} />
+    }
 
     render()
     {
@@ -82,66 +86,146 @@ class Dashboard extends Component {
         }
        
         return (
-            <div>
-                {/* <NavbarAdmin username={this.props.userDetails.username} isLoggedIn={this.props.userDetails.isLoggedIn} doLogout={this.props.doLogout}/> */}
-                <Navbar className="show-grid" fixedTop >
-                    <Navbar.Header>
-                        <Navbar.Brand>
-                            <a href="/home"><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
-                        </Navbar.Brand>
-                    </Navbar.Header>
-                        <Nav pullRight>
-                            <NavItem>
-                                <style type="text/css">{`
-                                    .form-control {
-                                        border-radius : 50px;
-                                `}</style>
-                                <FormControl id="serach-input" type="text" placeholder="Search"></FormControl>
-                            </NavItem>
-                            <NavItem>
-                                <span className="bell-parent">
-                                    <style type="text/css">
-                                        .glyphicon-bell {`
-                                            width : 30px;
-                                            height : 30px;
-                                        `}
-                                    </style>
-                                    <Glyphicon glyph="bell"/>
-                                    <span className="bell-child text-center">1</span>
-                                </span>
-                            </NavItem>
-                            <NavItem>
-                                <div className="circular-icon text-center">
-                                    <span>{this.props.userDetails.username.charAt(0)}</span>
-                                </div>
-                            </NavItem>
-                            <NavItem>
-                                <div>
-                                    <Button name="btnLogout" onClick={this.handleLogout}>Logout</Button>
-                                </div>
-                            </NavItem>
-                        </Nav>
-                </Navbar>
-                <div className="top-padding container">
-                    <Table striped condensed hover>
-                        <thead>
-                            <tr>
-                                <th>User Id</th>
-                                <th>User Name <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
-                                <th>Registration Date <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
-                                <th>Status <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.renderUsers()}
-                        </tbody>
-                    </Table>
-                    {/* <Pager>
-                        <Pager.Item previous href="#">Previous</Pager.Item>{' '}
-                        <Pager.Item next href="#">Next</Pager.Item>
-                    </Pager> */}
-                </div>
-            </div>
+            <MediaQuery maxWidth={768}>
+                {(matches) => {
+                    if(matches) {
+                        return (
+                        <div className="">
+                        <Navbar className="row"  >
+                            <Navbar.Header className="col-sm-3">
+                                <Navbar.Brand>
+                                    <a href=""><Image src={AeroLogo} alt="Aero Logo" responsive className="header-logo-admin-mobile" /></a>
+                                </Navbar.Brand>
+                            </Navbar.Header>
+                            <Nav pullRight className="col-sm-9 row">
+                                <NavItem className="col-xs-6">
+                                    <style type="text/css">{`
+                                        .form-control {
+                                            border-radius : 50px;
+                                            width : 180px;
+                                    `}</style>
+                                    <FormControl id="serach-input" type="text" placeholder="Search"></FormControl>
+                                </NavItem>
+                                <NavDropdown title="Dropdown" id="basic-nav-dropdown" className="col-xs-4 dropdown-custom">
+                                  <MenuItem href="/Projectview" >Map</MenuItem>
+                                  <MenuItem href="/analytics" >Analytics</MenuItem>
+                                  <MenuItem href="/validation" >Validation</MenuItem>
+                                </NavDropdown>
+                                {/* <NavItem>
+                                    <span className="bell-parent">
+                                        <style type="text/css">
+                                            .glyphicon-bell {`
+                                                width : 30px;
+                                                height : 30px;
+                                            `}
+                                        </style>
+                                        <Glyphicon glyph="bell"/>
+                                        <span className="bell-child text-center">1</span>
+                                    </span>
+                                </NavItem> */}
+                                <NavItem className="col-xs-2">
+                                    <div className="circular-icon-mobile text-center">
+                                        <span>{this.props.userDetails.username.charAt(0)}</span>
+                                    </div>
+                                </NavItem>
+                                {/* <NavItem>
+                                    <div>
+                                        <Button name="btnLogout" onClick={this.handleLogout}>Logout</Button>
+                                    </div>
+                                </NavItem> */}
+                            </Nav>
+                        </Navbar>
+                        <div className="">
+                            <Table striped condensed hover>
+                                <thead className="container">
+                                    <tr className="row">
+                                        <th className="th-admin col-sm-3">User Id</th>
+                                        <th className="th-admin col-sm-3">User Name</th>
+                                        <th className="th-admin col-sm-3">Registration Date</th>
+                                        <th className="th-admin col-sm-3">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="container">
+                                    {this.renderUsers()}
+                                </tbody>    
+                            </Table>
+                            {/* <Pager>
+                                <Pager.Item previous href="#">Previous</Pager.Item>{' '}
+                                <Pager.Item next href="#">Next</Pager.Item>
+                            </Pager> */}
+                        </div>
+                    </div>);
+                    } else {
+                        return (
+                        <div>
+                        <Navbar className="show-grid" fixedTop >
+                            <Navbar.Header>
+                                <Navbar.Brand>
+                                    <a href=""><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
+                                </Navbar.Brand>
+                            </Navbar.Header>
+                                <Nav pullRight>
+                                    <NavItem>
+                                        <style type="text/css">{`
+                                            .form-control {
+                                                border-radius : 50px;
+                                                width : 250px;
+                                        `}</style>
+                                        <FormControl id="serach-input" type="text" placeholder="Search"></FormControl>
+                                    </NavItem>
+                                    <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                                      <MenuItem href="/Projectview" >Map</MenuItem>
+                                      <MenuItem href="/analytics" >Analytics</MenuItem>
+                                      <MenuItem href="/validation" >Validation</MenuItem>
+                                    </NavDropdown>
+                                    {/* <NavItem>
+                                        <span className="bell-parent">
+                                            <style type="text/css">
+                                                .glyphicon-bell {`
+                                                    width : 30px;
+                                                    height : 30px;
+                                                `}
+                                            </style>
+                                            <Glyphicon glyph="bell"/>
+                                            <span className="bell-child text-center">1</span>
+                                        </span>
+                                    </NavItem> */}
+                                    <NavItem>
+                                        <div className="circular-icon text-center">
+                                            <span>{this.props.userDetails.username.charAt(0)}</span>
+                                        </div>
+                                    </NavItem>
+                                    <NavItem>
+                                        <div>
+                                            <Button name="btnLogout" onClick={this.handleLogout}>Logout</Button>
+                                        </div>
+                                    </NavItem>
+                                </Nav>
+                        </Navbar>
+                        <div className="top-padding">
+                            <Table striped condensed hover>
+                                <thead>
+                                    <tr>
+                                        <th>User Id</th>
+                                        <th>User Name <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
+                                        <th>Registration Date <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
+                                        <th>Status <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.renderUsers()}
+                                </tbody>
+                            </Table>
+                            {/* <Pager>
+                                <Pager.Item previous href="#">Previous</Pager.Item>{' '}
+                                <Pager.Item next href="#">Next</Pager.Item>
+                            </Pager> */}
+                        </div>
+                    </div>
+                        );
+                    }
+                }}
+            </MediaQuery>            
         );
     }
 }

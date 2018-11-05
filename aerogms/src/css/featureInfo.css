@@ -1,0 +1,19 @@
+.query-list-container {
+    width: 100%;
+    border: 2px solid black;
+}
+.query-list {
+    display: block;
+}
+.nav>li>a {
+    display: inline !important;
+    font-size: 12px;
+    padding: 0 5px;
+    /* line-height: 1; */
+}
+.feature {
+    padding: 0 10px;
+}
+hr {
+    margin-top: 0;
+}
