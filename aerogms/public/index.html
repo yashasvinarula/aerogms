@@ -13,6 +13,15 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
+    <!-- added for map importer-->
+    <link rel="stylesheet" href="js/leaflet.css?v1.0.0" />
+    <link rel="stylesheet" href="css/leaflet-measure.css?v1.0.0" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/> -->
+    <!-- <link rel="stylesheet" href="css/bootstrap.css?v1.0.0" /> -->
+    <link rel="stylesheet" href="css/style.css?v1.1.4" />
+    <link rel="stylesheet" href="css/Control.OSMGeocoder.css"/>
+
+
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -29,7 +38,29 @@
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
-    <script rel=”stylesheet” type=”javascript” href=”../node_modules/react-bootstrap/dist/react-bootstrap.min.js”></script>
+    <div id="map"></div>
+    <!-- <script rel=”stylesheet” type=”javascript” href=”../node_modules/react-bootstrap/dist/react-bootstrap.min.js”></script> -->
+
+     <!-- added for map importer-->
+      <script>
+      var m;
+      var cntrlrurl = 'http://localhost:3000';
+      </script>
+      <script src="js/jquery-3.3.1.js"></script>
+      <script src="js/jquery.form.min.js"></script>
+      <script src="js/leaflet.js"></script>
+      <script src="js/Control.OSMGeocoder.js?v=1.0.0"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script> 
+
+
+      <script src="js/leaflet-geodesy.js?v0.1.0"></script>
+      <script src="js/leaflet.control.orderlayers.min.js?v1.0.0"></script>
+      <script src="js/leaflet.hash.js?v1.0.0"></script>
+      <!-- <script src='jam/require.js?v1.0.0'></script> -->
+      <script src="js/leaflet-measure.js?v1.0.0"></script>
+      <!-- <script src='js/leaflet.spin.js?v1.0.0'></script> -->
+      <script src='js/mapSetup.js?v1.1.4'></script>
+ 
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

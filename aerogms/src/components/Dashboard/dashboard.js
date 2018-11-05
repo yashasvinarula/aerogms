@@ -207,9 +207,9 @@ class Dashboard extends Component {
                                 <thead>
                                     <tr>
                                         <th>User Id</th>
-                                        <th>User Name <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
-                                        <th>Registration Date <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
-                                        <th>Status <span bsSize="small"><Glyphicon glyph="sort" /></span></th>
+                                        <th>User Name <span><Glyphicon glyph="sort" /></span></th>
+                                        <th>Registration Date <span><Glyphicon glyph="sort" /></span></th>
+                                        <th>Status <span><Glyphicon glyph="sort" /></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Image, DropdownButton, MenuItem, Modal, Button } from 'react-bootstrap/lib';
 import { CompactPicker } from 'react-color';
+import { Image, DropdownButton, MenuItem, Modal, Button } from 'react-bootstrap/lib';
 import LayerVisible from '../../images/LayerVisible.png';
 import LayerInvisible from '../../images/LayerInvisible.png';
 import MenuIcon from '../../images/Menu.png';
@@ -14,7 +14,8 @@ class Layer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            layerVisible : true,
+            layerVisibleState : true,
+            changelayername:false,
             colorPicker : false,
             showTable : false,
             attributeType : '',
@@ -23,9 +24,11 @@ class Layer extends Component {
             showAttrForm : false,
         }
         this.makeLayerVisible = this.makeLayerVisible.bind(this);
-        this.makeLayerInvisible = this.makeLayerInvisible.bind(this);
+        this.makeLayerInVisible = this.makeLayerInVisible.bind(this);
         this.showColorPicker = this.showColorPicker.bind(this);
         this.removeColorPicker = this.removeColorPicker.bind(this);
+        this.closeChangeLayerModal = this.closeChangeLayerModal.bind(this);
+        this.changeLayerName = this.changeLayerName.bind(this);
         this.closeTableModal = this.closeTableModal.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -35,24 +38,29 @@ class Layer extends Component {
     showColorPicker() {
         this.setState({ colorPicker : true });
     }
-    // addAttribute() {
-    //     let newAttributes = [];
-    //     newAttributes = this.state.attributes;
-    //     let attrTitle = document.getElementById('attr-title').value;
-    //     let attrType = 
-
-    // }
     removeColorPicker() {
         this.setState({ colorPicker : false});
     }
+
+    makeLayerVisible() {
+        this.setState({ layerVisibleState : true });
+    }
+
+    makeLayerInVisible() {
+        this.setState({ layerVisibleState : false });
+    } 
+
+    closeChangeLayerModal(){
+        this.setState({changelayername:false});
+    }
+
+    changeLayerName(){
+        let newLayerTitle = document.getElementById('changeLayerName').value;
+        this.props.changeLayerNameParent(newLayerTitle);
+        this.closeChangeLayerModal();
+    }
     closeTableModal() {
         this.setState({showTable : false});
-    }
-    makeLayerVisible() {
-        this.setState({ layerVisible : true });
-    }
-    makeLayerInvisible() {
-        this.setState({ layerVisible : false });
     }
     handleChange(event) {
         this.setState({attributeName : event.target.value});
@@ -76,16 +84,25 @@ class Layer extends Component {
                     <div className="layer"> 
                         <input type="radio" name="group1" className="input-layer col-xs-2" />
                         <div className="inline-display align-vertical">
-                            {/* <h4 className="layer-title on-hover margin-outside"> {this.props.layer.title}</h4>
-                            <h6 className="layer-type margin-outside">{'(' + this.props.layer.type + ')'}</h6> */}
-                            <h4 className="layer-title on-hover margin-outside">Layer Title</h4>
-                            <h6 className="layer-type margin-outside">(Layer Type)</h6>
+                            <h4 className="layer-title on-hover margin-outside" onClick={()=>this.setState({changelayername:true})}> {this.props.layer.name}</h4>
+                            <Modal className="modal-custom"
+                                    show={this.state.changelayername}
+                                    onHide={this.closeChangeLayerModal}
+                                    container={this}>
+                                    <Modal.Header closeButton>Enter Layer Name</Modal.Header>
+                                    <Modal.Body>
+                                        {/* <label htmlFor="layerTitle">Enter Name</label> */}
+                                        <input type="text" id="changeLayerName" placeholder="Enter Name"/>
+                                        <Button onClick={this.changeLayerName}>Update</Button>
+                                    </Modal.Body>
+                                </Modal>
+                            <h6 className="layer-type margin-outside">{'(' + this.props.layer.type + ')'}</h6>
                         </div>
                         <div onClick={this.showColorPicker} className="color-rectangle on-hover inline-display "></div>
                         {
                             !this.props.layersInfo
                             ?
-                                (this.state.layerVisible 
+                                (this.state.layerVisibleState 
                                 ? <Image src={LayerVisible} onClick={this.makeLayerInvisible} className="visibility-icon on-hover inline-display margin-outside" />
                                 : <Image src={LayerInvisible} onClick={this.makeLayerVisible} className="visibility-icon on-hover inline-display margin-outside" />)
                             :

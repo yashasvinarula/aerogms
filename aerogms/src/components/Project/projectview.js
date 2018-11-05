@@ -29,8 +29,9 @@ class ProjectView extends Component{
             showImportModal : false,
             showAddLayerModal : false,
             layerType : '',
-            layer : {active : '', title : '', type : '', color : '', strokeColor : ''},
+            layer : {visible : '', name : '', type : '', color : '', strokeColor : ''},
             layers : [],
+            remFeature:false,
             layerList : false,
             analytics : false,
             validation : false,
@@ -43,8 +44,12 @@ class ProjectView extends Component{
         this.closeAddLayerModal = this.closeAddLayerModal.bind(this);
         this.addLayer = this.addLayer.bind(this);
         this.renderLayers = this.renderLayers.bind(this);
+        this.saveLayer = this.saveLayer.bind(this);
     }
 
+    componentWillMount () {
+        window.initMap();
+    }
     closeImportModal() {
         this.setState({ showImportModal : false});
     }
@@ -53,27 +58,65 @@ class ProjectView extends Component{
     }
     addLayer() {
         let newLayerTitle = document.getElementById('layer-title').value;
-        let newLayer = this.state.layer;
-            newLayer.active = true;
-            newLayer.title = newLayerTitle;
+        if(newLayerTitle !== ''){
+            let newLayer={}; //= this.state.layer;
+            newLayer.visible = true;
+            newLayer.name = newLayerTitle;
             newLayer.type = this.state.layerType;
             newLayer.backgroundColor = '4D4D4D';
             newLayer.outline = 'B3B3B3';
-        this.setState({ layer : newLayer });
-        let newLayers = this.state.layers;
-        newLayers.push(newLayer);
-        this.setState({ layers : newLayers });
-        this.closeAddLayerModal();
+
+            this.setState({ layer : newLayer });
+            let newLayers = this.state.layers;
+            newLayers.push(newLayer);
+            this.setState({ ...this.statelayers, newLayer });
+            this.closeAddLayerModal();
+            this.createNewLayer(this.state.layerType);
+           
+        }
+        else{
+            alert('Please enter layer name/title!');
+        }
     }
+
     renderLayers() {
         if(this.state.layers.length !== 0) {
             return this.state.layers.map((layer) => {
-               return (<li><input type="radio" name="group1" /><Layer layer={layer}/></li>);
+               return (<li><Layer key={layer.name} layer={layer} changeLayerNameParent={(name)=>{layer.name = name}}/></li>);
             });
         }
     }
 
+    createNewLayer(type){
+        window.createNewLayer(type);
+    }
+
+    addPoint(){
+        window.addPoint();
+    }
+
+    addLine(){
+        window.addLine();
+    }
+
+    addPolygon(){
+        window.addPolygon();
+    }
+
+    saveLayer(){
+        var latlngArray;
+        latlngArray =  window.saveLayer(this.state.layer.type, this.state.layer.name);
+        debugger
+        console.log('in react return ');
+        console.log(latlngArray.latlngs);
+    }
+
+    removeFeature(){
+        window.removeSelFeature();
+    }
+
     render(){
+        console.log(this.state.layers);
         return (
             <MediaQuery maxWidth={768}>
                 {(matches) => {
@@ -197,6 +240,11 @@ class ProjectView extends Component{
                     } else {
                         return (
                             <div className="">
+                                <input style={{marginTop:20}} type="button" id="btnMakePoint" value="AddPoint" onClick={this.addPoint}/>
+                                <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/>
+                                <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakePolygon" value="AddPolygon" onClick={this.addPolygon}/>
+                                <input style={{marginLeft:5, marginTop:20}} type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/>
+                                <input style={{marginLeft:5, marginTop:20, visibility:"hidden"}}  type="button" id="removeFeature" value="Remove Feature" onClick={this.removeFeature}/>
                             <div className="project-layer-box">
                                 <div>
                                     <h4 className="text-center">Project Title</h4>
@@ -207,16 +255,24 @@ class ProjectView extends Component{
                                         <Image src={importLayer} className="add-import-icons " />
                                         <span className="margin-outside">Import Layer</span>
                                     </div>
-                                    <Modal
+                                    <Modal className="modal-custom"
+
                                         show={this.state.showImportModal}
                                         onHide={this.closeImportModal}
                                         container={this}
                                     >
                                         <Modal.Header closeButton>Choose a file to import</Modal.Header>
                                         <Modal.Body>
-                                            <Button onClick={(e) => this.myInput.click() }>Select a file from your computer</Button>
-                                            <input id="myInput" type="file" ref={(ref) => this.myInput = ref} style={{ display: 'none' }} />
                                         </Modal.Body>
+                                            {/* <Button onClick={(e) => this.myInput.click() }>Select a file from your computer</Button>
+                                            <input id="myInput" type="file" ref={(ref) => this.myInput = ref} style={{ display: 'none' }} /> */}
+                                        <form id="frmUploader" enctype="multipart/form-data" action="/api/fileupload" method="post">
+                                        <input type="file" name="fileupload" multiple/>
+                                        <input type="submit" name="submit" id="btnSubmit" value="Upload" />
+                                        </form>
+                                            <div id="divloader" className="loader">
+                                                <img src="./images/loader.gif" className="loaderImg"/>
+                                            </div>
                                     </Modal>
                                     <DropdownButton 
                                         bsStyle="default"
@@ -234,15 +290,14 @@ class ProjectView extends Component{
                                         <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Point' })}>Point</MenuItem>
                                         <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Line' })}>Line</MenuItem>
                                         <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Polygon' })}>Polygon</MenuItem>
-                                        <Modal
+                                        <Modal className="modal-custom"
                                             show={this.state.showAddLayerModal}
                                             onHide={this.closeAddLayerModal}
                                             container={this}
                                         >
-                                            <Modal.Header closeButton>Enter Layer Title</Modal.Header>
+                                            <Modal.Header closeButton>Enter Layer Name</Modal.Header>
                                             <Modal.Body>
-                                                <label htmlFor="layerTitle">Enter Title</label>
-                                                <input type="text" id="layer-title"/>
+                                                <input type="text" id="layer-title" placeholder="Enter Name"/>
                                                 <Button onClick={this.addLayer}>Save</Button>
                                             </Modal.Body>
                                         </Modal>
@@ -250,13 +305,8 @@ class ProjectView extends Component{
                                 </div>
                                 <hr className="separator-line"></hr>
                                 <div>
-                                    {/* <ul>
-                                        {this.renderLayers()}
-                                    </ul> */}
                                     <ul id="group1">
-                                        <li><Layer /></li>
-                                        <li><Layer /></li>
-                                        <li><Layer /></li>
+                                        {this.renderLayers()}
                                     </ul>
                                 </div>
                             </div>
@@ -265,7 +315,6 @@ class ProjectView extends Component{
                     }
                 }}
             </MediaQuery>
-            
         );
     }
 }

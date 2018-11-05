@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Redirect} from 'react-router-dom';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { Image, Modal, DropdownButton, MenuItem } from 'react-bootstrap/lib/';
 import mapThumbnail from '../../images/map_thumbnail.jpeg';
@@ -23,6 +24,7 @@ class Project extends Component {
         this.deleteProject = this.deleteProject.bind(this);
         this.renameProject = this.renameProject.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.closeModal = this.closeModal.bind(this);
     }
 
     showMenu(event) {
@@ -52,7 +54,8 @@ class Project extends Component {
     }
 
     openProject(event){
-        console.log(this.props.prodetails);
+        //console.log(this.props.prodetails);
+        return <Redirect to='/projectView' />
     }
 
     deleteProject(){
