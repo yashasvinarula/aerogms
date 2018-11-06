@@ -3,7 +3,7 @@ import _ from 'lodash';
 // import axios from 'axios';
 // import NavbarAdmin from './navbar-dashboard-admin';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-import { Navbar, Nav, NavItem, FormControl, Image, Button, Table, MenuItem, NavDropdown } from 'react-bootstrap/lib/';
+import { Navbar, Nav, NavItem, FormControl, Image, Button, Table, MenuItem, NavDropdown, DropdownButton } from 'react-bootstrap/lib/';
 import MediaQuery from 'react-responsive';
 import {Redirect} from 'react-router-dom';
 import '../../css/dashboard.css';
@@ -91,22 +91,23 @@ class Dashboard extends Component {
                     if(matches) {
                         return (
                         <div className="">
-                        <Navbar className="row"  >
-                            <Navbar.Header className="col-sm-3">
+                        <Navbar className=""  >
+                            <Navbar.Header className="navbar-admin">
                                 <Navbar.Brand>
                                     <a href=""><Image src={AeroLogo} alt="Aero Logo" responsive className="header-logo-admin-mobile" /></a>
                                 </Navbar.Brand>
                             </Navbar.Header>
-                            <Nav pullRight className="col-sm-9 row">
-                                <NavItem className="col-xs-6">
+                            <Nav pullRight className="nav-admin">
+                                <NavItem className="">
                                     <style type="text/css">{`
                                         .form-control {
                                             border-radius : 50px;
-                                            width : 180px;
+                                            width : 120px;
+                                            height: 28px;
                                     `}</style>
                                     <FormControl id="serach-input" type="text" placeholder="Search"></FormControl>
                                 </NavItem>
-                                <NavDropdown title="Dropdown" id="basic-nav-dropdown" className="col-xs-4 dropdown-custom">
+                                <NavDropdown noCaret title="More" id="basic-nav-dropdown" className="dropdown-custom">
                                   <MenuItem href="/Projectview" >Map</MenuItem>
                                   <MenuItem href="/analytics" >Analytics</MenuItem>
                                   <MenuItem href="/validation" >Validation</MenuItem>
@@ -123,26 +124,51 @@ class Dashboard extends Component {
                                         <span className="bell-child text-center">1</span>
                                     </span>
                                 </NavItem> */}
-                                <NavItem className="col-xs-2">
-                                    <div className="circular-icon-mobile text-center">
+                                <NavItem className="">
+                                    {/* <div className="circular-icon-mobile text-center">
                                         <span>{this.props.userDetails.username.charAt(0)}</span>
-                                    </div>
+                                    </div> */}
+                                <DropdownButton id="ddb"
+                                    title={this.props.userDetails.username.charAt(0)}
+                                    noCaret
+                                    className="circular-icon text-center"
+                                  >
+                                    <div className="">
+                                      <MenuItem className="">
+                                        <p className="menu-text">
+                                          {this.props.userDetails.username}
+                                          Parveen Sahrawat
+                                        </p>
+                                      </MenuItem>
+                                      <MenuItem className="">
+                                        <p className="menu-text">
+                                          {this.props.userDetails.email}
+                                          parveen.sahrawat1209@gmai.com
+                                        </p>
+                                      </MenuItem>
+                                      <MenuItem>
+                                        <Button className="">Profile</Button>
+                                      </MenuItem>
+                                      <MenuItem>
+                                        <Button name="btnLogout" className="" pullRight
+                                          onClick={this.handleLogout}
+                                        >
+                                          Logout
+                                        </Button>
+                                      </MenuItem>
+                                      </div>
+                                  </DropdownButton>
                                 </NavItem>
-                                {/* <NavItem>
-                                    <div>
-                                        <Button name="btnLogout" onClick={this.handleLogout}>Logout</Button>
-                                    </div>
-                                </NavItem> */}
                             </Nav>
                         </Navbar>
                         <div className="">
                             <Table striped condensed hover>
                                 <thead className="container">
                                     <tr className="row">
-                                        <th className="th-admin col-sm-3">User Id</th>
-                                        <th className="th-admin col-sm-3">User Name</th>
-                                        <th className="th-admin col-sm-3">Registration Date</th>
-                                        <th className="th-admin col-sm-3">Status</th>
+                                        <th className="th-admin text-center col-sm-3">User Id</th>
+                                        <th className="th-admin text-center col-sm-3">User Name</th>
+                                        <th className="th-admin text-center col-sm-3">Regn. Date</th>
+                                        <th className="th-admin text-center col-sm-3">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="container">
@@ -158,7 +184,7 @@ class Dashboard extends Component {
                     } else {
                         return (
                         <div>
-                        <Navbar className="show-grid" fixedTop >
+                        <Navbar className="" fixedTop >
                             <Navbar.Header>
                                 <Navbar.Brand>
                                     <a href=""><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
@@ -173,7 +199,7 @@ class Dashboard extends Component {
                                         `}</style>
                                         <FormControl id="serach-input" type="text" placeholder="Search"></FormControl>
                                     </NavItem>
-                                    <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                                    <NavDropdown noCaret title="More" id="basic-nav-dropdown">
                                       <MenuItem href="/Projectview" >Map</MenuItem>
                                       <MenuItem href="/analytics" >Analytics</MenuItem>
                                       <MenuItem href="/validation" >Validation</MenuItem>
@@ -191,24 +217,49 @@ class Dashboard extends Component {
                                         </span>
                                     </NavItem> */}
                                     <NavItem>
-                                        <div className="circular-icon text-center">
-                                            <span>{this.props.userDetails.username.charAt(0)}</span>
+                                        <DropdownButton id="ddb"
+                                       title={this.props.userDetails.username.charAt(0)}
+                                       noCaret
+                                       className="circular-icon text-center"
+                                     >
+                                        <MenuItem className="circular-icon-menu text-center">
+                                          <span>{this.props.userDetails.username.charAt(0)}</span>
+                                        </MenuItem>
+                                        <div className="info">
+                                            <MenuItem className="">
+                                              <p className="menu-text">
+                                                {this.props.userDetails.username}
+                                                Parveen Sahrawat
+                                              </p>
+                                            </MenuItem>
+                                            <MenuItem className="">
+                                              <p className="menu-text">
+                                                {this.props.userDetails.email}
+                                                parveen.sahrawat1209@gmail.com
+                                              </p>
+                                            </MenuItem>
                                         </div>
-                                    </NavItem>
-                                    <NavItem>
-                                        <div>
-                                            <Button name="btnLogout" onClick={this.handleLogout}>Logout</Button>
-                                        </div>
+                                        <MenuItem>
+                                          <Button className="">Profile</Button>
+                                        </MenuItem>
+                                        <MenuItem>
+                                          <Button name="btnLogout" className="" pullRight
+                                            onClick={this.handleLogout}
+                                          >
+                                            Logout
+                                          </Button>
+                                        </MenuItem>
+                                     </DropdownButton>
                                     </NavItem>
                                 </Nav>
                         </Navbar>
                         <div className="top-padding">
                             <Table striped condensed hover>
-                                <thead>
+                                <thead className="container">
                                     <tr>
                                         <th>User Id</th>
                                         <th>User Name <span><Glyphicon glyph="sort" /></span></th>
-                                        <th>Registration Date <span><Glyphicon glyph="sort" /></span></th>
+                                        <th>Regn. Date <span><Glyphicon glyph="sort" /></span></th>
                                         <th>Status <span><Glyphicon glyph="sort" /></span></th>
                                     </tr>
                                 </thead>

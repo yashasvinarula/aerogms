@@ -12,6 +12,13 @@ const UserMenuIcon = (
     <Glyphicon  className="align-vertical btn-menu" onClick={this.showMenu}  glyph="option-vertical" />
 );
 
+const userNew = {
+    "u_id" : 1234,
+    "name" : 'Parveen Sahrawat',
+    "date_time" : '26 July, 2018',
+    "status" : true
+}
+
 class TableRow extends Component{
     constructor(props){
         super(props)
@@ -59,8 +66,9 @@ class TableRow extends Component{
     }
     
     render(){
-    const {user} = this.props;
-        if(user !== "unauthorised" ) {
+    // const {user} = this.props;
+    const user=userNew;         
+    if(user !== "unauthorised" ) {
             return (
                 <MediaQuery maxWidth={768}>
                     {(matches) => {
@@ -89,24 +97,24 @@ class TableRow extends Component{
                         } else {
                             return (
                                 <tr className="">
-                                <td className="">{user.u_id}</td>
-                                <td className="">{user.name}</td>
-                                <td className="">{user.date_time}</td>
-                                <td className="">{user.status === true ? 
-                                    <Image src={EnableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
-                                    : <Image src={DisableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
-                                     }
-                                <DropdownButton
-                                        noCaret
-                                        title={UserMenuIcon}    
-                                        id={user.u_id}
-                                        pullRight
-                                    >
-                                        {/* <MenuItem name="toggleStatus" className="" onClick={this.toggleUserStatus}>Toggle Status</MenuItem> */}
-                                        <MenuItem name="remove" className="" onClick={this.deleteUser}>Remove</MenuItem>
-                                    </DropdownButton>
-                                </td>
-                            </tr>
+                                    <td className="col-sm-3">{user.u_id}</td>
+                                    <td className="col-sm-3">{user.name}</td>
+                                    <td className="col-sm-3">{user.date_time}</td>
+                                    <td className="col-sm-3">{user.status === true ? 
+                                        <Image src={EnableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
+                                        : <Image src={DisableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
+                                         }
+                                    <DropdownButton
+                                            noCaret
+                                            title={UserMenuIcon}    
+                                            id={user.u_id}
+                                            pullRight
+                                        >
+                                            {/* <MenuItem name="toggleStatus" className="" onClick={this.toggleUserStatus}>Toggle Status</MenuItem> */}
+                                            <MenuItem name="remove" className="" onClick={this.deleteUser}>Remove</MenuItem>
+                                        </DropdownButton>
+                                    </td>
+                                </tr>
                             );
                         }
                     }}

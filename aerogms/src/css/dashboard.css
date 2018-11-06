@@ -2,6 +2,7 @@
     line-height: 0.5;
 } */
 .circular-icon {
+    position: relative;
     border-radius: 50%;
     background-color: #036;
     color: white;
@@ -9,12 +10,17 @@
     height : 40px;
 }
 .circular-icon-mobile {
+    position: absolute;
     border-radius: 50%;
     background-color: #036;
     color: white;
     width: 25px;
     height : 25px;
     float: none;
+}
+
+.info, .circular-icon-menu {
+    display: inline-block;
 }
 .bell-parent {
     position: relative;
@@ -55,10 +61,13 @@
     border: none;
     background: none;
 }
-.menuItem {
-    /* position: absolute; */
+/* .menuItem {
+    position: absolute;
     display: block;
     width:  110px;
+} */
+.menu-text {
+    font-size: 12px;
 }
 .user-icon-menu {
     position: absolute;
@@ -132,13 +141,75 @@ ul {
 .sort-glyph {
     font-size:  14px !important;
 }
-.btn {
+/* .btn {
     padding: 0 !important;
-}
+} */
 .top-padding {
     padding-right: 15px;
     padding-left: 15px;
 }
 .dropdown-custom {
     /* float: none !important; */
+}
+.btn-default {
+    border-color : transparent !important;
+}
+.btn-menu {
+    background-color: transparent !important;
+}
+.navbar-default .navbar-nav>li>a {
+    color: black !important;
+}
+.container {
+    width: 100%;
+}
+#ddb {
+    margin-right: 3px !important;
+}
+@media only screen and (max-width : 768px) {
+    .header-logo-admin {
+        width : 80px;
+    }
+    .navbar-mobile {
+        display: inline-block;
+    }
+    .nav>li {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    #create-project {
+        width: 160px;
+        height: 30px;
+        font-size: 12px;
+    }
+    .circular-icon {
+        width: 30px;
+        height : 30px;
+    }
+    .circular-icon-menu {
+        display: none;
+    }
+    .navbar-brand {
+        height: 40px;
+    }
+    .nav {
+        display: inline-block;
+        /* vertical-align: middle; */
+    }
+    .navItem-user {
+        display: inline-block;
+        font-size: 12px;
+    }
+    .nav>li>a {
+        padding: 8px 14px !important;
+    }
+    .navbar-nav {
+        margin: 5px -10px !important;
+    }
+    .navbar-admin {
+        display: inline-block;
+    }
+    .menu-text {
+        font-size: 12   px;
+    }
 }

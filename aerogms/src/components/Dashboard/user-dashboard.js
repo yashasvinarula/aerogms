@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Glyphicon from "react-bootstrap/lib/Glyphicon";
 import { Navbar, Nav,NavItem, Image, Button, Modal, DropdownButton, MenuItem } from "react-bootstrap/lib/";
+import MediaQuery from "react-responsive";
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {createProject, getProjects} from '../../actions';
@@ -8,6 +9,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
+import AeroLogoMObile from '../../images/AeroLOGO.png';
 import ProjectItem from './project';
 
 class UserNavs extends Component {
@@ -16,10 +18,10 @@ class UserNavs extends Component {
             <div>
                 <Nav bsStyle="tabs" className="nav-user">
                     <NavItem className="navItem-user">My Projects</NavItem>
-                    <NavItem className="text-center navItem-user">All</NavItem>
+                    <NavItem className="navItem-user">All</NavItem>
                     <NavItem className="navItem-user">Recent</NavItem>
                     <NavItem className="navItem-user">Shared</NavItem>
-                    <NavItem className="pull-right">
+                    <NavItem className="navItem-user">
                         <span>
                             <Glyphicon glyph="sort-by-attributes-alt"></Glyphicon>
                         </span>
@@ -101,20 +103,27 @@ class UserDashboard extends Component {
     }
 
     render() {
-        if(!this.props.userDetails.isLoggedIn)
-        {
-          return <Redirect to={{pathname:'/login'}}/>
-        }
+        // if(!this.props.userDetails.isLoggedIn)
+        // {
+        //   return <Redirect to={{pathname:'/login'}}/>
+        // }
         
         return (
             <div>
                 <Navbar className="navbar-css">
-                    <Navbar.Header>
-                        <Navbar.Brand>
-                            <a href="/home"><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
-                        </Navbar.Brand>
+                    <Navbar.Header className="navbar-mobile">
+                        <MediaQuery query="(min-device-width: 769px)">
+                            <Navbar.Brand>
+                                <a href="#"><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
+                            </Navbar.Brand>
+                        </MediaQuery>
+                        <MediaQuery query="(max-width: 768px)">
+                            <Navbar.Brand>
+                                <a href="#"><Image src={AeroLogoMObile} alt="Aero Logo" responsive className="header-logo-admin" /></a>
+                            </Navbar.Brand>
+                        </MediaQuery>
                     </Navbar.Header>
-                    <Nav pullRight>
+                    <Nav pullRight className="">
                         <NavItem className="modal-container">
                             <Button className="btn-color" id="create-project" 
                                 onClick={() => {this.setState({showmodal : true})}}
@@ -130,31 +139,33 @@ class UserDashboard extends Component {
                                 </Modal.Body>
                             </Modal>
                         </NavItem>
-                        <NavItem>
+                        <NavItem className="">
                             <DropdownButton id="ddb"
                                 title={this.props.userDetails.username.charAt(0)}
                                 noCaret
                                 className="circular-icon text-center row"
                               >
-                                <MenuItem className="circular-icon-menu text-center col-md-2">
+                                <MenuItem className="circular-icon-menu text-center">
                                   <span>{this.props.userDetails.username.charAt(0)}</span>
                                 </MenuItem>
-                                <div className="row col-md-10">
-                                  <MenuItem className="col-md-12">
-                                    <p>
+                                <div className="">
+                                  <MenuItem className="">
+                                    <p className="menu-text">
                                       {this.props.userDetails.username}
+                                      Parveen Sahrawat
                                     </p>
                                   </MenuItem>
-                                  <MenuItem className="col-md-12">
-                                    <p>
+                                  <MenuItem className="">
+                                    <p className="menu-text">
                                       {this.props.userDetails.email}
+                                      parveen.sahrawat1209@gmail.com
                                     </p>
                                   </MenuItem>
                                   <MenuItem>
-                                    <Button className="col-md-6">Profile</Button>
+                                    <Button className="btn-menu">Profile</Button>
                                   </MenuItem>
                                   <MenuItem>
-                                    <Button className="col-md-6" pullRight
+                                    <Button className="btn-menu" pullRight
                                       onClick={this.props.doLogout}
                                     >
                                       Logout
