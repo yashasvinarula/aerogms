@@ -27,7 +27,7 @@ class Dashboard extends Component {
     }
 
     componentDidMount(){
-        // debugger
+        debugger
         if(Object.keys(this.props.users).length === 0)
         {
             this.props.getUsers();
@@ -68,22 +68,22 @@ class Dashboard extends Component {
 
     render()
     {
-        // debugger;
-        // if(!this.props.userDetails.isLoggedIn)
-        // {
-        //   return <Redirect to={{pathname:'/login'}}/>
-        // }
-        // if(this.props.userDetails.isadmin === "false")
-        // {
-        //     return <Redirect to={{pathname:'/userDashboard'}}/>
-        // }
-        // if(this.props.users['error']){
-        //     debugger
-        //     alert('Your session is expired. Please login!')
-        //     console.log('error session out!');
-        //     this.props.doLogout();
-        //     return <Redirect to='/login' />
-        // }
+        //debugger;
+        if(!this.props.userDetails.isLoggedIn)
+        {
+          return <Redirect to={{pathname:'/login'}}/>
+        }
+        if(this.props.userDetails.isadmin === "false")
+        {
+            return <Redirect to={{pathname:'/userDashboard'}}/>
+        }
+        if(this.props.users['error']){
+            debugger
+            alert('Your session is expired. Please login!')
+            console.log('error session out!');
+            this.props.doLogout();
+            return <Redirect to='/login' />
+        }
        
         return (
             <MediaQuery maxWidth={768}>

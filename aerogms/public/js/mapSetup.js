@@ -14,7 +14,7 @@ function initMap()
         if (!location.hash) {
             m.setView([28.6057,77.2476], 11);
         }
-        m.addHash();
+        //m.addHash();
         var url = 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png';
         var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         
@@ -56,7 +56,7 @@ function initMap()
             layControl = L.control.orderlayers(baseLayers, overlays,{
                 collapsed: true,
                 title: 'Layers'
-            }).addTo(m);
+            })//.addTo(m);
             
            //layControl.addOverlay(water_bodies_MLayer, 'WaterBody');
            //layControl.removeLayer(water_bodies_MLayer);
@@ -65,7 +65,6 @@ function initMap()
            m.addControl(osmGeocoder);
 
            m.on('overlayadd', function(e){
-            debugger
             var activeOverlay = e.layer.options.layers;
         });  
             

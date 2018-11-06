@@ -16,11 +16,11 @@ class Project extends Component {
         this.state = {
             showMenu : false,
             projectName:this.props.prodetails.pro_name,
-            showmodal: false
+            showmodal: false,
+            rediectTo:false
         }
         this.showMenu = this.showMenu.bind(this);
         this.closeMenu = this.closeMenu.bind(this);
-        this.openProject = this.openProject.bind(this);
         this.deleteProject = this.deleteProject.bind(this);
         this.renameProject = this.renameProject.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -53,11 +53,6 @@ class Project extends Component {
         this.setState({projectName : value});
     }
 
-    openProject(event){
-        //console.log(this.props.prodetails);
-        return <Redirect to='/projectView' />
-    }
-
     deleteProject(){
         this.props.deleteProject(this.props.prodetails.pro_id);
     }
@@ -82,17 +77,20 @@ class Project extends Component {
     }
 
     render() {
+        if(this.state.rediectTo){
+        return <Redirect to={`/projectView?pro_id=${this.props.prodetails.pro_id}`} />
+        }
         debugger
         return (
             <div className="col-md-2 col-xs-6 col-sm-4 project-Item">
             <div className="project">
-                <div className="" onClick={this.openProject}>
-                    <Image src={mapThumbnail} className="map-thumbnail"/>
+                <div className="" onClick={()=>{this.setState({rediectTo:true})}}>
+                    <Image src={mapThumbnail} className="map-thumbnail" />
                 </div>
                 <div className="drawing-bottom">
                     <span className="pos-drawing">{this.props.prodetails.pro_name}</span>
                     <span className="pos-drawing drawing-right">
-                    <DropdownButton className="menu" noCaret title={dropDownTitle} >
+                    <DropdownButton id="ddlMenu" className="menu" noCaret title={dropDownTitle} pullRight >
                       <MenuItem className="" onClick={this.deleteProject}>Delete</MenuItem>
                       <MenuItem className="modal-container"
                         onClick={() => {
