@@ -103,10 +103,10 @@ class UserDashboard extends Component {
     }
 
     render() {
-        // if(!this.props.userDetails.isLoggedIn)
-        // {
-        //   return <Redirect to={{pathname:'/login'}}/>
-        // }
+        if(!this.props.userDetails.isLoggedIn)
+        {
+          return <Redirect to={{pathname:'/login'}}/>
+        }
         
         return (
             <div>
@@ -152,13 +152,11 @@ class UserDashboard extends Component {
                                   <MenuItem className="">
                                     <p className="menu-text">
                                       {this.props.userDetails.username}
-                                      Parveen Sahrawat
                                     </p>
                                   </MenuItem>
                                   <MenuItem className="">
                                     <p className="menu-text">
                                       {this.props.userDetails.email}
-                                      parveen.sahrawat1209@gmail.com
                                     </p>
                                   </MenuItem>
                                   <MenuItem>

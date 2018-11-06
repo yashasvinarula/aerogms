@@ -184,6 +184,9 @@ class ProjectView extends Component{
                                                     .btn-default {
                                                         border-color : #fff;
                                                     }
+                                                    .btn {
+                                                        padding : 0px;
+                                                    }
                                                     .dropdown {
                                                        float : none !important;
                                                     }

@@ -109,8 +109,8 @@ class Dashboard extends Component {
                                 </NavItem>
                                 <NavDropdown noCaret title="More" id="basic-nav-dropdown" className="dropdown-custom">
                                   <MenuItem href="/Projectview" >Map</MenuItem>
-                                  <MenuItem href="/analytics" >Analytics</MenuItem>
-                                  <MenuItem href="/validation" >Validation</MenuItem>
+                                  {/* <MenuItem href="/analytics" >Analytics</MenuItem>
+                                  <MenuItem href="/validation" >Validation</MenuItem> */}
                                 </NavDropdown>
                                 {/* <NavItem>
                                     <span className="bell-parent">
@@ -137,13 +137,11 @@ class Dashboard extends Component {
                                       <MenuItem className="">
                                         <p className="menu-text">
                                           {this.props.userDetails.username}
-                                          Parveen Sahrawat
                                         </p>
                                       </MenuItem>
                                       <MenuItem className="">
                                         <p className="menu-text">
                                           {this.props.userDetails.email}
-                                          parveen.sahrawat1209@gmai.com
                                         </p>
                                       </MenuItem>
                                       <MenuItem>
@@ -201,8 +199,8 @@ class Dashboard extends Component {
                                     </NavItem>
                                     <NavDropdown noCaret title="More" id="basic-nav-dropdown">
                                       <MenuItem href="/Projectview" >Map</MenuItem>
-                                      <MenuItem href="/analytics" >Analytics</MenuItem>
-                                      <MenuItem href="/validation" >Validation</MenuItem>
+                                      {/* <MenuItem href="/analytics" >Analytics</MenuItem>
+                                      <MenuItem href="/validation" >Validation</MenuItem> */}
                                     </NavDropdown>
                                     {/* <NavItem>
                                         <span className="bell-parent">
@@ -229,13 +227,11 @@ class Dashboard extends Component {
                                             <MenuItem className="">
                                               <p className="menu-text">
                                                 {this.props.userDetails.username}
-                                                Parveen Sahrawat
                                               </p>
                                             </MenuItem>
                                             <MenuItem className="">
                                               <p className="menu-text">
                                                 {this.props.userDetails.email}
-                                                parveen.sahrawat1209@gmail.com
                                               </p>
                                             </MenuItem>
                                         </div>
