@@ -66,6 +66,9 @@ input[type=button] {
     border: none !important;
     box-shadow: none !important;
 }
+input[type=button] {
+    width: 120px;
+}
 
 @media only screen and (max-width : 768px) {
     .project-layer-box {

@@ -89,11 +89,11 @@
 .align-vertical {
     vertical-align: middle !important;
 }
-.project {
+/* .project {
     position: relative;
     display : inline;
     border-bottom: 10px solid gray;
-}
+} */
 .map-thumbnail {
     width : 150px;
     height : 150px;
