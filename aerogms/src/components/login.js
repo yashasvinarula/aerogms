@@ -203,7 +203,7 @@ class Login extends Component {
                                                     <div className="">
                                                         <button className="btn btn-auth col s12" disabled={!this.state.formValid} onClick={this.handleSubmit} type="submit">Login</button>
                                                     </div>
-                                                    <div className="">
+                                                    <div className="text-center">
                                                         <a href="/signup" className="btn col s12">New User? Sign up</a>
                                                     </div>
                                                 </div>

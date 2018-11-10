@@ -49,6 +49,9 @@
 input[type=radio] {
     width: 15px;
 }
+input[type=button] {
+    width: 80px;
+}
 .input-layer {
     display: inline-block;
 }
@@ -73,7 +76,6 @@ input[type=radio] {
         /* top: 60px; */
         /* left: 0; */
         width: 100%;
-        height: 100%;
     }
     .project-menu {
         background-color: gray;
@@ -143,4 +145,19 @@ input[type=radio] {
     .bottom-layers-panel>ul>li {
         display: inline-block;
     }
+    /* bottom drawer */
+    .slider {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        overflow: hidden;
+        background-color: #000; color: #FFF;
+        transition: all 1s;
+    }
+    .slider.close {
+        top: 100vh;
+        height: 0;
+    }
+      
 }

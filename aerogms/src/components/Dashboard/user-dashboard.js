@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Glyphicon from "react-bootstrap/lib/Glyphicon";
 import { Navbar, Nav,NavItem, Image, Button, Modal, DropdownButton, MenuItem } from "react-bootstrap/lib/";
 import MediaQuery from "react-responsive";
-import {Redirect} from 'react-router-dom';
+// import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {createProject, getProjects} from '../../actions';
 import _ from 'lodash';
@@ -114,12 +114,12 @@ class UserDashboard extends Component {
                     <Navbar.Header className="navbar-mobile">
                         <MediaQuery query="(min-device-width: 769px)">
                             <Navbar.Brand>
-                                <a href="#"><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
+                                <a href=""><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
                             </Navbar.Brand>
                         </MediaQuery>
                         <MediaQuery query="(max-width: 768px)">
                             <Navbar.Brand>
-                                <a href="#"><Image src={AeroLogoMObile} alt="Aero Logo" responsive className="header-logo-admin" /></a>
+                                <a href=""><Image src={AeroLogoMObile} alt="Aero Logo" responsive className="header-logo-admin" /></a>
                             </Navbar.Brand>
                         </MediaQuery>
                     </Navbar.Header>
