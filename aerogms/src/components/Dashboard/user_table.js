@@ -12,12 +12,12 @@ const UserMenuIcon = (
     <Glyphicon  className="align-vertical btn-menu" onClick={this.showMenu}  glyph="option-vertical" />
 );
 
-// const userNew = {
-//     "u_id" : 1234,
-//     "name" : 'Parveen Sahrawat',
-//     "date_time" : '26 July, 2018',
-//     "status" : true
-// }
+const userNew = {
+    "u_id" : 1234,
+    "name" : 'Parveen Sahrawat',
+    "date_time" : '26 July, 2018',
+    "status" : true
+}
 
 class TableRow extends Component{
     constructor(props){
@@ -66,8 +66,8 @@ class TableRow extends Component{
     }
     
     render(){
-    const {user} = this.props;
-    // const user=userNew;         
+    // const {user} = this.props;
+    const user=userNew;         
     if(user !== "unauthorised" ) {
             return (
                 <MediaQuery maxWidth={768}>

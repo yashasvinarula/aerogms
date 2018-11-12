@@ -3,13 +3,14 @@ import { CompactPicker } from 'react-color';
 import { Image, DropdownButton, MenuItem, Modal, Button } from 'react-bootstrap/lib';
 import LayerVisible from '../../images/LayerVisible.png';
 import LayerInvisible from '../../images/LayerInvisible.png';
-import MenuIcon from '../../images/Menu.png';
+// import MenuIcon from '../../images/Menu.png';
+import InfoIcon from '../../images/InfoIcon.png';
 import AddAttribute from '../../images/add-attribute.png';
 import MediaQuery from 'react-responsive';
 import '../../css/layer.css';
 // import Feature from './featureInfo';
 
-const MenuImage = ( <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />);
+const MenuImage = ( <Image src={InfoIcon} className="menu-icon inline-display margin-outside" />);
 
 class Layer extends Component {
     constructor(props) {
@@ -84,7 +85,6 @@ class Layer extends Component {
             });
 
             if( flag === 0) {
-                debugger;
                 let newAttribute = {name: '', type: ''};
                 newAttribute.name = this.state.attributeName;
                 newAttribute.type = this.state.attributeType;
@@ -126,7 +126,7 @@ class Layer extends Component {
                             </div>
                             {
                                 this.props.layersInfo
-                                ? (<div onClick={this.showColorPicker} className="color-rectangle on-hover inline-display "></div>)
+                                ? (<span onClick={this.showColorPicker} className="color-rectangle on-hover inline-display "></span>)
                                 : ''
                             }
                             {

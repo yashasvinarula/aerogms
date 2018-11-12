@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Glyphicon from "react-bootstrap/lib/Glyphicon";
 import { Navbar, Nav,NavItem, Image, Button, Modal, DropdownButton, MenuItem } from "react-bootstrap/lib/";
 import MediaQuery from "react-responsive";
-// import {Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {createProject, getProjects} from '../../actions';
 import _ from 'lodash';

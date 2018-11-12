@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {  Image, DropdownButton, MenuItem, Modal, Button } from 'react-bootstrap/lib';
 import { slide as Menu } from 'react-burger-menu';
-import Drawer from 'react-drag-drawer';
 import MediaQuery from 'react-responsive';
 import Layer from './layer';
+import BottomDrawer from './bottom-drawer';
 import Analytics from './analytics';
 import Validation from './validation';
 import LayersPNG from '../../images/layers.png';
@@ -27,6 +27,11 @@ class ProjectView extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            more : false,
+            slider : 'slider',
+            close : 'close',
+            sliderPartial : 'slider-partial',
+
             showImportModal : false,
             showAddLayerModal : false,
             layerType : '',
@@ -38,9 +43,7 @@ class ProjectView extends Component{
             validation : false,
             info : true,
             showVisibles : false,
-            showHalfDrawer : false,
-            showFullDrawer : false,
-            // map : false,
+            showFeatures : false
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -48,6 +51,21 @@ class ProjectView extends Component{
         this.addLayer = this.addLayer.bind(this);
         this.renderLayers = this.renderLayers.bind(this);
         this.saveLayer = this.saveLayer.bind(this);
+        this.closeDrawer = this.closeDrawer.bind(this);
+        this.openFullDrawer = this.openFullDrawer.bind(this);
+        this.openPartialDrawer = this.openPartialDrawer.bind(this);
+    }
+
+    closeDrawer() {
+        this.setState({ close : 'close', sliderPartial : '', slider : '', more : false });
+    }
+
+    openFullDrawer() {
+        this.setState({ close : '', sliderPartial : '', slider : 'slider', more : false});
+    }
+
+    openPartialDrawer() {
+        this.setState({close : '', sliderPartial : 'slider-Partial', slider : '', more : true });
     }
 
     componentWillMount () {
@@ -75,7 +93,6 @@ class ProjectView extends Component{
             this.setState({ ...this.statelayers, newLayer });
             this.closeAddLayerModal();
             this.createNewLayer(this.state.layerType);
-           
         }
         else{
             alert('Please enter layer name/title!');
@@ -90,9 +107,6 @@ class ProjectView extends Component{
                  layersInfo={this.state.info} /></li>);
             });
         } 
-        // else {
-        //     alert('no layers to display')
-        // }
     }
 
     createNewLayer(type){
@@ -123,14 +137,13 @@ class ProjectView extends Component{
         window.removeSelFeature();
     }
 
-    toggle() {
-        let { toggle } = this.state;
-        this.setState({toggle : !toggle})
-    }
-
     render(){
+        let drawerStates={};
+        drawerStates.slider = this.state.slider;
+        drawerStates.more = this.state.more;
+        drawerStates.sliderPartial = this.state.sliderPartial;
+        drawerStates.close = this.state.close;
         console.log(this.state.layers);
-        // const { open } = this.state;
         return (
             <MediaQuery maxWidth={768}>
                 {(matches) => {
@@ -233,16 +246,7 @@ class ProjectView extends Component{
                                                 <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
                                             </ul> */}
                                         </div>
-                                        <Button className="">Show Drawer</Button>
-                                        <div className="slider close">
-                                            <ul>
-                                                <li>Attr1</li>
-                                                <li>Attr2</li>
-                                                <li>Attr3</li>
-                                                <li>Attr4</li>
-                                                <li>Attr5</li>
-                                            </ul>
-                                        </div>
+                                        
                                         {
                                             this.state.layers.length !== 0 
                                             ? ( <div className="bottom-layers-panel">
@@ -254,14 +258,15 @@ class ProjectView extends Component{
                                             : ''
                                         }
                                     </div>)
-                                    : ''
+                                    : (<div>
+                                        <Button className="bottom-drawer-button" onClick={this.openPartialDrawer}>Show Drawer</Button>
+                                        <BottomDrawer className="bottom-drawer-bar" 
+                                            closeDrawer={this.closeDrawer} 
+                                            openFullDrawer={this.openFullDrawer} 
+                                            drawerStates={drawerStates}
+                                        />
+                                    </div>)
                                 } 
-                                
-                                    {/* <Drawer open={open}
-                                            onRequestClose={this.toggle}>
-                                        <h1>It's working</h1>        
-                                    </Drawer> */}
-                                
                                 {
                                     this.state.analytics ?
                                     (<Analytics />)

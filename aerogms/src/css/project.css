@@ -1,3 +1,8 @@
+h4 {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    vertical-align: middle;
+}
 .separator-line {
     width: 100%;
 	height: 1px;
@@ -28,7 +33,6 @@
 .on-hover:hover {
     cursor: pointer;
 }
-
 .navbar-default .navbar-nav>li>a {
     color: #fff;
 }
@@ -44,16 +48,13 @@
     z-index: 999;
     background-color: white;
     position: absolute;
-
-}
-input[type=radio] {
-    width: 15px;
 }
 input[type=button] {
     width: 80px;
 }
 .input-layer {
     display: inline-block;
+    position: relative;
 }
 .modal-custom{
     position: fixed;
@@ -69,7 +70,6 @@ input[type=button] {
 input[type=button] {
     width: 120px;
 }
-
 @media only screen and (max-width : 768px) {
     .project-layer-box {
         -webkit-box-shadow: none;
@@ -86,7 +86,7 @@ input[type=button] {
         z-index: 1000;
     }
     .project-nav {
-        position: fixed;
+        /* position: fixed; */
         top: 0;
         left: 0;
         background-color: #036 !important;
@@ -149,18 +149,17 @@ input[type=button] {
         display: inline-block;
     }
     /* bottom drawer */
-    .slider {
-        position: absolute;
-        width: 100vw;
-        height: 100vh;
-        top: 0;
-        overflow: hidden;
-        background-color: #000; color: #FFF;
-        transition: all 1s;
+    .bottom-drawer-bar {
+        position: fixed;
+        bottom: 40px;
+        left: 0px;
+        width: 50px;
+        height: 50px;
     }
-    .slider.close {
-        top: 100vh;
-        height: 0;
+    .bottom-drawer-button {
+        z-index: 999;
+        bottom : 100px;
+        left : 10px;
     }
       
 }
