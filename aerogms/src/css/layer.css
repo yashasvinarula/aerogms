@@ -5,18 +5,27 @@
 /* li {
     position: relative;
 }*/
-/* .layer {
-    position: relative;
+/* tbody {
+    max-height: 500px;
+    overflow: auto;
 } */
+.layer {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    position: relative;
+}
+.layer-title-box {
+    vertical-align: middle;
+    margin-left: 10px;
+}
 .on-hover:hover { 
     cursor: pointer;
 }
 .color-rectangle {
-    /* position: absolute; */
-    right: 40px;
-    top: 5px;
-    width: 15px;
-    height: 30px;
+    width: 10px;
+    height: 20px;
+    margin-left: 10px;
+    vertical-align: middle;
     background-color: #4D4D4D;
     outline: #B3B3B3 solid 4px;
 }
@@ -24,23 +33,30 @@
     display: inline-block;
 }
 .menu-icon {
-    /* position: absolute; */
-    right: 10px;
-    top: 10px;
-    width: 25px;
-    height: 25px;
+    position: absolute;
+    right: 5px;
+    top: 7px;
+    width: 18px;
+    height: 18px;
     float: right !important;
     vertical-align: middle;
 }
+.menu-icon-attr {
+    width: 25px;
+    height: 25px;
+}
 .layer-title {
     font-size: 18px;
+    max-width: 200px;
+    overflow-x: auto;
 }
 .layer-type {
     font-size: 14px;
 }
 .layer-separator {
     background-color: #49494a;
-    margin-top: 8px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 .visibility-icon {
     width: 40px;
@@ -48,6 +64,68 @@
 }
 ul {
     padding-inline-start: 0px;
+}
+.add-attr {
+    position: fixed;
+    width: 90px;
+    height: 30px;
+    top: 60px;
+    right: 15px;
+    background-color: #4db6ac;
+    color: #fff;
+}
+.attr-type-icon {
+    width: 15px;
+    height: 15px;
+    /* margin-right: 15px */
+    /* float: right; */
+}
+/* input {
+    width: 50%;
+} */
+.attr-list-item {
+    /* margin-top: 5px;
+    margin-bottom: 5px; */
+    position: relative;
+}
+label {
+    display: block;
+}
+input {
+    margin-left: 20px;
+    width: 70%;
+    font-weight: 400;
+
+}
+.radio-input {
+    width: 20px;
+    margin-left: 50px !important;
+}
+.modal-dialog {
+    width: 400px;
+}
+.custom-button {
+    /* position: relative;
+    bottom: 15px;
+    right: 15px; */
+    background-color: #4db6ac;
+    color: #fff;
+    width: 60px;
+    height: 30px;
+}
+.attr-list {
+    width: 100%;
+}
+.attr-thead {
+    position: relative;
+    top: 70px !important;
+    left: 10px;
+}
+.attr-menu-icon {
+    position: absolute; 
+    right: 15px;
+    width: 15px;    
+    height: 15px;
 }
 
 @media only screen and (max-width : 768px ) {
@@ -65,12 +143,21 @@ ul {
     .color-rectangle {
         width: 10px;
         height: 20px;
+        margin-left: 15px;
+        vertical-align: middle;
         background-color: #4D4D4D;
         outline: #B3B3B3 solid 4px;
+    }
+    .visibility-icon {
+        position: absolute;
+        top: 2px;
+        right: 8px;
     }
     .menu-icon {
         width: 20px;
         height: 20px;
+        right: 1px;;
+        top: 2px;
     }
     .add-attribute {
         position: fixed;
@@ -83,4 +170,10 @@ ul {
         /* width: 15px; */
         margin: 10px 0;
     }
+    .modal-dialog {
+        width: 340px;
+    }
+    /* input {
+        width: 80%;
+    } */
 }

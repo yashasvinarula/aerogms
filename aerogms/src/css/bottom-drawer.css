@@ -4,7 +4,7 @@
     height: 100vh;
     top: 7.5vh;
     overflow: hidden;
-    background-color: rgb(202, 191, 191); 
+    background-color: rgb(255, 255, 255); 
     color: #000;
     transition: all 1s;
     z-index: 1000;
@@ -14,8 +14,9 @@
     /* height: 10vh; */
 }
 .slider.close {
-    top: 100vh;
-    height: 0;
+    top: 90vh;
+    height: 10vh;
+    z-index: 1000;
 }
 /* .slider-partial {
     position: absolute;

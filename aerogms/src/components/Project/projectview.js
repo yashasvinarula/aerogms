@@ -11,6 +11,7 @@ import LeftArrow from '../../images/LeftArrow.png';
 import '../../css/project.css';
 import addLayer from '../../images/AddLayerPNG.png';
 import importLayer from '../../images/ImportLayerPNG.png';
+// import _ from 'lodash';
 
 // class AddLayer extends Component {
 //     render() {
@@ -31,7 +32,7 @@ class ProjectView extends Component{
             slider : 'slider',
             close : 'close',
             sliderPartial : 'slider-partial',
-
+            
             showImportModal : false,
             showAddLayerModal : false,
             layerType : '',
@@ -43,7 +44,8 @@ class ProjectView extends Component{
             validation : false,
             info : true,
             showVisibles : false,
-            showFeatures : false
+            showFeatures : false,
+            activeLayer : null,
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -54,6 +56,11 @@ class ProjectView extends Component{
         this.closeDrawer = this.closeDrawer.bind(this);
         this.openFullDrawer = this.openFullDrawer.bind(this);
         this.openPartialDrawer = this.openPartialDrawer.bind(this);
+        this.makeLayerActive = this.makeLayerActive.bind(this);
+    }
+
+    makeLayerActive() {
+        
     }
 
     closeDrawer() {
@@ -102,7 +109,7 @@ class ProjectView extends Component{
     renderLayers() {
         if(this.state.layers.length !== 0) {
             return this.state.layers.map((layer) => {
-               return (<li><Layer key={layer.name} layer={layer} className="input-layer"
+               return (<li key={layer.name} layerActive={this.makeLayerActive}><Layer layer={layer} className="input-layer"
                  changeLayerNameParent={(name)=>{layer.name = name}} 
                  layersInfo={this.state.info} /></li>);
             });
