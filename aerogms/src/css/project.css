@@ -72,17 +72,60 @@ input[type=button] {
 }
 .project-infobox{
     width: 300px;
-    height: 590px;
+    max-height: 719px;
     position: absolute;
-    z-index: 99999;
-    right: 10px;
-    top: 165px;
+    z-index: 1000;
+    right: 0;
+    top: 60px;
     background:#fff;
-    display: none;
+    display: block;
     }
 
 .text-area{
     height: 200px;;
+}
+.info-panel-attr-list {
+    max-height: 150px;
+    overflow: auto;
+}
+.query-table-div {
+    position: absolute;
+    top: 70px;
+    left: 400px;
+    max-width: 800px;
+    max-height: 600px;
+    border: 2px solid lightgray;
+    background-color: #fff;
+    overflow: auto;
+    z-index: 1999;
+}
+/* tbody {
+    display: block;
+    max-height: 600px;
+    overflow: auto;
+}
+thead, tbody, tr {
+    display: table;
+    max-width: 800px;
+    table-layout: fixed; 
+} */
+.table-cross-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    z-index: 100000;
+}
+
+/* table {
+    max-width: 800px;
+} */
+.nav-items {
+    display: inline;
+}
+.query-table {
+    margin-top: 20px;
 }
 
 @media only screen and (max-width : 768px) {

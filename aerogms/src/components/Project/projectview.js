@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {  Image, DropdownButton, MenuItem, Modal, Button } from 'react-bootstrap/lib';
+import { Navbar, NavItem, Image, DropdownButton, MenuItem, Modal, Button, Table } from 'react-bootstrap/lib';
 import {connect} from 'react-redux';
 import { slide as Menu } from 'react-burger-menu';
 import MediaQuery from 'react-responsive';
@@ -9,6 +9,7 @@ import Analytics from './analytics';
 import Validation from './validation';
 import LayersPNG from '../../images/layers.png';
 import LeftArrow from '../../images/LeftArrow.png';
+import CrossIcon from '../../images/CrossIcon.png';
 import '../../css/project.css';
 import addLayer from '../../images/AddLayerPNG.png';
 import importLayer from '../../images/ImportLayerPNG.png';
@@ -16,17 +17,13 @@ import {create_layer, rename_layer, get_layers} from '../../actions'
 import _ from 'lodash';
 import axios from 'axios';
 
-// class AddLayer extends Component {
-//     render() {
-    const AddLayer = 
-        (
-            <div className="icons-display text-center col-xs-6">
-                <Image src={addLayer} className="add-import-icons" />
-                <span className="margin-outside">Add Layer</span>
-            </div>
-        );
-//     }
-// }
+const AddLayer = (
+    <div className="icons-display text-center col-xs-6">
+        <Image src={addLayer} className="add-import-icons" />
+        <span className="margin-outside">Add Layer</span>
+    </div>
+);
+
 class ProjectView extends Component{
     constructor(props) {
         super(props);
@@ -49,6 +46,7 @@ class ProjectView extends Component{
             showVisibles : false,
             showFeatures : false,
             activeLayer : null,
+            queryTable : false,
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -93,16 +91,16 @@ class ProjectView extends Component{
         this.setState({ showAddLayerModal : false });
     }
     addLayer() {
-        debugger
+        // debugger
         let newLayerTitle = document.getElementById('layer-title').value;
         if(newLayerTitle !== ''){
-            axios.post('/api/lay_name_exists', {
-                lay_name: newLayerTitle
-            })
-            .then(responce=>{
-                debugger
-                console.log(responce);
-                if(responce.data.status === 'not exists'){
+            // axios.post('/api/lay_name_exists', {
+            //     lay_name: newLayerTitle
+            // })
+            // .then(responce=>{
+            //     debugger
+            //     console.log(responce);
+            //     if(responce.data.status === 'not exists'){
                     let newLayer={}; //= this.state.layer;
                     newLayer.visible = true;
                     newLayer.name = newLayerTitle;
@@ -123,14 +121,14 @@ class ProjectView extends Component{
                 else{
                     alert('layer name is already exists! Please try with another name.')
                 }
-            })
-            .catch(err=>{
-                console.log('error: ' + err)
-            })
-        }
-        else{
-            alert('Please enter layer name/title!');
-        }
+            // })
+            // .catch(err=>{
+            //     console.log('error: ' + err)
+            // })
+        // }
+        // else{
+        //     alert('Please enter layer name/title!');
+        // }
     }
 
     renderLayers() {
@@ -139,7 +137,7 @@ class ProjectView extends Component{
         //        return (<li><Layer key={layer.name} layer={layer} changeLayerNameParent={(name)=>{layer.name = name}}/></li>);
         //     });
         // }
-        debugger
+        // debugger
         if(Object.keys(this.props.layers).length>0){
             return _.map(this.props.layers, layer=>{
                 console.log(layer);
@@ -333,13 +331,65 @@ class ProjectView extends Component{
                     } else {
                         return (
                             <div>
+                                <Navbar>
+                                <NavItem className="nav-items"><input type="button" id="btnMakePoint" value="AddPoint" onClick={this.addPoint}/></NavItem>
+                                <NavItem className="nav-items"><input type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/></NavItem>
+                                <NavItem className="nav-items"><input type="button" id="btnMakePolygon" value="AddPolygon" onClick={this.addPolygon}/></NavItem>
+                                <NavItem className="nav-items"><input type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/></NavItem>
+                                <NavItem className="nav-items"><input style={{visibility:"hidden"}}  type="button" id="removeFeature" 
+                                    value="Remove Feature" onClick={this.removeFeature}/></NavItem>
+                                    <NavItem className="nav-items" onClick={() => this.setState({queryTable : true})} >Complaint Dashboard</NavItem>
+                                </Navbar>
+                                {
+                                    this.state.queryTable ?
+                                    (
+                                    <div className="table-div">    
+                                        
+                                        <div className="query-table-div">
+                                        <Image onClick={() => this.setState({queryTable : false})} src={CrossIcon} className="table-cross-icon" />
+                                            <Table striped className="query-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th className="text-center">Aero Id</th>
+                                                        <th className="text-center">Comp. Id</th>
+                                                        <th className="text-center">Date</th>
+                                                        <th className="text-center">Description</th>
+                                                        <th className="text-center">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                            </tbody>
+                                            </Table>
+                                        </div>
+                                    </div>
+                                    )
+                                    : ''
+                                }
+                                    
                             <div className="">
-                                <input style={{marginTop:20}} type="button" id="btnMakePoint" value="AddPoint" onClick={this.addPoint}/>
-                                <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/>
-                                <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakePolygon" value="AddPolygon" onClick={this.addPolygon}/>
-                                <input style={{marginLeft:5, marginTop:20}} type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/>
-                                <input style={{marginLeft:5, marginTop:20, visibility:"hidden"}}  type="button" id="removeFeature" 
-                                    value="Remove Feature" onClick={this.removeFeature}/>
+                                
                             </div>
                             <div className="project-layer-box">
                                 <div>
@@ -410,16 +460,50 @@ class ProjectView extends Component{
                                 </div>
                             </div>
                             <div  id="infoDiv" className="project-infobox">
-                                <span><b>Info Panel</b></span>
-                                <br/>
-                                <div id="infoText">
+                                <h3>Info Panel</h3>
+                                <Table striped className="info-panel-attr-list">
+                                    <caption>Attributes Information</caption>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        {/* <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr>
+                                        <tr><td>Area</td><td>1234</td></tr> */}
+                                    </tbody>
+                                </Table>
+                                <div>
+                                    <h5>Suggestion</h5>
+                                    <h5>Complaint</h5>
+                                    <h5>Question</h5>
+                                    <h5>Edit Request</h5>
+                                </div>        
+                                {/* <div id="infoText">
                                 </div>
                                 <div>
                                     <textarea type="text" className="text-area"></textarea>
-                                    
                                 </div>
                                 <input type="Button" value="submit"></input>
-                                <input style={{marginLeft:5, marginTop:20, visibility:"true"}}  type="button" id="showInfo" value="cancel" onClick={this.closeInfoDiv}/>
+                                <input style={{marginLeft:5, marginTop:20, visibility:"true"}} 
+                                 type="button" id="showInfo" value="cancel" onClick={this.closeInfoDiv}/> */}
                             </div>
                         </div>
                         
