@@ -6,6 +6,7 @@ import LayerInvisible from '../../images/LayerInvisible.png';
 import MenuIcon from '../../images/Menu.png';
 import AddAttribute from '../../images/add-attribute.png';
 import '../../css/layer.css';
+import axios from 'axios';
 import Feature from './featureInfo';
 
 const MenuImage = ( <Image src={MenuIcon} className="menu-icon inline-display margin-outside" />);
@@ -44,20 +45,40 @@ class Layer extends Component {
 
     makeLayerVisible() {
         this.setState({ layerVisibleState : true });
+        window.addWMSLayer(this.props.layer.orig_name);
+
     }
 
     makeLayerInVisible() {
         this.setState({ layerVisibleState : false });
+        window.hideWMSLayer(this.props.layer.orig_name);
+
     } 
 
     closeChangeLayerModal(){
         this.setState({changelayername:false});
     }
 
+
     changeLayerName(){
         let newLayerTitle = document.getElementById('changeLayerName').value;
-        this.props.changeLayerNameParent(newLayerTitle);
-        this.closeChangeLayerModal();
+        axios.post('/api/lay_name_exists', {
+            lay_name: newLayerTitle
+        })
+        .then(responce=>{
+            debugger
+            console.log(responce);
+            if(responce.data.status == 'not exists'){
+                this.props.changeLayerNameParent(newLayerTitle);
+                this.closeChangeLayerModal();
+            }
+            else{
+                alert('layer name is already exists! Please try with another name.')
+            }
+        })
+        .catch(err=>{
+            console.log('error: ' + err)
+        })
     }
     closeTableModal() {
         this.setState({showTable : false});
@@ -73,12 +94,21 @@ class Layer extends Component {
         let newAttribute = {name: '', type: ''};
         newAttribute.name = this.state.attributeName;
         newAttribute.type = this.state.attributeType;
-        
-
     }
 
+    componentDidMount(){
+        window.addWMSLayer(this.props.layer.orig_name);
+    }
+
+    // removeLayer(){
+    //     window.hideWMSLayer(this.props.layer.orig_name);
+    // }
+
+    // addLayer(){
+    //     window.addWMSLayer(this.props.layer.orig_name);
+    // }
+
     render() {
-        // debugger;
         return (
             <div>
                     <div className="layer"> 
@@ -92,7 +122,7 @@ class Layer extends Component {
                                     <Modal.Header closeButton>Enter Layer Name</Modal.Header>
                                     <Modal.Body>
                                         {/* <label htmlFor="layerTitle">Enter Name</label> */}
-                                        <input type="text" id="changeLayerName" placeholder="Enter Name"/>
+                                        <input type="text" id="changeLayerName" placeholder="Enter Name" />
                                         <Button onClick={this.changeLayerName}>Update</Button>
                                     </Modal.Body>
                                 </Modal>
@@ -103,7 +133,7 @@ class Layer extends Component {
                             !this.props.layersInfo
                             ?
                                 (this.state.layerVisibleState 
-                                ? <Image src={LayerVisible} onClick={this.makeLayerInvisible} className="visibility-icon on-hover inline-display margin-outside" />
+                                ? <Image src={LayerVisible} onClick={this.makeLayerInVisible} className="visibility-icon on-hover inline-display margin-outside" />
                                 : <Image src={LayerInvisible} onClick={this.makeLayerVisible} className="visibility-icon on-hover inline-display margin-outside" />)
                             :
                                 (<DropdownButton

@@ -39,7 +39,7 @@ const App = ({userDetails, doLogin, doLogout}) =>(
         <Route path="/faq" render={() => <FAQ />} />
         <Route path="/feedback" render={() => <Feedback />} />
         <Route path="/usernotactivated" component={() => <div>User account is not activated now. Please try again later!</div>} />
-        <Route path="/projectView" render={()=><ProjectView/>}/>
+        <Route path="/projectView" render={()=><ProjectView userDetails={userDetails}/>}/>
         <Route component={() => <div>No Such Page!!</div>} />
         </Switch>
       </Router>

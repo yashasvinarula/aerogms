@@ -66,6 +66,20 @@ input[type=radio] {
 input[type=button] {
     width: 120px;
 }
+.project-infobox{
+    width: 300px;
+    height: 590px;
+    position: absolute;
+    z-index: 99999;
+    right: 10px;
+    top: 165px;
+    background:#fff;
+    display: none;
+    }
+
+.text-area{
+    height: 200px;;
+}
 
 @media only screen and (max-width : 768px) {
     .project-layer-box {

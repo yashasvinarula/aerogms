@@ -2,6 +2,54 @@ var geourl ='http://localhost:8080/geoserver/ows?';
 var m;
 var layControl;
 var currentLayer=null;
+var pid = null;
+
+var jalandhar_prop_layer;
+var jalandhar_wfs_layer;
+
+function addJalandharLayer(){
+var owsrootUrl = 'http://localhost:8080/geoserver/ows';
+var defaultParameters = {
+    service : 'WFS',
+    version : '2.0',
+    request : 'GetFeature',
+    typeName : 'AeroGMS:jalandhar',
+    outputFormat : 'text/javascript',
+    format_options : 'callback:getJson',
+    SrsName : 'EPSG:4326'
+};
+
+var parameters = L.Util.extend(defaultParameters);
+var URL = owsrootUrl + L.Util.getParamString(parameters);
+
+var ajax = $.ajax({
+    url : URL,
+    dataType : 'jsonp',
+    jsonpCallback : 'getJson',
+    success : function (response) {
+        debugger
+        jalandhar_wfs_layer = L.geoJson(response, {
+            style: function (feature) {
+                return {
+                    stroke: true,
+                    fillColor: '0000FF',
+                    fillOpacity: 0.5
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                debugger
+                popupOptions = {maxWidth: 200};
+                //"Popup text, access attributes with feature.properties.ATTRIBUTE_NAME"
+                layer.bindPopup('covered_area : '+feature.properties.covered_area + '<br/>' + 'unit_price : ' + feature.properties.unit_price ,popupOptions);
+                document.getElementById('infoText').innerHTML = '';
+
+                //showInfoDiv();
+                //document.getElementById('infoText').innerHTML = 'covered_area : '+feature.properties.covered_area + '<br/>' + 'unit_price : ' + feature.properties.unit_price;
+            }
+        }).addTo(m);
+    }
+});
+}
 
 function initMap()
     {
@@ -12,7 +60,8 @@ function initMap()
             measureControl: true
         });
         if (!location.hash) {
-            m.setView([28.6057,77.2476], 11);
+            //m.setView([28.6057,77.2476], 11); // delhi view
+            m.setView([31.3635, 75.5962], 15); // jalandhar view
         }
         //m.addHash();
         var url = 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png';
@@ -67,7 +116,14 @@ function initMap()
            m.on('overlayadd', function(e){
             var activeOverlay = e.layer.options.layers;
         });  
-            
+
+        // jalandhar_prop_layer = new L.tileLayer.wms(geourl, {
+        //     layers: 'AeroGMS:jalandhar', format:'image/png', 'transparent': true, 'tiled': true
+        // }).addTo(m);
+        //addJalandharLayer();
+        // m.on('click', function(ev) {
+        //     alert(ev.latlng); // ev is an event object (MouseEvent in this case)
+        // });
         //-----------------------------------------------------------
         
         $('#btnGoToLoc').on('click', function()
@@ -119,11 +175,98 @@ function initMap()
             }
         };
 
+         //--------------info-----------------
+         m.on('click', function(e) {
+
+            // Build the URL for a GetFeatureInfo
+            var jalandharLayer = wmsLayers.filter(layer=>{
+                if(layer.options){
+                    if(layer.options.layers.split(':')[1] == 'jalandhar'){
+                        return layer;
+                    }
+                }
+            })
+            var url = getFeatureInfoUrl(
+                            m,
+                            jalandharLayer[0],
+                            e.latlng,
+                            {
+                                'info_format': 'application/json',
+                                'propertyName': 'covered_area,unit_price'
+                            }
+                        );
+        
+            // Send the request and create a popup showing the response
+            //alert(url);
+            reqwest({
+                url: url,
+                type: 'json',
+            }).then(function (data) {
+                if(data.features.length > 0){
+                    var feature = data.features[0];
+                    // L.popup()
+                    // .setLatLng(e.latlng)
+                    // .setContent(L.Util.template("<h2>{covered_area}</h2><p>{unit_price}</p>", feature.properties))
+                    // .openOn(m);
+                    document.getElementById('infoText').innerHTML = '';
+                    document.getElementById('infoDiv').style.display = 'block';
+                    document.getElementById('infoText').innerHTML =  'covered_area : '+feature.properties.covered_area + '<br/>' + 'unit_price : ' + feature.properties.unit_price;
+                }
+              
+            }).catch(err=>{
+                //alert(err);
+            });
+        });
+        
+
+         function getFeatureInfoUrl(map, layer, latlng, params) {
+
+            var point = map.latLngToContainerPoint(latlng, map.getZoom()),
+                size = map.getSize(),
+                bounds = map.getBounds(),
+                sw = bounds.getSouthWest(),
+                ne = bounds.getNorthEast();
+                //sw = crs.projection._proj.forward([sw.lng, sw.lat]),
+                //ne = crs.projection._proj.forward([ne.lng, ne.lat]);
+        
+            var defaultParams = {
+                request: 'GetFeatureInfo',
+                service: 'WMS',
+                srs: 'EPSG:4326',//layer._crs.code,
+                styles: '',
+                version: layer._wmsVersion,
+                format: layer.options.format,
+                //bbox: m.getBounds(),//[sw.join(','), ne.join(',')].join(','),
+                bbox:[sw.lng, sw.lat, ne.lng, ne.lat],
+                height: size.y,
+                width: size.x,
+                layers: layer.options.layers,
+                query_layers: layer.options.layers,
+                info_format: 'text/html'
+            };
+        
+            params = L.Util.extend(defaultParams, params || {});
+        
+            params[params.version === '1.3.0' ? 'i' : 'x'] = point.x;
+            params[params.version === '1.3.0' ? 'j' : 'y'] = point.y;
+        
+            return layer._url + L.Util.getParamString(params, layer._url, true);
+        
+        }
+          //--------------------------------------------
+
+        let url_string = window.location.href;
+        let prourl = new URL(url_string);
+        pid = prourl.searchParams.get("pro_id");
+        return pid;
+        //m.addEventListener('click', Identify);
+              
+
+
+
     }
 
     try{
-
-
         $(document).ready(function() {
                 var options = {
                         beforeSubmit: showRequest,
@@ -396,7 +539,7 @@ function initMap()
     }
 
     function saveLayer(type, name){
-        alert(type);
+        //alert(type);
         $('#removeFeature').css('visibility', 'hidden');
         if(type === 'Point' && currentLayer !== null){
             L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
@@ -408,10 +551,13 @@ function initMap()
             //alert(latlngs);
             console.log(latlngs);
             m.off("click");
-            currentLayer.off('click');
+            currentLayer.off('click');  
+            m.removeLayer(currentLayer);
             currentLayer = null;
             markerPoints = null;
-            return { layer_name:name, type:type, latlngs:latlngs};
+
+            if(pid != null && pid != undefined)
+            return { layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
         }
         else if(type === 'Line' && currentLayer !== null){
             //debugger
@@ -437,4 +583,47 @@ function initMap()
             currentLayer = null;
             return { layer_name:name, type:type, latlngs:latlngs};
         }
+    }
+
+
+    var wmsLayers =[];
+    function addWMSLayer(layName){
+        debugger
+        let isLayerExist = null;
+        if(layName != undefined && layName!= null){
+            isLayerExist = wmsLayers.filter(layer=>{
+                if(layer.options){
+                    if(layer.options.layers.split(':')[1] == layName){
+                        return layer;
+                    }
+                }
+            })
+            if(isLayerExist.length == 0){
+                var layer = layName;
+                layer = new L.tileLayer.wms(geourl, {
+                layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true
+                }).addTo(m);
+                wmsLayers.push(layer);
+            }
+        }
+    }
+
+    function hideWMSLayer(layName){
+        debugger
+        console.log(wmsLayers);
+        wmsLayers =  wmsLayers.filter(layer=>{
+            if(layer.options.layers.split(':')[1] == layName)
+            {
+                m.removeLayer(layer);
+                return false;
+            }
+            else{
+                return layer;
+            }
+        })
+        console.log(wmsLayers);
+    }
+
+    function closeInfoDiv(){
+        document.getElementById('infoDiv').style.display = 'none';
     }

@@ -6,7 +6,7 @@ import mapThumbnail from '../../images/map_thumbnail.jpeg';
 import axios from 'axios';
 
 import {connect} from 'react-redux';
-import {deleteProject, renameProject} from '../../actions';
+import {deleteProject, renameProject, resetLayerStore} from '../../actions';
 
 const dropDownTitle = (<Glyphicon className="menu" onClick={this.showMenu} glyph="option-vertical" />);
 
@@ -78,6 +78,7 @@ class Project extends Component {
 
     render() {
         if(this.state.rediectTo){
+            this.props.resetLayerStore();
         return <Redirect to={`/projectView?pro_id=${this.props.prodetails.pro_id}`} />
         }
         debugger
@@ -125,4 +126,4 @@ class Project extends Component {
     }
   }
 
-export default connect(null, {deleteProject, renameProject})(Project);
+export default connect(null, {deleteProject, renameProject, resetLayerStore})(Project);

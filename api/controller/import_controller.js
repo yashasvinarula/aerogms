@@ -216,7 +216,7 @@ try
     let idx = filedArr.indexOf("__color__");
     if (idx > -1) { filedArr.splice(idx, 1);}
     for (let i = 0; i < filedArr.length; i++) {
-        fieldArrLower[i] = filedArr[i].toLowerCase().replace('-', '_');
+        fieldArrLower[i] = filedArr[i].toLowerCase().replace('-', '_').replace(' ', '_');
     }
 
     function insrtrecords()
@@ -251,7 +251,7 @@ try
             for(let j=0; j<filedArr.length;j++)
             {
                 //collval += "'"+ shpArr.features[i].properties[filedArr[j]] + "' , ";
-                collArrVal[filedArr[j].toLowerCase().replace('-', '_')] = shpArr.features[i].properties[filedArr[j]] ;
+                collArrVal[filedArr[j].toLowerCase().replace('-', '_').replace(' ', '_')] = shpArr.features[i].properties[filedArr[j]] ;
             }
             //valArr.push(collval);
             collArrVal['geom'] ={ type:geomType , coordinates:shpArr.features[i].geometry.coordinates};
@@ -333,11 +333,11 @@ catch(err)
 }
 }
 
-function registervector(datasetName, callback){
+ var registervector = function(datasetName, callback){
     //dataset name is the name of the PostGIS table
    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //my dev SSL is self-signed. don't do this in production.
    var http = require('http'); //using SSL because of basic auth in this example
-   var auth = 'Basic ' + new Buffer(userpw).toString('base64'); //strong passwords please
+   var auth = 'Basic ' + new Buffer(userpw).toString('base64');
    //build the object to post
    var post_data = {'featureType': {'name': datasetName}};
    //be sure to turn it into a string
@@ -367,6 +367,51 @@ function registervector(datasetName, callback){
           res.on('data', function (chunk) {
               //something went wrong so call back with error message
              callback(chunk);
+          });
+      }
+   });
+   // post the data
+   post_req.write(s);
+   post_req.end();
+};
+
+module.exports.registervector = registervector;
+
+module.exports.deletelayer = function(request, responce){
+    //dataset name is the name of the PostGIS table
+   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //my dev SSL is self-signed. don't do this in production.
+   var http = require('http'); //using SSL because of basic auth in this example
+   var auth = 'Basic ' + new Buffer(userpw).toString('base64');
+   //build the object to post
+   var post_data = {'featureType': {'name': request.body.layername}};
+   //be sure to turn it into a string
+   var s = JSON.stringify(post_data);
+   var post_options = {
+      host:'localhost',
+      port: '8080',
+      path: 'http://localhost:8080/geoserver/rest/workspaces/AeroGMS/datastores/aeroGMS/featuretypes',
+      method: 'DELETE',
+      headers: {
+        'Content-Length': s.length,
+        'Content-Type': 'application/json',
+	    'Authorization': auth
+      }
+   }
+   // Set up the request
+   var post_req = http.request(post_options, function(res) {
+      res.setEncoding('utf8');
+      //201 is good, anything else is Problem
+      if (res.statusCode === 201){
+          res.on('data', function (chunk) {
+          });
+        responce.status(201).send({message:'layer deleted!'})
+	    //callback(null);
+      }
+      else{
+          res.on('data', function (chunk) {
+              //something went wrong so call back with error message
+              responce.status(400).send({message:'layer not deleted! '+ chunk})
+             //callback(chunk);
           });
       }
    });

@@ -29,7 +29,11 @@ router.post('/delete_project', auth.loggedIn, cntrlr.delete_project);
 router.post('/rename_project', auth.loggedIn, cntrlr.rename_project);
 router.post('/pro_name_exists', auth.loggedIn, cntrlr.pro_name_exists);
 
-router.post('/layer_entry', layer_cntrlr.layer_entry);
+router.post('/get_layers', layer_cntrlr.get_layers)
+router.post('/create_layer', layer_cntrlr.create_layer);
+router.post('/rename_layer', layer_cntrlr.rename_layer);
+router.post('/lay_name_exists', layer_cntrlr.lay_name_exists);
+
 
 let storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -44,4 +48,6 @@ let storage = multer.diskStorage({
     });
 const upload = multer({ storage : storage });   
 router.route('/fileupload').post(upload.any(), auth.loggedIn, imprt_cntrlr.fileuploaddprocess);
+router.post('/deletelayer', imprt_cntrlr.deletelayer);
+
 module.exports = router;

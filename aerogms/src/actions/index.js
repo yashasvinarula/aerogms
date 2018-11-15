@@ -118,3 +118,51 @@ export function renameProject(pro_id, pro_name){
         payload:request
     }
 }
+
+export function create_layer(lay_name, lay_type, pro_id, mail_id, geom){
+    debugger
+    const request = axios.post(`${type.ROOT_URL}/create_layer`, {
+        name: lay_name,
+        type: lay_type,
+        pro_id:pro_id,
+        user_id: mail_id,
+        geom:geom
+    })
+
+    return{
+        type: type.CREATE_LAYER,
+        payload: request
+    }
+}
+
+export function rename_layer(lay_id, lay_name){
+    debugger
+    const request = axios.post(`${type.ROOT_URL}/rename_layer`, {
+        lay_id:lay_id,
+        name: lay_name
+    })
+
+    return{
+        type: type.RENAME_LAYER,
+        payload: request
+    }
+}
+
+export function get_layers(pro_id, user_id){
+    const request = axios.post(`${type.ROOT_URL}/get_layers`, {
+        pro_id:pro_id,
+        u_id: user_id
+    })
+
+    return{
+        type:type.GET_LAYERS,
+        payload:request
+    }
+}
+
+export function resetLayerStore(){
+    return {
+        type: type.RESET_LAYER_STORE,
+        payload: null
+    }
+}

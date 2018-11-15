@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {  Image, DropdownButton, MenuItem, Modal, Button } from 'react-bootstrap/lib';
+import {connect} from 'react-redux';
 import { slide as Menu } from 'react-burger-menu';
 import MediaQuery from 'react-responsive';
 import Layer from './layer';
@@ -10,6 +11,9 @@ import LeftArrow from '../../images/LeftArrow.png';
 import '../../css/project.css';
 import addLayer from '../../images/AddLayerPNG.png';
 import importLayer from '../../images/ImportLayerPNG.png';
+import {create_layer, rename_layer, get_layers} from '../../actions'
+import _ from 'lodash';
+import axios from 'axios';
 
 // class AddLayer extends Component {
 //     render() {
@@ -30,7 +34,7 @@ class ProjectView extends Component{
             showAddLayerModal : false,
             layerType : '',
             layer : {visible : '', name : '', type : '', color : '', strokeColor : ''},
-            layers : [],
+            //layers : [],
             remFeature:false,
             layerList : false,
             analytics : false,
@@ -48,7 +52,12 @@ class ProjectView extends Component{
     }
 
     componentWillMount () {
-        window.initMap();
+        let pid = window.initMap();
+        if(Object.keys(this.props.layers).length === 0){
+            if(pid != null && pid !== undefined){
+                this.props.get_layers(pid, this.props.userDetails.email);
+            }
+        }
     }
     closeImportModal() {
         this.setState({ showImportModal : false});
@@ -57,22 +66,40 @@ class ProjectView extends Component{
         this.setState({ showAddLayerModal : false });
     }
     addLayer() {
+        debugger
         let newLayerTitle = document.getElementById('layer-title').value;
         if(newLayerTitle !== ''){
-            let newLayer={}; //= this.state.layer;
-            newLayer.visible = true;
-            newLayer.name = newLayerTitle;
-            newLayer.type = this.state.layerType;
-            newLayer.backgroundColor = '4D4D4D';
-            newLayer.outline = 'B3B3B3';
-
-            this.setState({ layer : newLayer });
-            let newLayers = this.state.layers;
-            newLayers.push(newLayer);
-            this.setState({ ...this.statelayers, newLayer });
-            this.closeAddLayerModal();
-            this.createNewLayer(this.state.layerType);
-           
+            axios.post('/api/lay_name_exists', {
+                lay_name: newLayerTitle
+            })
+            .then(responce=>{
+                debugger
+                console.log(responce);
+                if(responce.data.status === 'not exists'){
+                    let newLayer={}; //= this.state.layer;
+                    newLayer.visible = true;
+                    newLayer.name = newLayerTitle;
+                    newLayer.type = this.state.layerType;
+                    //newLayer.backgroundColor = '4D4D4D';
+                    //newLayer.outline = 'B3B3B3';
+        
+                    this.setState({ layer : newLayer });
+                    //let newLayers = this.state.layers;
+                    //newLayers.push(newLayer);
+                    //this.setState({ ...this.statelayers, newLayer });
+                    //{"point113":{"name":"point113","type":"Point","visible":true}}
+        
+                    this.props.layers[newLayerTitle] = newLayer;
+                    this.closeAddLayerModal();
+                    this.createNewLayer(this.state.layerType);
+                }
+                else{
+                    alert('layer name is already exists! Please try with another name.')
+                }
+            })
+            .catch(err=>{
+                console.log('error: ' + err)
+            })
         }
         else{
             alert('Please enter layer name/title!');
@@ -80,10 +107,17 @@ class ProjectView extends Component{
     }
 
     renderLayers() {
-        if(this.state.layers.length !== 0) {
-            return this.state.layers.map((layer) => {
-               return (<li><Layer key={layer.name} layer={layer} changeLayerNameParent={(name)=>{layer.name = name}}/></li>);
-            });
+        // if(this.state.layers.length !== 0) {
+        //     return this.state.layers.map((layer) => {
+        //        return (<li><Layer key={layer.name} layer={layer} changeLayerNameParent={(name)=>{layer.name = name}}/></li>);
+        //     });
+        // }
+        debugger
+        if(Object.keys(this.props.layers).length>0){
+            return _.map(this.props.layers, layer=>{
+                console.log(layer);
+                return (<li><Layer key={layer.lay_id} layer={layer} changeLayerNameParent={(name)=>{this.props.rename_layer(layer.lay_id, name)}}/></li>);
+            })
         }
     }
 
@@ -107,8 +141,19 @@ class ProjectView extends Component{
         var latlngArray;
         latlngArray =  window.saveLayer(this.state.layer.type, this.state.layer.name);
         debugger
-        console.log('in react return ');
-        console.log(latlngArray.latlngs);
+        if(latlngArray !== null && latlngArray !== undefined){
+            if(latlngArray.latlngs.length > 0)
+            {
+                delete this.props.layers[this.state.layer.name];
+                console.log('in react return ');
+                console.log(latlngArray.latlngs);
+                this.props.create_layer(latlngArray.layer_name, latlngArray.type, latlngArray.pro_id, this.props.userDetails.email, latlngArray.latlngs);
+            }
+        }
+    }
+
+    closeInfoDiv(){
+        window.closeInfoDiv();
     }
 
     removeFeature(){
@@ -116,7 +161,7 @@ class ProjectView extends Component{
     }
 
     render(){
-        console.log(this.state.layers);
+        //console.log(this.props.match.params.pro_id);
         return (
             <MediaQuery maxWidth={768}>
                 {(matches) => {
@@ -242,12 +287,15 @@ class ProjectView extends Component{
                         );
                     } else {
                         return (
+                            <div>
                             <div className="">
                                 <input style={{marginTop:20}} type="button" id="btnMakePoint" value="AddPoint" onClick={this.addPoint}/>
                                 <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/>
                                 <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakePolygon" value="AddPolygon" onClick={this.addPolygon}/>
                                 <input style={{marginLeft:5, marginTop:20}} type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/>
                                 <input style={{marginLeft:5, marginTop:20, visibility:"hidden"}}  type="button" id="removeFeature" value="Remove Feature" onClick={this.removeFeature}/>
+                                
+                                </div>
                             <div className="project-layer-box">
                                 <div>
                                     <h4 className="text-center">Project Title</h4>
@@ -313,7 +361,20 @@ class ProjectView extends Component{
                                     </ul>
                                 </div>
                             </div>
+                            <div  id="infoDiv" className="project-infobox">
+                                <span><b>Info Panel</b></span>
+                                <br/>
+                                <div id="infoText">
+                                </div>
+                                <div>
+                                    <textarea type="text" className="text-area"></textarea>
+                                    
+                                </div>
+                                <input type="Button" value="submit"></input>
+                                <input style={{marginLeft:5, marginTop:20, visibility:"true"}}  type="button" id="showInfo" value="cancel" onClick={this.closeInfoDiv}/>
+                            </div>
                         </div>
+                        
                         );
                     }
                 }}
@@ -322,4 +383,8 @@ class ProjectView extends Component{
     }
 }
 
-export default ProjectView;
+function mapStateToProps({layers}){
+    return{layers}
+}
+
+export default connect(mapStateToProps, {create_layer, rename_layer, get_layers})(ProjectView);
