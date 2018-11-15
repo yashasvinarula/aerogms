@@ -5,7 +5,7 @@ import projectReducer from './reducer_project';
 import * as type from '../actions/types';
 import storage from 'redux-persist/lib/storage';
 import layerReducer from './reducer_layer';
-
+import userComplaintReducer from './reducer_user_complaints';
 
 // const rootReducer = combineReducers({
 //     userDetails: authReducer,
@@ -16,7 +16,8 @@ const AppReducer = combineReducers({
     userDetails: authReducer,
     users:usersReducer,
     projects:projectReducer,
-    layers:layerReducer
+    layers:layerReducer,
+    userComplaint:userComplaintReducer,
 });
 
 const rootReducer = (state, action)=>{

@@ -6,6 +6,7 @@ var pid = null;
 
 var jalandhar_prop_layer;
 var jalandhar_wfs_layer;
+var selcted_fea_info = {};
 
 function addJalandharLayer(){
 var owsrootUrl = 'http://localhost:8080/geoserver/ows';
@@ -57,7 +58,7 @@ function initMap()
             //crs: L.CRS.EPSG4326,
             //projection:'EPSG:4326',
             zoomControl: false,
-            measureControl: true
+            measureControl: false
         });
         if (!location.hash) {
             //m.setView([28.6057,77.2476], 11); // delhi view
@@ -176,8 +177,8 @@ function initMap()
         };
 
          //--------------info-----------------
+        
          m.on('click', function(e) {
-
             // Build the URL for a GetFeatureInfo
             var jalandharLayer = wmsLayers.filter(layer=>{
                 if(layer.options){
@@ -191,26 +192,30 @@ function initMap()
                             jalandharLayer[0],
                             e.latlng,
                             {
-                                'info_format': 'application/json',
-                                'propertyName': 'covered_area,unit_price'
+                                'info_format': 'application/json'
+                                //'propertyName': 'fid,covered_area,unit_price'
+                                //'FEATURE_COUNT': 50
                             }
                         );
-        
             // Send the request and create a popup showing the response
-            //alert(url);
             reqwest({
                 url: url,
                 type: 'json',
             }).then(function (data) {
                 if(data.features.length > 0){
+                    debugger
+                    selcted_fea_info={};
                     var feature = data.features[0];
+                    selcted_fea_info['sid'] = feature.properties.sid;
+                    selcted_fea_info['covered_area'] = feature.properties.covered_area;
+                    selcted_fea_info['unit_price'] = feature.properties.unit_price;
                     // L.popup()
                     // .setLatLng(e.latlng)
                     // .setContent(L.Util.template("<h2>{covered_area}</h2><p>{unit_price}</p>", feature.properties))
                     // .openOn(m);
                     document.getElementById('infoText').innerHTML = '';
                     document.getElementById('infoDiv').style.display = 'block';
-                    document.getElementById('infoText').innerHTML =  'covered_area : '+feature.properties.covered_area + '<br/>' + 'unit_price : ' + feature.properties.unit_price;
+                    document.getElementById('infoText').innerHTML =  'AeroGMS_id : '+ feature.properties.sid + '<br/>' + 'covered_area : '+feature.properties.covered_area + '<br/>' + 'unit_price : ' + feature.properties.unit_price;
                 }
               
             }).catch(err=>{
@@ -260,10 +265,6 @@ function initMap()
         pid = prourl.searchParams.get("pro_id");
         return pid;
         //m.addEventListener('click', Identify);
-              
-
-
-
     }
 
     try{
@@ -626,4 +627,14 @@ function initMap()
 
     function closeInfoDiv(){
         document.getElementById('infoDiv').style.display = 'none';
+    }
+
+    function getSelectedFeaValue(){
+        if(Object.keys(selcted_fea_info).length != 0){
+            return selcted_fea_info;
+        }
+        else{
+            alert('please select feature!');
+        }
+      
     }

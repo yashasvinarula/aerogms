@@ -166,3 +166,19 @@ export function resetLayerStore(){
         payload: null
     }
 }
+
+export function getUserComplaints(complaintObj){
+    debugger
+    return{
+        type: type.GET_USER_COMPLAINTS,
+        payload: [complaintObj]
+    }
+}
+
+export function addUserComplaint(complaintObj){
+    debugger
+    return{
+        type: type.ADD_USER_COMPLAINT,
+        payload: [complaintObj]
+    }
+}

@@ -13,6 +13,8 @@ export const RENAME_LAYER = 'rename_layer';
 export const GET_LAYERS = 'get_layers';
 export const DELETE_LAYER = 'delete_layer';
 export const RESET_LAYER_STORE = 'reset_layer_store';
+export const GET_USER_COMPLAINTS = 'get_user_complaints';
+export const ADD_USER_COMPLAINT = 'add_user_complaint';
 
 export const ROOT_URL = '/api';
 export const GET_SUCCESS = 'get_success';

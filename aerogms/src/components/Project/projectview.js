@@ -12,7 +12,7 @@ import LeftArrow from '../../images/LeftArrow.png';
 import '../../css/project.css';
 import addLayer from '../../images/AddLayerPNG.png';
 import importLayer from '../../images/ImportLayerPNG.png';
-import {create_layer, rename_layer, get_layers} from '../../actions'
+import {create_layer, rename_layer, get_layers, addUserComplaint} from '../../actions'
 import _ from 'lodash';
 import axios from 'axios';
 
@@ -49,6 +49,8 @@ class ProjectView extends Component{
             showVisibles : false,
             showFeatures : false,
             activeLayer : null,
+            compBoxShow:false,
+            compboxvalue:'',
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -60,6 +62,10 @@ class ProjectView extends Component{
         this.openFullDrawer = this.openFullDrawer.bind(this);
         this.openPartialDrawer = this.openPartialDrawer.bind(this);
         this.makeLayerActive = this.makeLayerActive.bind(this);
+        this.showCompBox = this.showCompBox.bind(this);
+        this.submitComplaint = this.submitComplaint.bind(this);
+        this.getCompBoxValue = this.getCompBoxValue.bind(this);
+        this.closeInfoDiv = this.closeInfoDiv.bind(this);
     }
 
     makeLayerActive() {
@@ -181,13 +187,43 @@ class ProjectView extends Component{
 
     closeInfoDiv(){
         window.closeInfoDiv();
+        this.setState({compBoxShow:false});
+
     }
 
     removeFeature(){
         window.removeSelFeature();
     }
 
+    showCompBox(){
+        this.setState({compBoxShow:!this.state.compBoxShow});
+        this.setState({compboxvalue:''});
+    }
+
+    submitComplaint(){
+        let comp_val = this.state.compboxvalue.trim();
+        let feaInfo = window.getSelectedFeaValue();
+        feaInfo['complaint'] = comp_val;
+        feaInfo['comp_id'] = 100 + parseInt(feaInfo.sid);
+        feaInfo['date'] = new Date().toLocaleString();
+        feaInfo['status'] = 'Pending';
+        this.props.addUserComplaint(feaInfo);
+        this.setState({compBoxShow:false});
+        alert('Complaint is received with id:' + feaInfo['comp_id']);
+    }
+
+    getCompBoxValue(e) {
+        this.setState({ 
+            compboxvalue: e.target.value 
+        });
+      }
+
     render(){
+        if(this.props.userComplaint){
+            console.log('coming from complaint reducer');
+            console.log(this.props.userComplaint);
+        }
+
         let drawerStates={};
         drawerStates.slider = this.state.slider;
         drawerStates.more = this.state.more;
@@ -410,16 +446,21 @@ class ProjectView extends Component{
                                 </div>
                             </div>
                             <div  id="infoDiv" className="project-infobox">
-                                <span><b>Info Panel</b></span>
-                                <br/>
+                                <span className="info-header"><b>Info Panel</b></span>
+                                <hr/>
                                 <div id="infoText">
                                 </div>
-                                <div>
-                                    <textarea type="text" className="text-area"></textarea>
-                                    
+                                <br/>
+                                <input id="btnAddComp" type="Button" value="Add Complaint" onClick={this.showCompBox}></input>
+                                <input style={{marginLeft:5, marginTop:10, visibility:"true"}}  type="button" id="hideInfo" value="cancel" onClick={this.closeInfoDiv}/>
+                                <br/><hr/>
+                                <div id="divCompBox" className={this.state.compBoxShow? '':'comp-box-div'}>
+                                    <div>
+                                        <textarea id="taCompDesc" onChange={this.getCompBoxValue} type="text" value={this.state.compboxvalue} className="text-area"></textarea>
+                                    </div>
+                                    <input type="Button" value="submit" onClick={this.submitComplaint}></input>
+                                    <input style={{marginLeft:5, marginTop:10, visibility:"true"}}  type="button" id="hideInfo2" value="cancel" onClick={this.closeInfoDiv}/>
                                 </div>
-                                <input type="Button" value="submit"></input>
-                                <input style={{marginLeft:5, marginTop:20, visibility:"true"}}  type="button" id="showInfo" value="cancel" onClick={this.closeInfoDiv}/>
                             </div>
                         </div>
                         
@@ -431,8 +472,8 @@ class ProjectView extends Component{
     }
 }
 
-function mapStateToProps({layers}){
-    return{layers}
+function mapStateToProps({layers, userComplaint}){
+    return{layers, userComplaint}
 }
 
-export default connect(mapStateToProps, {create_layer, rename_layer, get_layers})(ProjectView);
+export default connect(mapStateToProps, {create_layer, rename_layer, get_layers, addUserComplaint})(ProjectView);

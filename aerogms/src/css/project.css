@@ -71,7 +71,7 @@ input[type=button] {
     width: 120px;
 }
 .project-infobox{
-    width: 300px;
+    width: 266px;
     height: 590px;
     position: absolute;
     z-index: 99999;
@@ -79,10 +79,24 @@ input[type=button] {
     top: 165px;
     background:#fff;
     display: none;
+    box-shadow: #036;
     }
 
 .text-area{
-    height: 200px;;
+    height: 200px;
+    width: 261px;
+    padding-left: 5px;
+    margin-left: 5px;
+}
+#infoText{
+    padding-left: 5px;
+}
+.comp-box-div{
+    display: none;
+}
+.info-header{
+    font-size: 25px;
+    padding-left: 5px;
 }
 
 @media only screen and (max-width : 768px) {
