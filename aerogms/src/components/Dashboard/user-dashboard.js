@@ -114,12 +114,12 @@ class UserDashboard extends Component {
                     <Navbar.Header className="navbar-mobile">
                         <MediaQuery query="(min-device-width: 769px)">
                             <Navbar.Brand>
-                                <a href="#"><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
+                                <a href=""><Image src={AeroLogoHeader} alt="Aero Logo" responsive className="header-logo-admin" /></a>
                             </Navbar.Brand>
                         </MediaQuery>
                         <MediaQuery query="(max-width: 768px)">
                             <Navbar.Brand>
-                                <a href="#"><Image src={AeroLogoMObile} alt="Aero Logo" responsive className="header-logo-admin" /></a>
+                                <a href=""><Image src={AeroLogoMObile} alt="Aero Logo" responsive className="header-logo-admin" /></a>
                             </Navbar.Brand>
                         </MediaQuery>
                     </Navbar.Header>

@@ -1,3 +1,8 @@
+h4 {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    vertical-align: middle;
+}
 .separator-line {
     width: 100%;
 	height: 1px;
@@ -28,7 +33,6 @@
 .on-hover:hover {
     cursor: pointer;
 }
-
 .navbar-default .navbar-nav>li>a {
     color: #fff;
 }
@@ -40,17 +44,17 @@
     top: 60px;
     left: 0;
 	width: 300px;
-    height: 719px;
+    min-height: 719px;
     z-index: 999;
     background-color: white;
     position: absolute;
-
 }
-input[type=radio] {
-    width: 15px;
+input[type=button] {
+    width: 80px;
 }
 .input-layer {
     display: inline-block;
+    position: relative;
 }
 .modal-custom{
     position: fixed;
@@ -89,8 +93,7 @@ input[type=button] {
         position: relative;
         /* top: 60px; */
         /* left: 0; */
-        width: 100%;
-        height: 100%;
+        width: 100vw;
     }
     .project-menu {
         background-color: gray;
@@ -98,7 +101,7 @@ input[type=button] {
         z-index: 1000;
     }
     .project-nav {
-        position: fixed;
+        /* position: fixed; */
         top: 0;
         left: 0;
         background-color: #036 !important;
@@ -160,4 +163,18 @@ input[type=button] {
     .bottom-layers-panel>ul>li {
         display: inline-block;
     }
+    /* bottom drawer */
+    .bottom-drawer-bar {
+        position: fixed;
+        bottom: 40px;
+        left: 0px;
+        width: 50px;
+        height: 50px;
+    }
+    .bottom-drawer-button {
+        z-index: 999;
+        bottom : 100px;
+        left : 10px;
+    }
+      
 }

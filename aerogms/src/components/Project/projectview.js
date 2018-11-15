@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import { slide as Menu } from 'react-burger-menu';
 import MediaQuery from 'react-responsive';
 import Layer from './layer';
+import BottomDrawer from './bottom-drawer';
 import Analytics from './analytics';
 import Validation from './validation';
 import LayersPNG from '../../images/layers.png';
@@ -30,18 +31,24 @@ class ProjectView extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            more : false,
+            slider : 'slider',
+            close : 'close',
+            sliderPartial : 'slider-partial',
+            
             showImportModal : false,
             showAddLayerModal : false,
             layerType : '',
             layer : {visible : '', name : '', type : '', color : '', strokeColor : ''},
-            //layers : [],
-            remFeature:false,
+            layers : [],
+            remFeature : false,
             layerList : false,
             analytics : false,
             validation : false,
             info : true,
             showVisibles : false,
-            // map : false,
+            showFeatures : false,
+            activeLayer : null,
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -49,6 +56,26 @@ class ProjectView extends Component{
         this.addLayer = this.addLayer.bind(this);
         this.renderLayers = this.renderLayers.bind(this);
         this.saveLayer = this.saveLayer.bind(this);
+        this.closeDrawer = this.closeDrawer.bind(this);
+        this.openFullDrawer = this.openFullDrawer.bind(this);
+        this.openPartialDrawer = this.openPartialDrawer.bind(this);
+        this.makeLayerActive = this.makeLayerActive.bind(this);
+    }
+
+    makeLayerActive() {
+        
+    }
+
+    closeDrawer() {
+        this.setState({ close : 'close', sliderPartial : '', slider : '', more : false });
+    }
+
+    openFullDrawer() {
+        this.setState({ close : '', sliderPartial : '', slider : 'slider', more : false});
+    }
+
+    openPartialDrawer() {
+        this.setState({close : '', sliderPartial : 'slider-Partial', slider : '', more : true });
     }
 
     componentWillMount () {
@@ -161,7 +188,12 @@ class ProjectView extends Component{
     }
 
     render(){
-        //console.log(this.props.match.params.pro_id);
+        let drawerStates={};
+        drawerStates.slider = this.state.slider;
+        drawerStates.more = this.state.more;
+        drawerStates.sliderPartial = this.state.sliderPartial;
+        drawerStates.close = this.state.close;
+        console.log(this.state.layers);
         return (
             <MediaQuery maxWidth={768}>
                 {(matches) => {
@@ -175,7 +207,7 @@ class ProjectView extends Component{
                                         : ''
                                     }
                                     {
-                                        !this.state.layerList ? 
+                                     !this.state.layerList ? 
                                         (<div>
                                             <Menu className="project-menu" width={'40%'}>
                                                 <a id="home" className="menu-item" href="/dashboard">Users</a>
@@ -221,57 +253,69 @@ class ProjectView extends Component{
                                                 </Modal.Body>
                                             </Modal>
                                             <DropdownButton 
-                                        bsStyle="default"
-                                        noCaret
-                                        title={AddLayer}
-                                        id="dropdown-no-caret" >
-                                        <style type="text/css">{`
-                                                    .btn-default {
-                                                        border-color : #fff;
-                                                    }
-                                                    .btn {
-                                                        padding : 0px;
-                                                    }
-                                                    .dropdown {
-                                                       float : none !important;
-                                                    }
-                                                `}</style>
-                                        <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Point' })}>Point</MenuItem>
-                                        <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Line' })}>Line</MenuItem>
-                                        <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Polygon' })}>Polygon</MenuItem>
-                                        <Modal
-                                            show={this.state.showAddLayerModal}
-                                            onHide={this.closeAddLayerModal}
-                                            container={this}
-                                        >
-                                            <Modal.Header closeButton>Enter Layer Title</Modal.Header>
-                                            <Modal.Body>
-                                                <label htmlFor="layerTitle">Enter Title</label>
-                                                <input type="text" id="layer-title"/>
-                                                <Button onClick={this.addLayer}>Save</Button>
-                                            </Modal.Body>
-                                        </Modal>
-                                    </DropdownButton>
+                                                bsStyle="default"
+                                                noCaret
+                                                title={AddLayer}
+                                                id="dropdown-no-caret" >
+                                                <style type="text/css">{`
+                                                            .btn-default {
+                                                                border-color : #fff;
+                                                            }
+                                                            .btn {
+                                                                padding : 0px;
+                                                            }
+                                                            .dropdown {
+                                                               float : none !important;
+                                                            }
+                                                        `}</style>
+                                                <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Point' })}>Point</MenuItem>
+                                                <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Line' })}>Line</MenuItem>
+                                                <MenuItem onClick={() => this.setState({ showAddLayerModal : true, layerType : 'Polygon' })}>Polygon</MenuItem>
+                                                <Modal
+                                                    show={this.state.showAddLayerModal}
+                                                    onHide={this.closeAddLayerModal}
+                                                    container={this}
+                                                >
+                                                    <Modal.Header closeButton>Enter Layer Title</Modal.Header>
+                                                    <Modal.Body>
+                                                        <label htmlFor="layerTitle">Enter Title</label>
+                                                        <input type="text" id="layer-title"/>
+                                                        <Button onClick={this.addLayer}>Save</Button>
+                                                    </Modal.Body>
+                                                </Modal>
+                                            </DropdownButton>
                                         </div>
                                         <hr className="separator-line"></hr>
                                         <div>
-                                            {/* <ul>
+                                            <ul>
                                                 {this.renderLayers()}
+                                            </ul>
+                                            {/* <ul id="group1" className="">
+                                                <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
+                                                <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
+                                                <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
                                             </ul> */}
-                                            <ul id="group1" className="">
-                                                <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
-                                                <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
-                                                <li><Layer className="input-layer" layersInfo={this.state.info} /></li>
-                                            </ul>
                                         </div>
-                                        <div className="bottom-layers-panel">
-                                            <ul className="row">
-                                                <li className="col-xs-6" onClick={() => this.setState({info : true})} >Info</li>
-                                                <li className="col-xs-6" onClick={() => this.setState({info : false})} >Visibility</li>
-                                            </ul>
-                                        </div>
+                                        
+                                        {
+                                            this.state.layers.length !== 0 
+                                            ? ( <div className="bottom-layers-panel">
+                                                    <ul className="row">
+                                                        <li className="col-xs-6" onClick={() => this.setState({info : true})} >Info</li>
+                                                        <li className="col-xs-6" onClick={() => this.setState({info : false})} >Visibility</li>
+                                                    </ul>
+                                                </div>)
+                                            : ''
+                                        }
                                     </div>)
-                                    : ''
+                                    : (<div>
+                                        <Button className="bottom-drawer-button" onClick={this.openPartialDrawer}>Show Drawer</Button>
+                                        <BottomDrawer className="bottom-drawer-bar" 
+                                            closeDrawer={this.closeDrawer} 
+                                            openFullDrawer={this.openFullDrawer} 
+                                            drawerStates={drawerStates}
+                                        />
+                                    </div>)
                                 } 
                                 {
                                     this.state.analytics ?
@@ -282,7 +326,8 @@ class ProjectView extends Component{
                                     this.state.validation ?
                                     (<Validation />)
                                     : ''
-                                } 
+                                }
+
                             </div>
                         );
                     } else {
@@ -293,9 +338,9 @@ class ProjectView extends Component{
                                 <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/>
                                 <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakePolygon" value="AddPolygon" onClick={this.addPolygon}/>
                                 <input style={{marginLeft:5, marginTop:20}} type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/>
-                                <input style={{marginLeft:5, marginTop:20, visibility:"hidden"}}  type="button" id="removeFeature" value="Remove Feature" onClick={this.removeFeature}/>
-                                
-                                </div>
+                                <input style={{marginLeft:5, marginTop:20, visibility:"hidden"}}  type="button" id="removeFeature" 
+                                    value="Remove Feature" onClick={this.removeFeature}/>
+                            </div>
                             <div className="project-layer-box">
                                 <div>
                                     <h4 className="text-center">Project Title</h4>
@@ -322,7 +367,7 @@ class ProjectView extends Component{
                                         <input type="submit" name="submit" id="btnSubmit" value="Upload" />
                                         </form>
                                             <div id="divloader" className="loader">
-                                                <img src="./images/loader.gif" className="loaderImg"/>
+                                                <img src="./images/loader.gif" alt="loader" className="loaderImg"/>
                                             </div>
                                     </Modal>
                                     <DropdownButton 
@@ -333,6 +378,9 @@ class ProjectView extends Component{
                                         <style type="text/css">{`
                                                     .btn-default {
                                                         border-color : #fff;
+                                                    }
+                                                    .btn {
+                                                        padding : 0px;
                                                     }
                                                     .dropdown {
                                                        float : none !important;
