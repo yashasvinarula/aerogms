@@ -14,6 +14,8 @@ debugger
             return {...state, [action.payload[0].comp_id]:action.payload[0]}
             else
             return state
+        case type.RESET_LAYER_STORE:
+            return state=initialState;
         default:
             return state;
     }

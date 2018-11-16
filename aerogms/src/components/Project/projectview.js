@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {  Image, DropdownButton, MenuItem, Modal, Button } from 'react-bootstrap/lib';
+import { Navbar, NavItem, Image, DropdownButton, MenuItem, Modal, Button, Table } from 'react-bootstrap/lib';
 import {connect} from 'react-redux';
 import { slide as Menu } from 'react-burger-menu';
 import MediaQuery from 'react-responsive';
@@ -9,24 +9,26 @@ import Analytics from './analytics';
 import Validation from './validation';
 import LayersPNG from '../../images/layers.png';
 import LeftArrow from '../../images/LeftArrow.png';
+import CrossIcon from '../../images/CrossIcon.png';
 import '../../css/project.css';
 import addLayer from '../../images/AddLayerPNG.png';
+import paytm from '../../images/paytm.png';
+import phonepay from '../../images/phonepay.png';
+import buddy from '../../images/buddy.png';
+import bhim from '../../images/bhim.png';
+import tez from '../../images/tez.png';
 import importLayer from '../../images/ImportLayerPNG.png';
 import {create_layer, rename_layer, get_layers, addUserComplaint} from '../../actions'
 import _ from 'lodash';
 import axios from 'axios';
 
-// class AddLayer extends Component {
-//     render() {
-    const AddLayer = 
-        (
-            <div className="icons-display text-center col-xs-6">
-                <Image src={addLayer} className="add-import-icons" />
-                <span className="margin-outside">Add Layer</span>
-            </div>
-        );
-//     }
-// }
+const AddLayer = (
+    <div className="icons-display text-center col-xs-6">
+        <Image src={addLayer} className="add-import-icons" />
+        <span className="margin-outside">Add Layer</span>
+    </div>
+);
+
 class ProjectView extends Component{
     constructor(props) {
         super(props);
@@ -34,10 +36,10 @@ class ProjectView extends Component{
             more : false,
             slider : 'slider',
             close : 'close',
-            sliderPartial : 'slider-partial',
-            
+            sliderPartial : 'slider-partial',  
             showImportModal : false,
             showAddLayerModal : false,
+            showPaymentModal:false,
             layerType : '',
             layer : {visible : '', name : '', type : '', color : '', strokeColor : ''},
             layers : [],
@@ -51,6 +53,7 @@ class ProjectView extends Component{
             activeLayer : null,
             compBoxShow:false,
             compboxvalue:'',
+            queryTable : false,
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -66,6 +69,8 @@ class ProjectView extends Component{
         this.submitComplaint = this.submitComplaint.bind(this);
         this.getCompBoxValue = this.getCompBoxValue.bind(this);
         this.closeInfoDiv = this.closeInfoDiv.bind(this);
+        this.getTableData = this.getTableData.bind(this);
+        this.closePaymentModal = this.closePaymentModal.bind(this);
     }
 
     makeLayerActive() {
@@ -99,16 +104,16 @@ class ProjectView extends Component{
         this.setState({ showAddLayerModal : false });
     }
     addLayer() {
-        debugger
+        // debugger
         let newLayerTitle = document.getElementById('layer-title').value;
         if(newLayerTitle !== ''){
-            axios.post('/api/lay_name_exists', {
-                lay_name: newLayerTitle
-            })
-            .then(responce=>{
-                debugger
-                console.log(responce);
-                if(responce.data.status === 'not exists'){
+            // axios.post('/api/lay_name_exists', {
+            //     lay_name: newLayerTitle
+            // })
+            // .then(responce=>{
+            //     debugger
+            //     console.log(responce);
+            //     if(responce.data.status === 'not exists'){
                     let newLayer={}; //= this.state.layer;
                     newLayer.visible = true;
                     newLayer.name = newLayerTitle;
@@ -129,14 +134,17 @@ class ProjectView extends Component{
                 else{
                     alert('layer name is already exists! Please try with another name.')
                 }
-            })
-            .catch(err=>{
-                console.log('error: ' + err)
-            })
-        }
-        else{
-            alert('Please enter layer name/title!');
-        }
+            // })
+            // .catch(err=>{
+            //     console.log('error: ' + err)
+            // })
+        // }
+        // else{
+        //     alert('Please enter layer name/title!');
+        // }
+    }
+    closePaymentModal(){
+        this.setState({showPaymentModal:false});
     }
 
     renderLayers() {
@@ -145,7 +153,7 @@ class ProjectView extends Component{
         //        return (<li><Layer key={layer.name} layer={layer} changeLayerNameParent={(name)=>{layer.name = name}}/></li>);
         //     });
         // }
-        debugger
+        // debugger
         if(Object.keys(this.props.layers).length>0){
             return _.map(this.props.layers, layer=>{
                 console.log(layer);
@@ -218,11 +226,30 @@ class ProjectView extends Component{
         });
       }
 
-    render(){
-        if(this.props.userComplaint){
-            console.log('coming from complaint reducer');
-            console.log(this.props.userComplaint);
+    getTableData(){
+        
+        if(Object.keys(this.props.userComplaint).length>0){
+            return  _.map(this.props.userComplaint, complaint=>{
+                debugger
+                console.log(complaint);
+                return (<tr><td>{complaint.sid}</td>
+                <td>{complaint.comp_id}</td>
+                <td>{complaint.complaint}</td>
+                <td>{complaint.date}</td>
+                <td>{complaint.status}</td></tr>)
+            })
         }
+        else{
+            alert('There is no complaints!');
+            this.setState({queryTable : false});
+        }
+    }
+
+    render(){
+        // if(this.props.userComplaint){
+        //     console.log('coming from complaint reducer');
+        //     console.log(this.props.userComplaint);
+        // }
 
         let drawerStates={};
         drawerStates.slider = this.state.slider;
@@ -369,13 +396,48 @@ class ProjectView extends Component{
                     } else {
                         return (
                             <div>
+                                <Navbar>
+                                <NavItem className="nav-items"><input type="button" id="btnMakePoint" value="AddPoint" onClick={this.addPoint}/></NavItem>
+                                <NavItem className="nav-items"><input type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/></NavItem>
+                                <NavItem className="nav-items"><input type="button" id="btnMakePolygon" value="AddPolygon" onClick={this.addPolygon}/></NavItem>
+                                <NavItem className="nav-items"><input type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/></NavItem>
+                                <NavItem className="nav-items"><input style={{visibility:"hidden"}}  type="button" id="removeFeature" 
+                                    value="Remove Feature" onClick={this.removeFeature}/></NavItem>
+                                    <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Complaint Dashboard" onClick={()=>{this.setState({queryTable : true})}}/></NavItem>
+                                </Navbar>
+                                {
+                                    this.state.queryTable ?
+                                    (
+                                    <div className="table-div" >    
+                                        
+                                        <div className="query-table-div" id="divCompTable">
+                                        <Image onClick={() => this.setState({queryTable : false})} src={CrossIcon} className="table-cross-icon" />
+                                            <Table striped className="query-table">
+                                                <caption className="text-center" style={{fontWeight : 700}}>
+                                                    My Dashboard
+                                                </caption>
+                                                <thead>
+                                                    <tr>
+                                                        <th className="text-center">AeroId</th>
+                                                        <th className="text-center">Comp.Id</th>
+                                                        <th className="text-center">Description</th>
+                                                        <th className="text-center">Date</th>
+                                                        <th className="text-center">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {this.getTableData()}
+                                                </tbody>
+                                              
+                                            </Table>
+                                        </div>
+                                    </div>
+                                    )
+                                    : ''
+                                }
+                                    
                             <div className="">
-                                <input style={{marginTop:20}} type="button" id="btnMakePoint" value="AddPoint" onClick={this.addPoint}/>
-                                <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/>
-                                <input style={{marginLeft:5, marginTop:20}} type="button" id="btnMakePolygon" value="AddPolygon" onClick={this.addPolygon}/>
-                                <input style={{marginLeft:5, marginTop:20}} type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/>
-                                <input style={{marginLeft:5, marginTop:20, visibility:"hidden"}}  type="button" id="removeFeature" 
-                                    value="Remove Feature" onClick={this.removeFeature}/>
+                                
                             </div>
                             <div className="project-layer-box">
                                 <div>
@@ -395,7 +457,7 @@ class ProjectView extends Component{
                                     >
                                         <Modal.Header closeButton>Choose a file to import</Modal.Header>
                                         <Modal.Body>
-                                        </Modal.Body>
+                                        
                                             {/* <Button onClick={(e) => this.myInput.click() }>Select a file from your computer</Button>
                                             <input id="myInput" type="file" ref={(ref) => this.myInput = ref} style={{ display: 'none' }} /> */}
                                         <form id="frmUploader" enctype="multipart/form-data" action="/api/fileupload" method="post">
@@ -405,6 +467,7 @@ class ProjectView extends Component{
                                             <div id="divloader" className="loader">
                                                 <img src="./images/loader.gif" alt="loader" className="loaderImg"/>
                                             </div>
+                                            </Modal.Body>
                                     </Modal>
                                     <DropdownButton 
                                         bsStyle="default"
@@ -452,7 +515,27 @@ class ProjectView extends Component{
                                 </div>
                                 <br/>
                                 <input id="btnAddComp" type="Button" value="Add Complaint" onClick={this.showCompBox}></input>
-                                <input style={{marginLeft:5, marginTop:10, visibility:"true"}}  type="button" id="hideInfo" value="cancel" onClick={this.closeInfoDiv}/>
+                                <input style={{marginLeft:5, marginTop:10, visibility:"true"}}  type="button" id="hideInfo" value="Payment" onClick={()=>{this.setState({showPaymentModal:true})}}/>
+                                        <Modal 
+                                                show={this.state.showPaymentModal}
+                                                onHide={this.closePaymentModal}
+                                                container={this}
+                                            >
+                                            <style type="text/css">{
+                                                `.modal-content{width:240px}`
+                                            }</style>
+                                                <Modal.Header closeButton>Select a payment option</Modal.Header>
+                                                <Modal.Body>
+                                                   <div>
+                                                      <Image className="imageBorder" src={paytm}></Image>
+                                                      <Image className="imageBorder" src={phonepay}></Image>
+                                                      <Image className="imageBorder" src={buddy}></Image>
+                                                      <Image className="imageBorder" src={bhim}></Image>
+                                                      <Image className="imageBorder" src={tez}></Image>
+                                                   </div>
+                                                </Modal.Body>
+                                            </Modal>
+
                                 <br/><hr/>
                                 <div id="divCompBox" className={this.state.compBoxShow? '':'comp-box-div'}>
                                     <div>

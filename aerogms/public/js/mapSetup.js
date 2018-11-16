@@ -111,8 +111,8 @@ function initMap()
            //layControl.addOverlay(water_bodies_MLayer, 'WaterBody');
            //layControl.removeLayer(water_bodies_MLayer);
            
-           var osmGeocoder = new L.Control.OSMGeocoder();
-           m.addControl(osmGeocoder);
+        //    var osmGeocoder = new L.Control.OSMGeocoder();
+        //    m.addControl(osmGeocoder);
 
            m.on('overlayadd', function(e){
             var activeOverlay = e.layer.options.layers;
@@ -192,8 +192,8 @@ function initMap()
                             jalandharLayer[0],
                             e.latlng,
                             {
-                                'info_format': 'application/json'
-                                //'propertyName': 'fid,covered_area,unit_price'
+                                'info_format': 'application/json',
+                                'propertyName': 'sid,name,address,zone,nature,covered_area,vacant_area'
                                 //'FEATURE_COUNT': 50
                             }
                         );
@@ -206,16 +206,32 @@ function initMap()
                     debugger
                     selcted_fea_info={};
                     var feature = data.features[0];
-                    selcted_fea_info['sid'] = feature.properties.sid;
-                    selcted_fea_info['covered_area'] = feature.properties.covered_area;
-                    selcted_fea_info['unit_price'] = feature.properties.unit_price;
+                    selcted_fea_info = feature.properties;
+                    // selcted_fea_info['sid'] = feature.properties.sid;
+                    // selcted_fea_info['covered_area'] = feature.properties.covered_area;
+                    // selcted_fea_info['unit_price'] = feature.properties.unit_price;
                     // L.popup()
                     // .setLatLng(e.latlng)
                     // .setContent(L.Util.template("<h2>{covered_area}</h2><p>{unit_price}</p>", feature.properties))
                     // .openOn(m);
+
+                    let pro_tax = null;
+                    if(feature.properties.zone == 1){
+                        pro_tax = parseInt(feature.properties.covered_area)*5 + parseInt(feature.properties.vacant_area)*2.5;
+                    }
+                    if(feature.properties.zone == 2){
+                        pro_tax = parseInt(feature.properties.covered_area)*3 + parseInt(feature.properties.vacant_area)*2;
+                    }
                     document.getElementById('infoText').innerHTML = '';
                     document.getElementById('infoDiv').style.display = 'block';
-                    document.getElementById('infoText').innerHTML =  'AeroGMS_id : '+ feature.properties.sid + '<br/>' + 'covered_area : '+feature.properties.covered_area + '<br/>' + 'unit_price : ' + feature.properties.unit_price;
+                    document.getElementById('infoText').innerHTML =  'AeroGMS_id : '+ feature.properties.sid + '<br/>' 
+                    + 'Name : '+feature.properties.name + '<br/>' 
+                    + 'Address : ' + feature.properties.address + '<br/>' 
+                    + 'Zone : '+feature.properties.zone + '<br/>' 
+                    + 'Nature : ' + feature.properties.nature + '<br/>' 
+                    + 'Covered Area : '+feature.properties.covered_area + '<br/>' 
+                    + 'Vacant Area : ' + feature.properties.vacant_area + '<br/>' 
+                    + 'Property Tax : ' + pro_tax;
                 }
               
             }).catch(err=>{
@@ -269,6 +285,8 @@ function initMap()
 
     try{
         $(document).ready(function() {
+
+            //$('#divCompTable').draggable();
                 var options = {
                         beforeSubmit: showRequest,
                         success: showResponse 
