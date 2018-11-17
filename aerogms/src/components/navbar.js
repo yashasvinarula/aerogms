@@ -16,8 +16,8 @@ class NavbarLogin extends Component {
                             <a ><Image src={AeroLogoHeader} alt="AeroGMS Logo" className="header-logo"></Image></a>
                         </Navbar.Brand>
                     </Navbar.Header>
-                    <Navbar.Collapse className="col-md-9" pullRight>
-                        <Nav row="true">
+                    <Navbar.Collapse className="col-md-9">
+                        <Nav row="true" pullRight>
                             <NavItem className="col-md-4" eventKey={1}>Home</NavItem>
                             <NavItem className="col-md-4" eventKey={2}>About</NavItem>
                             <NavItem className="col-md-4" eventKey={3}>Contact us</NavItem>

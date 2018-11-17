@@ -47,6 +47,9 @@ class ProjectView extends Component{
             showFeatures : false,
             activeLayer : null,
             queryTable : false,
+            editReq : false,
+            queryForm : false,
+            queryType : '',
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -331,44 +334,41 @@ class ProjectView extends Component{
                     } else {
                         return (
                             <div>
-                                <Navbar>
-                                <NavItem className="nav-items"><input type="button" id="btnMakePoint" value="AddPoint" onClick={this.addPoint}/></NavItem>
-                                <NavItem className="nav-items"><input type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/></NavItem>
-                                <NavItem className="nav-items"><input type="button" id="btnMakePolygon" value="AddPolygon" onClick={this.addPolygon}/></NavItem>
-                                <NavItem className="nav-items"><input type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/></NavItem>
-                                <NavItem className="nav-items"><input style={{visibility:"hidden"}}  type="button" id="removeFeature" 
-                                    value="Remove Feature" onClick={this.removeFeature}/></NavItem>
-                                    <NavItem className="nav-items" onClick={() => this.setState({queryTable : true})} >Complaint Dashboard</NavItem>
+                                <Navbar fixedTop>
+                                    <NavItem className="nav-items"><input type="button" id="btnMakePoint" value="AddPoint" onClick={this.addPoint}/></NavItem>
+                                    <NavItem className="nav-items"><input type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/></NavItem>
+                                    <NavItem className="nav-items"><input type="button" id="btnMakePolygon" value="AddPolygon" onClick={this.addPolygon}/></NavItem>
+                                    <NavItem className="nav-items"><input type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/></NavItem>
+                                    <NavItem className="nav-items"><input style={{visibility:"hidden"}}  type="button" id="removeFeature" 
+                                        value="Remove Feature" onClick={this.removeFeature}/></NavItem>
+                                    <NavItem className="nav-items"><input type="button" className=""
+                                         value="Complaint Dashboard" onClick={() => this.setState({queryTable : true})} /></NavItem>
                                 </Navbar>
                                 {
                                     this.state.queryTable ?
                                     (
                                     <div className="table-div">    
-                                        
                                         <div className="query-table-div">
                                         <Image onClick={() => this.setState({queryTable : false})} src={CrossIcon} className="table-cross-icon" />
                                             <Table striped className="query-table">
+                                                <caption>My Dashboard</caption>
                                                 <thead>
                                                     <tr>
-                                                        <th className="text-center">Aero Id</th>
-                                                        <th className="text-center">Comp. Id</th>
+                                                        <th className="text-center">AeroId</th>
+                                                        <th className="text-center">Comp.Id</th>
                                                         <th className="text-center">Date</th>
                                                         <th className="text-center">Description</th>
                                                         <th className="text-center">Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                <tr>
+                                                    <td className="text-center">1234</td>
+                                                    <td className="text-center">1234</td>
+                                                    <td className="text-center">23 Sept, 2019</td>
+                                                    <td className="text-center">This is a Complaint</td>
+                                                    <td className="text-center">Pending</td>
+                                                </tr>
                                                 <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
                                                 <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
                                                 <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
@@ -387,9 +387,7 @@ class ProjectView extends Component{
                                     )
                                     : ''
                                 }
-                                    
                             <div className="">
-                                
                             </div>
                             <div className="project-layer-box">
                                 <div>
@@ -401,25 +399,33 @@ class ProjectView extends Component{
                                         <Image src={importLayer} className="add-import-icons " />
                                         <span className="margin-outside">Import Layer</span>
                                     </div>
-                                    <Modal className="modal-custom"
-
+                                    {/* <Modal className="modal-custom"
                                         show={this.state.showImportModal}
                                         onHide={this.closeImportModal}
                                         container={this}
                                     >
                                         <Modal.Header closeButton>Choose a file to import</Modal.Header>
-                                        <Modal.Body>
-                                        </Modal.Body>
+                                        <Modal.Body> */}
                                             {/* <Button onClick={(e) => this.myInput.click() }>Select a file from your computer</Button>
                                             <input id="myInput" type="file" ref={(ref) => this.myInput = ref} style={{ display: 'none' }} /> */}
-                                        <form id="frmUploader" enctype="multipart/form-data" action="/api/fileupload" method="post">
-                                        <input type="file" name="fileupload" multiple/>
-                                        <input type="submit" name="submit" id="btnSubmit" value="Upload" />
-                                        </form>
-                                            <div id="divloader" className="loader">
-                                                <img src="./images/loader.gif" alt="loader" className="loaderImg"/>
-                                            </div>
-                                    </Modal>
+                                            {
+                                                this.state.showImportModal ? 
+                                                (
+                                                    <div className="layer-upload">
+                                                        <Image src={CrossIcon} className="cross-icon" onClick={this.closeImportModal} />
+                                                        <form id="frmUploader" enctype="multipart/form-data" action="/api/fileupload" method="post">
+                                                            <input className="upload-btn" type="file" name="fileupload" multiple/>
+                                                            <input className="upload-btn" type="submit" name="submit" id="btnSubmit" value="Upload" />
+                                                        </form>
+                                                        <div id="divloader" className="loader">
+                                                            <img src="./images/loader.gif" alt="loader" className="loaderImg"/>
+                                                        </div>
+                                                    </div>
+                                                )
+                                                : ''
+                                            }
+                                        {/* </Modal.Body>
+                                    </Modal> */}
                                     <DropdownButton 
                                         bsStyle="default"
                                         noCaret
@@ -460,42 +466,98 @@ class ProjectView extends Component{
                                 </div>
                             </div>
                             <div  id="infoDiv" className="project-infobox">
-                                <h3>Info Panel</h3>
-                                <Table striped className="info-panel-attr-list">
-                                    <caption>Attributes Information</caption>
+                                <h3 className="text-center">Info Panel</h3>
+                                <Table striped className="info-panel-attr-list scroll">
+                                    <caption className="text-center">Attributes Information</caption>
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Value</th>
+                                            <th className=" text-center">Name</th>
+                                            <th className=" text-center">Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        {/* <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr>
-                                        <tr><td>Area</td><td>1234</td></tr> */}
+                                        <tr><td className="text-center td-info-panel">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        {/* <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr>
+                                        <tr><td className="text-center">Area</td><td className="text-center">1234</td></tr> */}
                                     </tbody>
                                 </Table>
-                                <div>
-                                    <h5>Suggestion</h5>
-                                    <h5>Complaint</h5>
-                                    <h5>Question</h5>
-                                    <h5>Edit Request</h5>
-                                </div>        
+                                {
+                                    !this.state.queryForm ?
+                                        (
+                                            <DropdownButton
+                                                bsStyle="default"
+                                                id="dropdown-default"
+                                                title={`Interact with Admin`}
+                                                className="query-list-dropdown"
+                                            ><style type="text/css">{`.dropdown { margin : 8px}`}</style>
+                                                <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Suggestion'})}>Suggestion</MenuItem>
+                                                <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Complaint'})}>Complaint</MenuItem>
+                                                <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Question'})}>Question</MenuItem>
+                                                <MenuItem onClick={() => this.setState({queryForm : true, editReq : true})}>Edit Request</MenuItem>
+                                            </DropdownButton>
+                                        )
+                                    :   
+                                        !this.state.editReq ? 
+                                            (
+                                                <form className="query-form">
+                                                    <h4 className="text-center">{this.state.queryType}</h4>
+                                                    {/* <hr /> */}
+                                                    <label>Subject</label>
+                                                    <textarea type="text" className="textArea" placeholder="Enter subject here"></textarea>
+                                                    <label>Description</label>
+                                                    <textarea type="text" className="textArea custom-height" placeholder="Enter description here"></textarea>
+                                                    <Button className="query-form-btn cancel-btn" onClick={() => this.setState({queryForm : false, queryType : ''})}>Cancel</Button>
+                                                    <Button className="query-form-btn submit-btn">Submit</Button>
+                                                </form>
+                                            )
+                                        :
+                                            (
+                                                <form className="query-form">
+                                                    <label>Specify Attribute Name</label>
+                                                    <select size={this.state.size}>
+                                                        <option value="">Choose Attribute</option>
+                                                        <option value="">Area</option>
+                                                        <option value="">Population</option>
+                                                        <option value="">Perimeter</option>
+                                                        <option value="">Choose Attribute</option>
+                                                        <option value="">Area</option>
+                                                        <option value="">Population</option>
+                                                        <option value="">Perimeter</option>
+                                                        <option value="">Choose Attribute</option>
+                                                        <option value="">Area</option>
+                                                        <option value="">Population</option>
+                                                        <option value="">Perimeter</option>
+                                                        <option value="">Choose Attribute</option>
+                                                        <option value="">Area</option>
+                                                    </select>
+                                                    <label>Current value</label>
+                                                    <input readOnly></input>
+                                                    <label>Specify new value</label>
+                                                    <input type=""></input>
+                                                    <label>Please specify reason</label>
+                                                    <textarea type="text" className="textArea custom-height" placeholder="Enter here"></textarea>
+                                                    <Button className="query-form-btn cancel-btn" onClick={() => this.setState({editReq : false, queryForm : false})}>Cancel</Button>
+                                                    <Button className="query-form-btn submit-btn">Submit</Button>
+                                                </form>
+                                            ) 
+                                }
+                                {/* {
+                                    this.state.editReq && !this.state.queryForm ? 
+                                    
+                                    : ''
+                                } */}
                                 {/* <div id="infoText">
                                 </div>
                                 <div>
@@ -506,7 +568,6 @@ class ProjectView extends Component{
                                  type="button" id="showInfo" value="cancel" onClick={this.closeInfoDiv}/> */}
                             </div>
                         </div>
-                        
                         );
                     }
                 }}

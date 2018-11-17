@@ -84,7 +84,7 @@ class Layer extends Component {
         .then(responce=>{
             debugger
             console.log(responce);
-            if(responce.data.status == 'not exists'){
+            if(responce.data.status === 'not exists'){
                 this.props.changeLayerNameParent(newLayerTitle);
                 this.closeChangeLayerModal();
             }
@@ -384,7 +384,6 @@ class Layer extends Component {
                                     >
                                         <Modal.Header closeButton>Layer Title</Modal.Header>
                                         <Modal.Body>
-                                        
                                             {
                                                 !this.state.showAttrForm ? 
                                                     (

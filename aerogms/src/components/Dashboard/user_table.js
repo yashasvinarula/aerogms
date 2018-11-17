@@ -5,8 +5,8 @@ import {removeUser,toggleUserStatus} from '../../actions';
 import MediaQuery from 'react-responsive';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { DropdownButton, MenuItem, Image } from 'react-bootstrap/lib/';
-import EnableLogo from '../../images/LayerOn.png';
-import DisableLogo from '../../images/LayerNotActive.png';
+import EnableLogo from '../../images/LayerVisible.png';
+import DisableLogo from '../../images/LayerInvisible.png';
 
 const UserMenuIcon = (
     <Glyphicon  className="align-vertical btn-menu" onClick={this.showMenu}  glyph="option-vertical" />

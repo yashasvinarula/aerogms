@@ -1,7 +1,7 @@
-/* .layer-on-off {
-    width: 24px;
-    visibility: visible;
-} */
+.layer-on-off {
+    width: 40px;
+    height: 20px;
+}
 /* li {
     position: relative;
 }*/
@@ -92,8 +92,8 @@ label {
     display: block;
 }
 input {
-    margin-left: 20px;
-    width: 70%;
+    /* margin-left: 20px; */
+    width: 100%;
     font-weight: 400;
 
 }
@@ -130,7 +130,8 @@ input {
 
 @media only screen and (max-width : 768px ) {
     .layer-on-off {
-        width: 24px;
+        width: 30px;
+        height: 20px;
     }
     .layer-title {
         font-size: 12px;
