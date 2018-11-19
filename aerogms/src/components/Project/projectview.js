@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import { Navbar, NavItem, Image, DropdownButton, MenuItem, Modal, Button, Table } from 'react-bootstrap/lib';
+import { Navbar, NavItem, Image, DropdownButton, MenuItem, Modal, Button, Table, Tabs, Tab } from 'react-bootstrap/lib';
 import {connect} from 'react-redux';
 import { slide as Menu } from 'react-burger-menu';
 import MediaQuery from 'react-responsive';
 import Layer from './layer';
+import Chat from './specificQuery';
 import BottomDrawer from './bottom-drawer';
 import Analytics from './analytics';
 import Validation from './validation';
@@ -16,6 +17,7 @@ import importLayer from '../../images/ImportLayerPNG.png';
 import {create_layer, rename_layer, get_layers} from '../../actions'
 import _ from 'lodash';
 import axios from 'axios';
+import SpecificQuery from './specificQuery';
 
 const AddLayer = (
     <div className="icons-display text-center col-xs-6">
@@ -50,6 +52,8 @@ class ProjectView extends Component{
             editReq : false,
             queryForm : false,
             queryType : '',
+            specificQuery : false,
+            tabKey : 1,
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -61,8 +65,12 @@ class ProjectView extends Component{
         this.openFullDrawer = this.openFullDrawer.bind(this);
         this.openPartialDrawer = this.openPartialDrawer.bind(this);
         this.makeLayerActive = this.makeLayerActive.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
     }
 
+    handleSelect(tabKey) {
+        this.setState({tabKey});
+    }
     makeLayerActive() {
         
     }
@@ -189,6 +197,7 @@ class ProjectView extends Component{
     }
 
     render(){
+        debugger;
         let drawerStates={};
         drawerStates.slider = this.state.slider;
         drawerStates.more = this.state.more;
@@ -333,7 +342,7 @@ class ProjectView extends Component{
                         );
                     } else {
                         return (
-                            <div>
+                            <   div>
                                 <Navbar fixedTop>
                                     <NavItem className="nav-items"><input type="button" id="btnMakePoint" value="AddPoint" onClick={this.addPoint}/></NavItem>
                                     <NavItem className="nav-items"><input type="button" id="btnMakeLine" value="AddLine" onClick={this.addLine}/></NavItem>
@@ -349,39 +358,49 @@ class ProjectView extends Component{
                                     (
                                     <div className="table-div">    
                                         <div className="query-table-div">
-                                        <Image onClick={() => this.setState({queryTable : false})} src={CrossIcon} className="table-cross-icon" />
-                                            <Table striped className="query-table">
-                                                <caption>My Dashboard</caption>
-                                                <thead>
-                                                    <tr>
-                                                        <th className="text-center">AeroId</th>
-                                                        <th className="text-center">Comp.Id</th>
-                                                        <th className="text-center">Date</th>
-                                                        <th className="text-center">Description</th>
-                                                        <th className="text-center">Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td className="text-center">1234</td>
-                                                    <td className="text-center">1234</td>
-                                                    <td className="text-center">23 Sept, 2019</td>
-                                                    <td className="text-center">This is a Complaint</td>
-                                                    <td className="text-center">Pending</td>
-                                                </tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                                <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
-                                            </tbody>
-                                            </Table>
+                                        <Image onClick={() => this.setState({queryTable : false, tabKey : 1})} src={CrossIcon} className="table-cross-icon" />
+                                            <Tabs
+                                                activeKey={this.state.tabKey}
+                                                onSelect={this.handleSelect}
+                                            >
+                                                <Tab eventKey={1} title="Complaints">
+                                                    <Table striped className="query-table">
+                                                        <caption>My Dashboard</caption>
+                                                        <thead>
+                                                            <tr>
+                                                                <th className="text-center">AeroId</th>
+                                                                <th className="text-center">Comp.Id</th>
+                                                                <th className="text-center">Date</th>
+                                                                <th className="text-center">Subject</th>
+                                                                <th className="text-center">Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr onClick={() => this.setState({specificQuery : true})}>
+                                                                <td className="text-center">1234</td>
+                                                                <td className="text-center">1234</td>
+                                                                <td className="text-center">23 Sept, 2019</td>
+                                                                <td className="text-center">This is a Complaint</td>
+                                                                <td className="text-center">Pending</td>
+                                                            </tr>
+                                                            <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                        </tbody>
+                                                    </Table>
+                                                </Tab>
+                                                <Tab eventKey={2} title="Specific Complaint">
+                                                    <SpecificQuery />
+                                                </Tab>
+                                            </Tabs>
+                                            {/* {
+                                                !this.state.specificQuery ? 
+                                                    (
+                                                    
+                                                    )
+                                                :
+                                                    (
+                                                        <Chat />
+                                                    )
+                                            } */}
                                         </div>
                                     </div>
                                     )

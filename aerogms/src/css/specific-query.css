@@ -1,0 +1,54 @@
+#subject {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.chat-box {
+    float: left;
+    width: 58%;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    margin: 0 0 10px 10px;
+    min-height: 20px;
+}
+.chat {
+    min-height: 370px;
+    max-height: 370px;
+    padding: 5px;
+    overflow-y: auto;
+}
+#chat-input {
+    border: 1px solid lightgray;
+    margin: 5px;
+    width: 81%;
+    padding-left: 5px;
+    border-radius: 5px;
+}
+#chat-submit-btn {
+    background-color: #4db6ac;
+    color: #fff;
+    width: 15%;
+    vertical-align: middle;
+}
+.descn {
+    float: left;
+    width: 39%;
+    margin-left: 12px;
+}
+#descn-text {
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    margin-right: 10px;
+    padding: 5px;
+    max-height: 218px;
+    overflow: auto;
+}
+.comp-table {
+    float: right;
+    width: 38%;
+    margin-right: 10px;
+}
+table {
+    border : 1px solid lightgray;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
