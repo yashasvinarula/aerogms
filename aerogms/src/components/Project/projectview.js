@@ -19,6 +19,33 @@ import _ from 'lodash';
 import axios from 'axios';
 import SpecificQuery from './specificQuery';
 
+const queryList = [
+    {
+        aero_id : 1234,
+        query_id : 1234,
+        date : '21 May, 2018',
+        subject : 'First complaint',
+        status : 'Pending',
+        description : 'First complaint in query list'
+    },
+    {
+        aero_id : 4567,
+        query_id : 4567,
+        date : '21 September, 2018',
+        subject : 'Second complaint',
+        status : 'Resolved',
+        description : 'Second complaint in query list'
+    },
+    {
+        aero_id : 6789,
+        query_id : 6789,
+        date : '21 August, 2018',
+        subject : 'Third complaint',
+        status : 'Considered',
+        description : 'Third complaint in query list'
+    }
+];
+
 const AddLayer = (
     <div className="icons-display text-center col-xs-6">
         <Image src={addLayer} className="add-import-icons" />
@@ -52,8 +79,12 @@ class ProjectView extends Component{
             editReq : false,
             queryForm : false,
             queryType : '',
-            specificQuery : false,
-            tabKey : 1,
+            tabKey : 1, // for list of complaints and specific complaint
+            queryList : queryList, // list of all types queries
+            currentQueryIndex : 0, //index for current query row selected by default for 1st query row
+            showSpecificQuery : true, // for showing specific query by default true for showing first query
+            enableNext : 'prev-next-btn', // to enable css class on next button
+            enablePrev : 'disable-btn', // to enable css class on previous button
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -66,27 +97,64 @@ class ProjectView extends Component{
         this.openPartialDrawer = this.openPartialDrawer.bind(this);
         this.makeLayerActive = this.makeLayerActive.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
+        this.selectRow = this.selectRow.bind(this);
+        this.showNextQuery = this.showNextQuery.bind(this);
+        this.showPreviousQuery = this.showPreviousQuery.bind(this);
     }
 
     handleSelect(tabKey) {
         this.setState({tabKey});
     }
+    selectRow(item) {
+        let currentRowIndex = this.state.queryList.findIndex(queryItem => queryItem.query_id.toString() === item._dispatchInstances.key);
+        if(currentRowIndex !== -1) {
+            if(currentRowIndex === 0) {
+                this.setState({tabKey : 2, currentQueryIndex : currentRowIndex, 
+                    showSpecificQuery : true, enableNext : 'prev-next-btn', 
+                    enablePrev : 'disable-btn'});
+            } else if( currentRowIndex === this.state.queryList.length -1) {
+                this.setState({tabKey : 2, currentQueryIndex : currentRowIndex, 
+                    showSpecificQuery : true, enableNext : 'disable-btn', 
+                    enablePrev : 'prev-next-btn'});
+            } else if(currentRowIndex > 0 && currentRowIndex < this.state.queryList.length - 1) {
+                this.setState({tabKey : 2, currentQueryIndex : currentRowIndex, 
+                    showSpecificQuery : true, enableNext : 'prev-next-btn', 
+                    enablePrev : 'prev-next-btn'});
+            }
+        }
+        else 
+            return;
+    }
+    showNextQuery() {
+        let index = this.state.currentQueryIndex;
+        if(index < this.state.queryList.length - 1) {
+            index++;
+            this.setState({currentQueryIndex : index, enableNext : 'prev-next-btn', enablePrev : 'prev-next-btn'});
+        } else if(index === this.state.queryList.length - 1) {
+            this.setState({enableNext : 'disable-btn', enablePrev : 'prev-next-btn'});
+        }
+    }
+    showPreviousQuery() {
+        let index = this.state.currentQueryIndex;
+        if(index > 0) {
+            index--;
+            this.setState({currentQueryIndex : index, enableNext : 'prev-next-btn', enablePrev : 'prev-next-btn'});
+        } else if(index === 0) {
+            this.setState({enableNext : 'prev-next-btn', enablePrev : 'disable-btn'});
+        }
+    }
     makeLayerActive() {
         
     }
-
     closeDrawer() {
         this.setState({ close : 'close', sliderPartial : '', slider : '', more : false });
     }
-
     openFullDrawer() {
         this.setState({ close : '', sliderPartial : '', slider : 'slider', more : false});
     }
-
     openPartialDrawer() {
         this.setState({close : '', sliderPartial : 'slider-Partial', slider : '', more : true });
     }
-
     componentWillMount () {
         let pid = window.initMap();
         if(Object.keys(this.props.layers).length === 0){
@@ -141,7 +209,6 @@ class ProjectView extends Component{
         //     alert('Please enter layer name/title!');
         // }
     }
-
     renderLayers() {
         // if(this.state.layers.length !== 0) {
         //     return this.state.layers.map((layer) => {
@@ -156,23 +223,18 @@ class ProjectView extends Component{
             })
         }
     }
-
     createNewLayer(type){
         window.createNewLayer(type);
     }
-
     addPoint(){
         window.addPoint();
     }
-
     addLine(){
         window.addLine();
     }
-
     addPolygon(){
         window.addPolygon();
     }
-
     saveLayer(){
         var latlngArray;
         latlngArray =  window.saveLayer(this.state.layer.type, this.state.layer.name);
@@ -187,15 +249,12 @@ class ProjectView extends Component{
             }
         }
     }
-
     closeInfoDiv(){
         window.closeInfoDiv();
     }
-
     removeFeature(){
         window.removeSelFeature();
     }
-
     render(){
         debugger;
         let drawerStates={};
@@ -203,7 +262,6 @@ class ProjectView extends Component{
         drawerStates.more = this.state.more;
         drawerStates.sliderPartial = this.state.sliderPartial;
         drawerStates.close = this.state.close;
-        console.log(this.state.layers);
         return (
             <MediaQuery maxWidth={768}>
                 {(matches) => {
@@ -351,7 +409,7 @@ class ProjectView extends Component{
                                     <NavItem className="nav-items"><input style={{visibility:"hidden"}}  type="button" id="removeFeature" 
                                         value="Remove Feature" onClick={this.removeFeature}/></NavItem>
                                     <NavItem className="nav-items"><input type="button" className=""
-                                         value="Complaint Dashboard" onClick={() => this.setState({queryTable : true})} /></NavItem>
+                                         value="Query Dashboard" onClick={() => this.setState({queryTable : true})} /></NavItem>
                                 </Navbar>
                                 {
                                     this.state.queryTable ?
@@ -362,45 +420,50 @@ class ProjectView extends Component{
                                             <Tabs
                                                 activeKey={this.state.tabKey}
                                                 onSelect={this.handleSelect}
+                                                id="query-tab"
                                             >
-                                                <Tab eventKey={1} title="Complaints">
+                                                <Tab eventKey={1} title="Queries">
                                                     <Table striped className="query-table">
                                                         <caption>My Dashboard</caption>
                                                         <thead>
                                                             <tr>
                                                                 <th className="text-center">AeroId</th>
-                                                                <th className="text-center">Comp.Id</th>
+                                                                <th className="text-center">Query.Id</th>
                                                                 <th className="text-center">Date</th>
                                                                 <th className="text-center">Subject</th>
                                                                 <th className="text-center">Status</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr onClick={() => this.setState({specificQuery : true})}>
-                                                                <td className="text-center">1234</td>
-                                                                <td className="text-center">1234</td>
-                                                                <td className="text-center">23 Sept, 2019</td>
-                                                                <td className="text-center">This is a Complaint</td>
-                                                                <td className="text-center">Pending</td>
-                                                            </tr>
-                                                            <tr><td>1234</td><td>1234</td><td>23 Sept, 2019</td><td>This is a Complaint</td><td>Pending</td></tr>
+                                                            {
+                                                                this.state.queryList.map((item) => {
+                                                                    return (
+                                                                        <tr key={item.query_id} className="query-row" onClick={this.selectRow}>
+                                                                            <td>{item.aero_id}</td>
+                                                                            <td>{item.query_id}</td>
+                                                                            <td>{item.date}</td>
+                                                                            <td>{item.subject}</td>
+                                                                            <td>{item.status}</td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                            }
                                                         </tbody>
                                                     </Table>
                                                 </Tab>
-                                                <Tab eventKey={2} title="Specific Complaint">
-                                                    <SpecificQuery />
+                                                <Tab eventKey={2} title="Specific Query">
+                                                {
+                                                    this.state.showSpecificQuery ? 
+                                                        (<SpecificQuery next={this.showNextQuery} 
+                                                            prev={this.showPreviousQuery} 
+                                                            query={this.state.queryList[this.state.currentQueryIndex]} 
+                                                            enableNext={this.state.enableNext}
+                                                            enablePrev={this.state.enablePrev}
+                                                        />)
+                                                    : ''
+                                                }
                                                 </Tab>
                                             </Tabs>
-                                            {/* {
-                                                !this.state.specificQuery ? 
-                                                    (
-                                                    
-                                                    )
-                                                :
-                                                    (
-                                                        <Chat />
-                                                    )
-                                            } */}
                                         </div>
                                     </div>
                                     )
@@ -520,7 +583,7 @@ class ProjectView extends Component{
                                                 id="dropdown-default"
                                                 title={`Interact with Admin`}
                                                 className="query-list-dropdown"
-                                            ><style type="text/css">{`.dropdown { margin : 8px}`}</style>
+                                            >
                                                 <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Suggestion'})}>Suggestion</MenuItem>
                                                 <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Complaint'})}>Complaint</MenuItem>
                                                 <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Question'})}>Question</MenuItem>

@@ -9,23 +9,21 @@ class SpecificQuery extends Component {
         this.state = {
             chat : [], // conversation 
             userType : '', // admin or user
-            chatText : '' // current written text
+            chatText : '', // current written text
         }
         this.handleChat = this.handleChat.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
-
+    
     handleChange(event) {
         this.setState({chatText : event.target.value})
     }
-
     handleChat(event) {
         debugger;
         event.preventDefault();
         if(this.state.chatText === '' || this.state.chatText === 'undefined'  || this.state.chatText === null) {
             alert('Please enter something');
         } else {
-            // this.setState({userType : 'user'});
             let newChat = {user : 'user', text : ''};
             newChat.user = this.state.userType;
             newChat.text = this.state.chatText;
@@ -37,17 +35,23 @@ class SpecificQuery extends Component {
 
     render() {
         debugger;
+        console.log(this.props.query);
         return (
             <div>
                 <div id="subject">
                     <label className="inline-display">Subject : </label>
                     <p className="inline-display">This is a complaint</p>
+                    <Button className={`prev-next-btn-default ${this.props.enableNext}`} onChange={this.handlePrevNext} onClick={this.props.next}>Next</Button>
+                    <Button className={`prev-next-btn-default ${this.props.enablePrev}`} onChange={this.handlePrevNext} onClick={this.props.prev}>Previous</Button>
+                </div>
+                <div>
+                    
                 </div>
                 <div className="chat-box">
                     <div className="chat">
                         {
                             this.state.chat.map((chat) => {
-                                return (<div><Image src={AdminIcon} /><p>{chat.text}</p></div>);
+                                return (<div><Image className="admin-icon" src={AdminIcon} /><p className="chat-text">{chat.text}</p></div>);
                             })
                         }
                     </div>
@@ -56,34 +60,29 @@ class SpecificQuery extends Component {
                         <Button id="chat-submit-btn" onClick={(event) => this.handleChat(event)} >Send</Button>
                     {/* </form> */}
                 </div>
-                <div id="comp-box">
+                {/* <div id="comp-box"> */}
                     <div className="descn">
                         <label>Description</label>
-                        <p id="descn-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                            when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                            It has survived not only five centuries, but also the leap into electronic typesetting, remaining 
-                            essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing 
-                            Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                            when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                            It has survived not only five centuries, but also the leap into electronic typesetting, remaining 
-                            essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing 
-                            Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
-                        </p>
+                        <p id="descn-text">{`${this.props.query.description}`}</p>
                     </div>
-                </div>
+                {/* </div> */}
                 <div>
-                        <Table striped  className="comp-table">
-                            <tbody>
-                                <tr><td>AeroId</td><td>1234</td></tr>
-                                <tr><td>Comp.Id</td><td>1234</td></tr>
-                                <tr><td>Date</td><td>23 Sept, 2018</td></tr>
-                                <tr><td>Status</td><td>Pending</td></tr>
-                            </tbody>
-                        </Table>
-                    </div>
+                    {
+                        this.props.query !== 'undefined' ?
+                            (
+                                <Table striped  className="comp-table">
+                                    <tbody>
+                                        <tr><td>AeroId</td><td>{`${this.props.query.aero_id}`}</td></tr>
+                                        <tr><td>Comp.Id</td><td>{`${this.props.query.query_id}`}</td></tr>
+                                        <tr><td>Date</td><td>{`${this.props.query.date}`}</td></tr>
+                                        <tr><td>Status</td><td>{`${this.props.query.status}`}</td></tr>
+                                    </tbody>
+                                </Table>
+                            )
+                        :
+                            ''
+                    }
+                </div>
             </div>
         );
     }

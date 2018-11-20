@@ -29,6 +29,13 @@
     width: 15%;
     vertical-align: middle;
 }
+.chat-text {
+    display: inline-block;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 0 5px;
+    margin-left: 8px;
+}
 .descn {
     float: left;
     width: 39%;
@@ -39,6 +46,7 @@
     border-radius: 10px;
     margin-right: 10px;
     padding: 5px;
+    min-height: 218px;
     max-height: 218px;
     overflow: auto;
 }
@@ -51,4 +59,25 @@ table {
     border : 1px solid lightgray;
     border-radius: 10px;
     margin-bottom: 5px;
+}
+.admin-icon {
+    width: 24px;
+    height: 24px;
+}
+.prev-next-btn-default {
+    width: 70px;
+    margin-right: 10px;
+    float: right;
+}
+.prev-next-btn {
+    background-color: #4db6ac;
+    color: #fff;
+}
+.prev-next-btn:hover {
+    background-color: #4db6ac;
+}
+.disable-btn {
+    background-color: lightgray;
+    color: #000;
+    cursor: auto;
 }
