@@ -64,10 +64,16 @@ table {
     width: 24px;
     height: 24px;
 }
+/* :active {
+    border-style: outset;
+} */
+
 .prev-next-btn-default {
+    background: none;
     width: 70px;
     margin-right: 10px;
     float: right;
+    /* outline: none; */
 }
 .prev-next-btn {
     background-color: #4db6ac;
@@ -80,4 +86,21 @@ table {
     background-color: lightgray;
     color: #000;
     cursor: auto;
+}
+/* .btn-default:active, .btn-default:focus {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    outline: 0;
+  } */
+  .btn:focus {
+    outline: none !important;
+    border-style: outset;
+    /* outline-offset: none !important; */
+}
+button[disabled] {
+    cursor: auto !important;
+}
+button[disabled]:hover {
+    background-color: lightgray;
 }

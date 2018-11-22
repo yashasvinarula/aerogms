@@ -256,7 +256,7 @@ class ProjectView extends Component{
         window.removeSelFeature();
     }
     render(){
-        debugger;
+        // debugger;
         let drawerStates={};
         drawerStates.slider = this.state.slider;
         drawerStates.more = this.state.more;

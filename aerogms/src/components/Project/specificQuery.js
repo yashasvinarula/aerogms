@@ -34,15 +34,19 @@ class SpecificQuery extends Component {
     }
 
     render() {
-        debugger;
+        // debugger;
         console.log(this.props.query);
         return (
             <div>
                 <div id="subject">
                     <label className="inline-display">Subject : </label>
                     <p className="inline-display">This is a complaint</p>
-                    <Button className={`prev-next-btn-default ${this.props.enableNext}`} onChange={this.handlePrevNext} onClick={this.props.next}>Next</Button>
-                    <Button className={`prev-next-btn-default ${this.props.enablePrev}`} onChange={this.handlePrevNext} onClick={this.props.prev}>Previous</Button>
+                    <Button className={`prev-next-btn-default ${this.props.enableNext}`} 
+                        onChange={this.handlePrevNext} onClick={this.props.next}
+                        disabled={this.props.enableNext == "disable-btn" ? true : false}>Next</Button>
+                    <Button className={`prev-next-btn-default ${this.props.enablePrev}`} 
+                        onChange={this.handlePrevNext} onClick={this.props.prev} 
+                        disabled={this.props.enablePrev == "disable-btn" ? true : false} >Previous</Button>
                 </div>
                 <div>
                     
