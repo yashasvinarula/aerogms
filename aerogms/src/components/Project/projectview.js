@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Redirect} from 'react-router-dom';
 import { Navbar, NavItem, Image, DropdownButton, MenuItem, Modal, Button, Table } from 'react-bootstrap/lib';
 import {connect} from 'react-redux';
 import { slide as Menu } from 'react-burger-menu';
@@ -18,7 +19,7 @@ import buddy from '../../images/buddy.png';
 import bhim from '../../images/bhim.png';
 import tez from '../../images/tez.png';
 import importLayer from '../../images/ImportLayerPNG.png';
-import {create_layer, rename_layer, get_layers, addUserComplaint} from '../../actions'
+import {create_layer, rename_layer, get_layers, addUserComplaint, makelayerafterimport} from '../../actions'
 import _ from 'lodash';
 import axios from 'axios';
 
@@ -54,6 +55,7 @@ class ProjectView extends Component{
             compBoxShow:false,
             compboxvalue:'',
             queryTable : false,
+            pro_id:'',
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -71,6 +73,7 @@ class ProjectView extends Component{
         this.closeInfoDiv = this.closeInfoDiv.bind(this);
         this.getTableData = this.getTableData.bind(this);
         this.closePaymentModal = this.closePaymentModal.bind(this);
+        this.getLayerDataFromJS = this.getLayerDataFromJS.bind(this);
     }
 
     makeLayerActive() {
@@ -89,8 +92,13 @@ class ProjectView extends Component{
         this.setState({close : '', sliderPartial : 'slider-Partial', slider : '', more : true });
     }
 
+    componentDidMount(){
+        window.getLayerDataFromJS = this.getLayerDataFromJS;
+    }
+
     componentWillMount () {
         let pid = window.initMap();
+        this.setState({pro_id:pid});
         if(Object.keys(this.props.layers).length === 0){
             if(pid != null && pid !== undefined){
                 this.props.get_layers(pid, this.props.userDetails.email);
@@ -107,13 +115,13 @@ class ProjectView extends Component{
         // debugger
         let newLayerTitle = document.getElementById('layer-title').value;
         if(newLayerTitle !== ''){
-            // axios.post('/api/lay_name_exists', {
-            //     lay_name: newLayerTitle
-            // })
-            // .then(responce=>{
-            //     debugger
-            //     console.log(responce);
-            //     if(responce.data.status === 'not exists'){
+            axios.post('/api/lay_name_exists', {
+                lay_name: newLayerTitle
+            })
+            .then(responce=>{
+                debugger
+                console.log(responce);
+                if(responce.data.status === 'not exists'){
                     let newLayer={}; //= this.state.layer;
                     newLayer.visible = true;
                     newLayer.name = newLayerTitle;
@@ -134,26 +142,20 @@ class ProjectView extends Component{
                 else{
                     alert('layer name is already exists! Please try with another name.')
                 }
-            // })
-            // .catch(err=>{
-            //     console.log('error: ' + err)
-            // })
-        // }
-        // else{
-        //     alert('Please enter layer name/title!');
-        // }
+            })
+            .catch(err=>{
+                console.log('error: ' + err);
+            })
+        }
+        else{
+            alert('Please enter layer name/title!');
+        }
     }
     closePaymentModal(){
         this.setState({showPaymentModal:false});
     }
 
     renderLayers() {
-        // if(this.state.layers.length !== 0) {
-        //     return this.state.layers.map((layer) => {
-        //        return (<li><Layer key={layer.name} layer={layer} changeLayerNameParent={(name)=>{layer.name = name}}/></li>);
-        //     });
-        // }
-        // debugger
         if(Object.keys(this.props.layers).length>0){
             return _.map(this.props.layers, layer=>{
                 console.log(layer);
@@ -179,18 +181,64 @@ class ProjectView extends Component{
     }
 
     saveLayer(){
+        debugger
         var latlngArray;
         latlngArray =  window.saveLayer(this.state.layer.type, this.state.layer.name);
-        debugger
+       
         if(latlngArray !== null && latlngArray !== undefined){
-            if(latlngArray.latlngs.length > 0)
+            if(latlngArray.latlngs.length > 0 && latlngArray.type == 'Point')
             {
                 delete this.props.layers[this.state.layer.name];
                 console.log('in react return ');
                 console.log(latlngArray.latlngs);
                 this.props.create_layer(latlngArray.layer_name, latlngArray.type, latlngArray.pro_id, this.props.userDetails.email, latlngArray.latlngs);
             }
+            else if(latlngArray.latlngs.length > 0 && latlngArray.type == 'Line')
+            {
+                debugger
+                var stringArray = [];
+                var lnglatString = '';
+                latlngArray.latlngs.map((array1)=>{
+                    array1.map((latlon, i, arr)=>{
+                        if(i <= arr.length-2){
+                            lnglatString += latlon.lng + '@' + latlon.lat + '@'
+                        }
+                    })
+                    stringArray.push(lnglatString);
+                    lnglatString = '';
+                })
+                delete this.props.layers[this.state.layer.name];
+                this.props.create_layer(latlngArray.layer_name, latlngArray.type, latlngArray.pro_id, this.props.userDetails.email, stringArray);
+                stringArray = null;
+            }
+            else if(latlngArray.latlngs.length > 0 && latlngArray.type == 'Polygon')
+            {
+                debugger
+                var stringArray = [];
+                var lnglatString = '';
+                latlngArray.latlngs.map((array1)=>{
+                    array1.map((array2)=>{
+                        array2.map((latlon, i, arr)=>{
+                            if(i <= arr.length-2)
+                            {
+                                lnglatString += latlon.lng + '@' + latlon.lat + '@'
+                            }
+                            else{
+                                lnglatString += arr[0].lng + '@' + arr[0].lat + '@'
+                            }
+                        })
+                    })
+                    stringArray.push(lnglatString);
+                    lnglatString = '';
+                })
+                delete this.props.layers[this.state.layer.name];
+                console.log('in react return Polygon latlng Array: ');
+                console.log(stringArray);
+                this.props.create_layer(latlngArray.layer_name, latlngArray.type, latlngArray.pro_id, this.props.userDetails.email, stringArray);
+                //stringArray = null;
+            }
         }
+        
     }
 
     closeInfoDiv(){
@@ -245,11 +293,20 @@ class ProjectView extends Component{
         }
     }
 
+    getLayerDataFromJS(data){
+        debugger
+        if(data){
+            this.props.makelayerafterimport(data);
+        }
+    }
+
     render(){
-        // if(this.props.userComplaint){
-        //     console.log('coming from complaint reducer');
-        //     console.log(this.props.userComplaint);
-        // }
+        if(!this.props.userDetails.isLoggedIn)
+        {
+            window.wmsLayers=[];
+            document.getElementById('map').style.display='none';
+            return <Redirect to={{pathname:'/login'}}/>
+        }
 
         let drawerStates={};
         drawerStates.slider = this.state.slider;
@@ -403,7 +460,9 @@ class ProjectView extends Component{
                                 <NavItem className="nav-items"><input type="button" id="saveLayer" value="Save Layer" onClick={this.saveLayer}/></NavItem>
                                 <NavItem className="nav-items"><input style={{visibility:"hidden"}}  type="button" id="removeFeature" 
                                     value="Remove Feature" onClick={this.removeFeature}/></NavItem>
-                                    <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Complaint Dashboard" onClick={()=>{this.setState({queryTable : true})}}/></NavItem>
+                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Logout" onClick={this.props.doLogout}/></NavItem>
+                                     <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Complaint Dashboard" onClick={()=>{this.setState({queryTable : true})}}/></NavItem>
+                                    
                                 </Navbar>
                                 {
                                     this.state.queryTable ?
@@ -436,39 +495,27 @@ class ProjectView extends Component{
                                     : ''
                                 }
                                     
-                            <div className="">
-                                
-                            </div>
+                            <div className=""> </div>
                             <div className="project-layer-box">
                                 <div>
                                     <h4 className="text-center">Project Title</h4>
                                 </div>
                                 <hr className="separator-line"></hr>
                                 <div className="row">
-                                    <div className="icons-display on-hover text-center col-xs-6 left-padding" onClick={() => this.setState({ showImportModal : true })}>
+                                    <div className="icons-display on-hover text-center col-xs-6 left-padding" onClick={() =>{document.getElementById('divImportLayer').style.display='block';}}>
                                         <Image src={importLayer} className="add-import-icons " />
                                         <span className="margin-outside">Import Layer</span>
                                     </div>
-                                    <Modal className="modal-custom"
-
-                                        show={this.state.showImportModal}
-                                        onHide={this.closeImportModal}
-                                        container={this}
-                                    >
-                                        <Modal.Header closeButton>Choose a file to import</Modal.Header>
-                                        <Modal.Body>
-                                        
-                                            {/* <Button onClick={(e) => this.myInput.click() }>Select a file from your computer</Button>
-                                            <input id="myInput" type="file" ref={(ref) => this.myInput = ref} style={{ display: 'none' }} /> */}
-                                        <form id="frmUploader" enctype="multipart/form-data" action="/api/fileupload" method="post">
-                                        <input type="file" name="fileupload" multiple/>
-                                        <input type="submit" name="submit" id="btnSubmit" value="Upload" />
-                                        </form>
-                                            <div id="divloader" className="loader">
-                                                <img src="./images/loader.gif" alt="loader" className="loaderImg"/>
-                                            </div>
-                                            </Modal.Body>
-                                    </Modal>
+                                                <div id="divImportLayer" className="layer-upload">
+                                                    <Image src={CrossIcon} className="cross-icon" onClick={()=>{document.getElementById('divImportLayer').style.display='none';}} />
+                                                    <form id="frmUploader" enctype="multipart/form-data" action="/api/fileupload" method="post">
+                                                        <input className="upload-btn" type="file" name={'pro_id:'+this.state.pro_id} multiple/>
+                                                        <input className="upload-btn" type="submit" name="submit" id="btnSubmit" value="Upload" />
+                                                    </form>
+                                                    <div id="divloader" className="loader">
+                                                        <img src="./images/loader.gif" alt="loader" className="loaderImg"/>
+                                                    </div>
+                                                </div>
                                     <DropdownButton 
                                         bsStyle="default"
                                         noCaret
@@ -510,6 +557,7 @@ class ProjectView extends Component{
                             </div>
                             <div  id="infoDiv" className="project-infobox">
                                 <span className="info-header"><b>Info Panel</b></span>
+                                <Image src={CrossIcon} className="cross-icon" onClick={this.closeInfoDiv}/>
                                 <hr/>
                                 <div id="infoText">
                                 </div>
@@ -542,7 +590,7 @@ class ProjectView extends Component{
                                         <textarea id="taCompDesc" onChange={this.getCompBoxValue} type="text" value={this.state.compboxvalue} className="text-area"></textarea>
                                     </div>
                                     <input type="Button" value="submit" onClick={this.submitComplaint}></input>
-                                    <input style={{marginLeft:5, marginTop:10, visibility:"true"}}  type="button" id="hideInfo2" value="cancel" onClick={this.closeInfoDiv}/>
+                                    <input style={{marginLeft:5, marginTop:10, visibility:"true"}}  type="button" id="hideInfo2" value="cancel" onClick={this.showCompBox}/>
                                 </div>
                             </div>
                         </div>
@@ -559,4 +607,4 @@ function mapStateToProps({layers, userComplaint}){
     return{layers, userComplaint}
 }
 
-export default connect(mapStateToProps, {create_layer, rename_layer, get_layers, addUserComplaint})(ProjectView);
+export default connect(mapStateToProps, {create_layer, rename_layer, get_layers, addUserComplaint, makelayerafterimport})(ProjectView);

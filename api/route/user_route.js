@@ -4,7 +4,7 @@ var cntrlr = require('../controller/user_controller');
 var imprt_cntrlr = require('../controller/import_controller');
 var layer_cntrlr = require('../controller/layer_controller');
 const passport = require('passport');
-const auth = require('./Auth.js');
+const auth = require('./Auth.js');9 
 const multer = require('multer');
 
 
@@ -33,6 +33,7 @@ router.post('/get_layers', layer_cntrlr.get_layers)
 router.post('/create_layer', layer_cntrlr.create_layer);
 router.post('/rename_layer', layer_cntrlr.rename_layer);
 router.post('/lay_name_exists', layer_cntrlr.lay_name_exists);
+router.post('/delete_layer', layer_cntrlr.delete_layer);
 
 
 let storage = multer.diskStorage({

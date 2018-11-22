@@ -5,19 +5,19 @@ import {removeUser,toggleUserStatus} from '../../actions';
 import MediaQuery from 'react-responsive';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { DropdownButton, MenuItem, Image } from 'react-bootstrap/lib/';
-import EnableLogo from '../../images/LayerOn.png';
-import DisableLogo from '../../images/LayerNotActive.png';
+import EnableLogo from '../../images/LayerVisible.png';
+import DisableLogo from '../../images/LayerInvisible.png';
 
 const UserMenuIcon = (
     <Glyphicon  className="align-vertical btn-menu" onClick={this.showMenu}  glyph="option-vertical" />
 );
 
-const userNew = {
-    "u_id" : 1234,
-    "name" : 'Parveen Sahrawat',
-    "date_time" : '26 July, 2018',
-    "status" : true
-}
+// const userNew = {
+//     "u_id" : 1234,
+//     "name" : 'Parveen Sahrawat',
+//     "date_time" : '26 July, 2018',
+//     "status" : true
+// }
 
 class TableRow extends Component{
     constructor(props){
@@ -66,8 +66,8 @@ class TableRow extends Component{
     }
     
     render(){
-    // const {user} = this.props;
-    const user=userNew;         
+    const {user} = this.props;
+    // const user=userNew;         
     if(user !== "unauthorised" ) {
             return (
                 <MediaQuery maxWidth={768}>

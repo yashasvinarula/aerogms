@@ -7,6 +7,7 @@ var pid = null;
 var jalandhar_prop_layer;
 var jalandhar_wfs_layer;
 var selcted_fea_info = {};
+var getLayerDataFromJS;
 
 function addJalandharLayer(){
 var owsrootUrl = 'http://localhost:8080/geoserver/ows';
@@ -54,6 +55,10 @@ var ajax = $.ajax({
 
 function initMap()
     {
+        if(m){ m.remove();}
+       
+        //document.getElementById('map').nodeValue= null;
+        document.getElementById('map').style.display = 'block';
         m = L.map("map", {
             //crs: L.CRS.EPSG4326,
             //projection:'EPSG:4326',
@@ -197,7 +202,7 @@ function initMap()
                                 //'FEATURE_COUNT': 50
                             }
                         );
-            // Send the request and create a popup showing the response
+            //Send the request and create a popup showing the response
             reqwest({
                 url: url,
                 type: 'json',
@@ -278,78 +283,97 @@ function initMap()
 
         let url_string = window.location.href;
         let prourl = new URL(url_string);
+
+        //--------------import ---------
+        try{
+            $(document).ready(function() {
+                //$('#divCompTable').draggable();
+    
+                    var options = {
+                            beforeSubmit: showRequest,
+                            data:{ 'pro_id':pid},
+                            success: showResponse
+                            };
+                            // bind to the form's submit event 
+                            $('#frmUploader').submit(function () { $(this).ajaxSubmit(options); 
+                            // always return false to prevent standard browser submit and page navigation return false;
+                            return false;
+                            }); 
+                        });
+                            
+                        // pre-submit callback 
+                        function showRequest(formData, jqForm, options)
+                        {
+                            debugger
+                            //alert('Uploading is starting.'); return true;
+                            
+                            $('#divloader').show();
+                        }
+                        // post-submit callback 
+                        function showResponse(responseText, statusText, xhr, $form) 
+                        { 
+                            debugger
+                            document.getElementById('divImportLayer').style.display='none';
+                            $('#divloader').hide();
+                            if(responseText.message)
+                            {
+                                alert(responseText.message);
+                            }
+                            else if(responseText.status)
+                            {
+                                var box = responseText.status.box;
+                                if(box)
+                                {
+                                    var box = box.replace(/[\'BOX'\(\)]/g, '').split(',');
+                                    var corner1 = L.latLng(box[0].split(' ')[1], box[0].split(' ')[0]),
+                                    corner2 = L.latLng(box[1].split(' ')[1], box[1].split(' ')[0]),
+                                    bounds = L.latLngBounds(corner1, corner2);
+                                    m.fitBounds(bounds);
+                                }
+                                getLayerDataFromJS(responseText.status);
+                                // var layer = responseText[0].tname + '_Layer';
+                                // layer = new L.tileLayer.wms(geourl, {
+                                //     layers: 'AeroGMS:'+ responseText[0].tname, format:'image/png', 'transparent': true, 'tiled': true
+                                // }).addTo(m);
+                                // layControl.addOverlay(layer, responseText[0].tname);
+                                // if(responseText[0].box)
+                                // {
+                                //     var box = responseText[0].box.replace(/[\'BOX'\(\)]/g, '').split(',');
+                                //     var corner1 = L.latLng(box[0].split(' ')[1], box[0].split(' ')[0]),
+                                //     corner2 = L.latLng(box[1].split(' ')[1], box[1].split(' ')[0]),
+                                //     bounds = L.latLngBounds(corner1, corner2);
+                                //     m.fitBounds(bounds);
+                                // }
+                                //alert('Layer is saved and published successfully.');
+                            }
+                            else if(responseText[0].sp_add_new_table == 'EXISTS')
+                            {
+                                alert('Layer is already exists!');
+                            }
+                            else if(responseText[0].status)
+                            {
+                                alert(responseText[0].message);
+                            }
+                            else if(responseText)
+                            {
+                                alert(responseText);
+                            }
+                            else
+                            {
+                                document.getElementById('divImportLayer').style.display='none';
+                                alert('please check file before upload!');
+                            }
+                        }
+        }
+        catch(err)
+        {
+            document.getElementById('divImportLayer').style.display='none';
+            alert(err);
+        }
+        //--------------
         pid = prourl.searchParams.get("pro_id");
         return pid;
         //m.addEventListener('click', Identify);
-    }
-
-    try{
-        $(document).ready(function() {
-
-            //$('#divCompTable').draggable();
-                var options = {
-                        beforeSubmit: showRequest,
-                        success: showResponse 
-						};
-						// bind to the form's submit event 
-						$('#frmUploader').submit(function () { $(this).ajaxSubmit(options); 
-                        // always return false to prevent standard browser submit and page navigation return false;
-                        return false;
-                        }); 
-                    });
-						
-					// pre-submit callback 
-					function showRequest(formData, jqForm, options)
-					{
-                        //alert('Uploading is starting.'); return true;
-                        $('#divloader').show();
-                    }
-					// post-submit callback 
-					function showResponse(responseText, statusText, xhr, $form) 
-					{ 
-                        $('#divloader').hide();
-                        if(responseText.message)
-                        {
-                            alert(responseText.message);
-                        }
-                        else if(responseText[0].status =='published')
-                        {
-                            var layer = responseText[0].tname + '_Layer';
-                            layer = new L.tileLayer.wms(geourl, {
-                                layers: 'AeroGMS:'+ responseText[0].tname, format:'image/png', 'transparent': true, 'tiled': true
-                            }).addTo(m);
-                            layControl.addOverlay(layer, responseText[0].tname);
-                            if(responseText[0].box)
-                            {
-                                var box = responseText[0].box.replace(/[\'BOX'\(\)]/g, '').split(',');
-                                var corner1 = L.latLng(box[0].split(' ')[1], box[0].split(' ')[0]),
-                                corner2 = L.latLng(box[1].split(' ')[1], box[1].split(' ')[0]),
-                                bounds = L.latLngBounds(corner1, corner2);
-                                m.fitBounds(bounds);
-                            }
-                            //alert('Layer is saved and published successfully.');
-                        }
-                        else if(responseText[0].sp_add_new_table == 'EXISTS')
-                        {
-                            alert('Layer is already exists!');
-                        }
-                        else if(responseText[0].status)
-                        {
-                            alert(responseText[0].message);
-                        }
-                        else if(responseText)
-                        {
-                            alert(responseText);
-                        }
-                        else
-                        {
-                            alert('please check file before upload!');
-                        }
-                    }
-    }
-    catch(err)
-    {
-        alert(err);
     }
 
     function getBound(){
@@ -505,7 +529,6 @@ function initMap()
                     //L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
                  })
             }
-         
         }
     }
 
@@ -579,16 +602,19 @@ function initMap()
             return { layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
         }
         else if(type === 'Line' && currentLayer !== null){
-            //debugger
+            debugger
             let latlngs =[];
             latlngs = currentLayer.getLayers().map(line => {
                 line.editing.disable();
                 return line.getLatLngs();
             })
+            console.log('original lines latlng Array:');
             console.log(latlngs);
             currentLayer.off('click');
+            m.removeLayer(currentLayer);
             currentLayer = null;
-            return { layer_name:name, type:type, latlngs:latlngs};
+            debugger
+            return { layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
         }
         else if(type === 'Polygon' && currentLayer !== null){
             let latlngs =[];
@@ -599,8 +625,9 @@ function initMap()
             })
             console.log(latlngs);
             currentLayer.off('click');
+            m.removeLayer(currentLayer);
             currentLayer = null;
-            return { layer_name:name, type:type, latlngs:latlngs};
+            return { layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
         }
     }
 
@@ -654,5 +681,4 @@ function initMap()
         else{
             alert('please select feature!');
         }
-      
     }

@@ -160,6 +160,19 @@ export function get_layers(pro_id, user_id){
     }
 }
 
+export function delete_layer(layName, layId){
+    debugger
+    const request = axios.post(`${type.ROOT_URL}/delete_layer`, {
+        layer_name:layName,
+        lay_id:layId
+    })
+
+    return{
+        type: type.DELETE_LAYER,
+        payload: request
+    }
+}
+
 export function resetLayerStore(){
     return {
         type: type.RESET_LAYER_STORE,
@@ -180,5 +193,14 @@ export function addUserComplaint(complaintObj){
     return{
         type: type.ADD_USER_COMPLAINT,
         payload: [complaintObj]
+    }
+}
+
+export function makelayerafterimport(data){
+    debugger
+    var data = {data}
+    return{
+        type: type.CREATE_LAYER,
+        payload: data
     }
 }

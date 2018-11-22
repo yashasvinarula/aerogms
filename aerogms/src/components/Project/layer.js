@@ -12,6 +12,8 @@ import axios from 'axios';
 import Feature from './featureInfo';
 import TextIcon from '../../images/TextIcon.png';
 import NumberIcon from '../../images/NumberIcon.png';
+import {connect} from 'react-redux';
+import {delete_layer} from '../../actions';
 // import Feature from './featureInfo';
 
 const MenuImage = ( <Image src={InfoIcon} className="menu-icon inline-display margin-outside" />);
@@ -50,6 +52,7 @@ class Layer extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.deleteAttr = this.deleteAttr.bind(this);
         this.renameAttr = this.renameAttr.bind(this);
+        this.deleteLayer = this.deleteLayer.bind(this);
     };
 
     showColorPicker() {
@@ -107,6 +110,7 @@ class Layer extends Component {
     }
 
     componentDidMount(){
+        debugger
         window.addWMSLayer(this.props.layer.orig_name);
     }
 
@@ -163,6 +167,15 @@ class Layer extends Component {
     // addLayer(){
     //     window.addWMSLayer(this.props.layer.orig_name);
     // }
+    deleteLayer(){
+        if(window.confirm(`Do you really want to delete ${this.props.layer.name} layer.`)){
+            if(this.props.layer.orig_name && this.props.layer.lay_id)
+            {
+                this.props.delete_layer(this.props.layer.orig_name, this.props.layer.lay_id);
+                window.hideWMSLayer(this.props.layer.orig_name);
+            }
+        }
+    }
 
     render() {
         return (
@@ -484,7 +497,7 @@ class Layer extends Component {
                                         </Modal.Body>
                                     </Modal>
                                 <MenuItem>Table</MenuItem>
-                                <MenuItem>Delete</MenuItem>
+                                <MenuItem onClick={()=>this.deleteLayer()}>Delete</MenuItem>
                             </DropdownButton>
                             
                             {
@@ -502,4 +515,4 @@ class Layer extends Component {
     }
 }
 
-export default Layer;
+export default connect(null, {delete_layer})(Layer);

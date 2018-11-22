@@ -69,21 +69,21 @@ class Dashboard extends Component {
     render()
     {
         //debugger;
-        // if(!this.props.userDetails.isLoggedIn)
-        // {
-        //   return <Redirect to={{pathname:'/login'}}/>
-        // }
-        // if(this.props.userDetails.isadmin === "false")
-        // {
-        //     return <Redirect to={{pathname:'/userDashboard'}}/>
-        // }
-        // if(this.props.users['error']){
-        //     debugger
-        //     alert('Your session is expired. Please login!')
-        //     console.log('error session out!');
-        //     this.props.doLogout();
-        //     return <Redirect to='/login' />
-        // }
+        if(!this.props.userDetails.isLoggedIn)
+        {
+          return <Redirect to={{pathname:'/login'}}/>
+        }
+        if(this.props.userDetails.isadmin === "false")
+        {
+            return <Redirect to={{pathname:'/userDashboard'}}/>
+        }
+        if(this.props.users['error']){
+            debugger
+            alert('Your session is expired. Please login!')
+            console.log('error session out!');
+            this.props.doLogout();
+            return <Redirect to='/login' />
+        }
        
         return (
             <MediaQuery maxWidth={768}>
@@ -163,7 +163,7 @@ class Dashboard extends Component {
                             <Table striped condensed hover>
                                 <thead className="container">
                                     <tr className="row">
-                                        <th className="th-admin text-center col-sm-3">User Id</th>
+                                        <th className="th-admin text-center col-sm-3">UserId</th>
                                         <th className="th-admin text-center col-sm-3">User Name</th>
                                         <th className="th-admin text-center col-sm-3">Regn. Date</th>
                                         <th className="th-admin text-center col-sm-3">Status</th>
@@ -253,7 +253,7 @@ class Dashboard extends Component {
                             <Table striped condensed hover>
                                 <thead className="container">
                                     <tr>
-                                        <th>User Id</th>
+                                        <th>UserId</th>
                                         <th>User Name <span><Glyphicon glyph="sort" /></span></th>
                                         <th>Regn. Date <span><Glyphicon glyph="sort" /></span></th>
                                         <th>Status <span><Glyphicon glyph="sort" /></span></th>

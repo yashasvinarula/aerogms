@@ -266,33 +266,79 @@ try
         db.none(insert)
         .then(() => {
             console.log('TABLE CREATED AND DATA INSERTED SUCCESSFULLY.');
-            //res.status(200).json({'status': 'table created successfully', 'tname':tname});
-            registervector(tname, function(err){
-                if(err){
-                    console.log(err);
-                    return res.status(200).send(err);
-                }
-                else{
-                    //your table will appear as a new layer in GeoServer admin UI
-                    db.func('public.sp_aerogms', ['get_box', [tname.toString()]])
-                    .then(result => {
-                    if(result[0])
-                    {
-                        //return res.status(200).send({pro_id:result[0].sp_aerogms});
+            //---------------------
+            var pro_id = req.files[0].fieldname.split(':')[1];
+            db.func('public.sp_aerogms', ['layer_entry', [tname, geomType, pro_id, req.user.email]])
+            .then(result => {
+            if(result[0].sp_aerogms)
+            {
+                var lay_id = result[0].sp_aerogms;
+                console.log(result[0].sp_aerogms);
+                registervector(tname, function(err){
+                    if(err){
+                        console.log(err);
+                        return res.status(400).send(err);
+                    }
+                    else{
                         console.log('TABLE PUBLISHED SUCCESSFULLY.');
-                        return res.status(200).json([{'status':'published', 'message': 'table created and published successfully.', 'tname':tname, 'box':result[0].sp_aerogms}]);
+                        db.func('public.sp_aerogms', ['get_box', [tname.toString()]])
+                        .then(result => {
+                        if(result[0])
+                        {
+                            return res.status(200).send({status:{name:tname, orig_name:tname, type:geomType, visible:true, lay_id:lay_id, box:result[0].sp_aerogms}});
+                        }
+                        else
+                        {
+                            return res.status(200).send({message:'Problem in finding box!'});
+                        }
+                        })
+                        .catch(error => {
+                        console.log('ERROR:', error); // print the error;
+                        return res.status(400).send({status:'error', error:error});
+                        });
+                      
+                       //return res.status(200).json([{'status':'published', 'message': 'table created and published successfully.', 'tname':tname}]);
                     }
-                    else
-                    {
-                        return res.status(200).send({message:'Problem in finding box!'});
-                    }
-                    })
-                    .catch(error => {
-                    console.log('ERROR:', error); // print the error;
-                    return res.status(400).send(error);
-                    });
-                }
+                })
+            }
+            else
+            {
+                return res.status(200).send({message:'Problem in layer entry!'});
+            }
             })
+            .catch(error => {
+            console.log('ERROR:', error);
+            return res.status(400).send(error);
+            });
+            //---------------------
+            // registervector(tname, function(err){
+            //     if(err){
+            //         console.log(err);
+            //         return res.status(200).send(err);
+            //     }
+            //     else{
+            //         //your table will appear as a new layer in GeoServer admin UI
+            //         db.func('public.sp_aerogms', ['get_box', [tname.toString()]])
+            //         .then(result => {
+            //         if(result[0])
+            //         {
+            //             //return res.status(200).send({pro_id:result[0].sp_aerogms});
+            //             console.log('TABLE PUBLISHED SUCCESSFULLY.');
+            //             //-------------------------------
+            //             return res.status(200).json([{'status':'published', 'message': 'table created and published successfully.', 'tname':tname, 'box':result[0].sp_aerogms}]);
+            //         }
+            //         else
+            //         {
+            //             return res.status(200).send({message:'Problem in finding box!'});
+            //         }
+            //         })
+            //         .catch(error => {
+            //         console.log('ERROR:', error); // print the error;
+            //         return res.status(400).send(error);
+            //         });
+            //     }
+            // })
+            //---------------------
         })
         .catch(error => {
             console.log(error.message);
@@ -590,4 +636,22 @@ catch(err)
     //res.send({'status':'ok'});
 }
 
-
+var getBbox = function(tname){
+    db.func('public.sp_aerogms', ['get_box', [tname.toString()]])
+            .then(result => {
+            if(result[0])
+            {
+                return {status:'success', box:result[0].sp_aerogms};
+                //return res.status(200).json([{'status':'published', 'message': 'table created and published successfully.', 'tname':tname, 'box':result[0].sp_aerogms}]);
+            }
+            else
+            {
+                return res.status(200).send({status:'fail', message:'Problem in finding box!'});
+            }
+            })
+            .catch(error => {
+            console.log('ERROR:', error); // print the error;
+            return res.status(400).send({status:'error', error:error});
+            });
+        }
+module.exports.getBbox = getBbox;

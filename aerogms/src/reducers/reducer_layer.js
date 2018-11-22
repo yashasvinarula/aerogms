@@ -9,13 +9,15 @@ export default function(state=initialstate, action){
         case type.GET_LAYERS:
             return _.mapKeys(action.payload.data, 'lay_id')
         case type.CREATE_LAYER:
+        debugger
             if(Object.keys(action.payload.data).length>0)
             return {...state, [action.payload.data.lay_id]:action.payload.data}
             else
             return state
-        // case type.DELETE_PROJECT:
-        //     let pro_id1 = action.payload.data;
-        //     return _.omit(state, pro_id1)
+        case type.DELETE_LAYER:
+            debugger
+            let {layId} = action.payload.data;
+            return _.omit(state, layId);
         case type.RENAME_LAYER:
             let {lay_id, name} = action.payload.data;
             return {...state, [lay_id]:{...state[lay_id], name:name}}
