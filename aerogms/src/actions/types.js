@@ -15,6 +15,9 @@ export const DELETE_LAYER = 'delete_layer';
 export const RESET_LAYER_STORE = 'reset_layer_store';
 export const GET_USER_COMPLAINTS = 'get_user_complaints';
 export const ADD_USER_COMPLAINT = 'add_user_complaint';
+export const MAKE_ACTIVE_LAYER = 'make_active_layer';
+export const UPDATE_ACTIVE_LAYER = 'update_active_layer';
+export const UPDATE_LAYER_COLOR = 'update_layer_color';
 
 export const ROOT_URL = '/api';
 export const GET_SUCCESS = 'get_success';

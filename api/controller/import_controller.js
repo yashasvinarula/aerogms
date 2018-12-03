@@ -285,7 +285,7 @@ try
                         .then(result => {
                         if(result[0])
                         {
-                            return res.status(200).send({status:{name:tname, orig_name:tname, type:geomType, visible:true, lay_id:lay_id, box:result[0].sp_aerogms}});
+                            return res.status(200).send({status:{name:tname, orig_name:tname, type:geomType, visible:true, lay_id:lay_id, box:result[0].sp_aerogms, color:'0000ff'}});
                         }
                         else
                         {
@@ -646,12 +646,12 @@ var getBbox = function(tname){
             }
             else
             {
-                return res.status(200).send({status:'fail', message:'Problem in finding box!'});
+                return {status:'fail', message:'Problem in finding box!'};
             }
             })
             .catch(error => {
             console.log('ERROR:', error); // print the error;
-            return res.status(400).send({status:'error', error:error});
+            return {status:'error', error:error.message};
             });
         }
 module.exports.getBbox = getBbox;

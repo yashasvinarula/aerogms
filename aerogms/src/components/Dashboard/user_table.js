@@ -53,7 +53,7 @@ class TableRow extends Component{
 
     toggleUserStatus(event){
         this.setState({showMenu : false});
-        if(window.confirm(`Do you really want to toogle the status of user ${this.props.user.name}!`)){
+        if(window.confirm(`Do you really want to toggle the status of user ${this.props.user.name}!`)){
             this.props.toggleUserStatus(this.props.user.u_id);
         }
     }
@@ -97,10 +97,10 @@ class TableRow extends Component{
                         } else {
                             return (
                                 <tr className="">
-                                    <td className="col-sm-3">{user.u_id}</td>
-                                    <td className="col-sm-3">{user.name}</td>
-                                    <td className="col-sm-3">{user.date_time}</td>
-                                    <td className="col-sm-3">{user.status === true ? 
+                                    <td className="col-sm-3 text-center">{user.u_id}</td>
+                                    <td className="col-sm-3 text-center">{user.name}</td>
+                                    <td className="col-sm-3 text-center">{user.date_time}</td>
+                                    <td className="col-sm-3 text-center">{user.status === true ? 
                                         <Image src={EnableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
                                         : <Image src={DisableLogo} onClick={this.toggleUserStatus} className="layer-on-off on-hover inline-display margin-outside" />
                                          }

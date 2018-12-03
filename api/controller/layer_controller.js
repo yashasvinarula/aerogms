@@ -1,5 +1,5 @@
 const { db, pg, pool, geocred}=require('../db.js');
-const {registervector} = require('../controller/import_controller');
+const {registervector, getBbox} = require('../controller/import_controller');
 const userpw=geocred;
 
 module.exports.get_layers = function(req, res){
@@ -19,9 +19,8 @@ module.exports.get_layers = function(req, res){
     return res.status(400).send(error);
     });
 }
-
 module.exports.rename_layer = function(req, res){
-    db.func('public.sp_aerogms', ['rename_layer', [req.body.lay_id, req.body.name]])
+    db.func('public.sp_aerogms', ['rename_layer', [req.body.lay_id.toString(), req.body.name]])
     .then(result => {
     if(result[0].sp_aerogms)
     {
@@ -39,7 +38,6 @@ module.exports.rename_layer = function(req, res){
     return res.status(400).send(error);
     });
 }
-
 module.exports.create_layer = function(req, res){
     var tab_name = req.body.name.toLowerCase();
     var tab_type = req.body.type;
@@ -105,9 +103,9 @@ module.exports.create_layer = function(req, res){
     return res.status(400).send(error);
     });
     }
-    else if(tab_type == 'Line')
+    else if(tab_type == 'Linestring' || tab_type == 'LineString')
     {
-        tab_type = 'Linestring';
+        //tab_type = 'Linestring';
         db.func('public.fn_add_new_layer', [tab_name, tab_type])
     .then(result => {
     if(result[0].fn_add_new_layer)
@@ -231,7 +229,6 @@ module.exports.create_layer = function(req, res){
     });
     }
 }
-
 module.exports.lay_name_exists = function(req, res){
     db.func('public.sp_aerogms', ['lay_name_exists', [req.body.lay_name]])
     .then(result => {
@@ -241,7 +238,7 @@ module.exports.lay_name_exists = function(req, res){
     }
     else
     {
-        return res.status(200).send({message:'Problem in checking layer name!', status:'not exists'});
+        return res.status(200).send({message:'checking layer name!', status:'not exists'});
     }
     })
     .catch(error => {
@@ -249,7 +246,6 @@ module.exports.lay_name_exists = function(req, res){
     return res.status(400).send(error);
     });
 }
-
 module.exports.delete_layer = function(req, res){
     var layName = req.body.layer_name;
     var layId = req.body.lay_id
@@ -263,7 +259,7 @@ module.exports.delete_layer = function(req, res){
             deletevector(layName, function(err){
                 if(err){
                     console.log(err);
-                    return res.status(400).send({'Error':err, message:'layer deleted from database but not from geoserver', status:'partially deleted'});
+                    return res.status(400).send({error:err, message:'layer deleted from database but not from geoserver', status:'partially deleted'});
                 }
                 else{
                     console.log('LAYER DELETED SUCCESSFULLY.');
@@ -282,7 +278,136 @@ module.exports.delete_layer = function(req, res){
         });
     }
 }
+module.exports.layer_attribute = function(req, res){
+    var tab_name = req.body.layer;
+    db.func('public.sp_gettable_attrilist', [tab_name.toString()])
+    .then(result => {
+    if(result.length>0)
+    {
+        return res.status(200).send({'status':'success', 'data': result});
+    }
+    else
+    {
+        return res.status(200).send({message:'Problem in getting layer attributes or there is no attributes!'});
+    }
+    })
+    .catch(error => {
+    console.log('ERROR:', error); // print the error;
+    return res.status(400).send(error);
+    });
+}
+module.exports.delete_column = function(req, res){
+    var tab_name = req.body.layer;
+    var col_name = req.body.column;
+    db.func('public.sp_aerogms', ['delete_column', [tab_name.toString(), col_name.toString()]])
+    .then(result => {
+    if(!result[0].sp_aerogms)
+    {
+        reloadvector(tab_name, function(err){
+            if(err){
+                return res.status(200).send({message:'Problem in updating attribute in layer!'});
+            }
+            else{
+                return res.status(200).send({'status':'success', 'data': 'deleted'});
+            }
+        })
+    }
+    else
+    {
+        return res.status(200).send({message:'Problem in deleting attribute!'});
+    }
+    })
+    .catch(error => {
+    console.log('ERROR:', error); // print the error;
+    return res.status(400).send(error.message);
+    });
+}
+module.exports.rename_column = function(req, res){
+    var tab_name = req.body.layer;
+    var old_col_name = req.body.old_column;
+    var new_col_name = req.body.new_column;
 
+    db.func('public.sp_aerogms', ['rename_column', [tab_name.toString(), old_col_name.toString(), new_col_name.toString()]])
+    .then(result => {
+    if(!result[0].sp_aerogms)
+    {
+        reloadvector(tab_name, function(err){
+            if(err){
+                return res.status(200).send({message:'Problem in updating attribute in layer!'});
+            }
+            else{
+                return res.status(200).send({'status':'success', 'data': 'renamed'});
+            }
+        })
+    }
+    else
+    {
+        return res.status(200).send({message:'Problem in renaming attribute!'});
+    }
+    })
+    .catch(error => {
+    console.log('ERROR:', error); // print the error;
+    return res.status(400).send(error.message);
+    });
+}
+module.exports.add_column = function(req, res){
+    var tab_name = req.body.layer;
+    var col_name = req.body.column;
+    var col_type = req.body.type;
+    if(col_type == 'number'){
+        col_type = 'numeric';
+    }
+    else if(col_type == 'text'){
+        col_type = 'character varying';
+    }
+    else{
+        return res.status(400).send('Column type is wrong!');
+    }
+
+    db.func('public.sp_aerogms', ['add_column', [tab_name.toString(), col_name.toString(), col_type.toString()]])
+    .then(result => {
+    if(!result[0].sp_aerogms)
+    {
+        reloadvector(tab_name, function(err){
+            if(err){
+                return res.status(200).send({message:'Problem in adding attribute in layer!'});
+            }
+            else{
+                return res.status(200).send({'status':'success', 'data': 'added'});
+            }
+        })
+    }
+    else
+    {
+        return res.status(200).send({message:'Problem in adding attribute!'});
+    }
+    })
+    .catch(error => {
+    console.log('ERROR:', error); // print the error;
+    return res.status(400).send(error.message);
+    });
+}
+module.exports.get_bound = function(req, res){
+    let layer_nm = req.body.layer;
+    if(layer_nm){
+        db.func('public.sp_aerogms', ['get_box', [layer_nm.toString()]])
+        .then(result => {
+        if(result[0])
+        {
+            return res.status(200).send({status:'success', box:result[0].sp_aerogms});
+            //return res.status(200).json([{'status':'published', 'message': 'table created and published successfully.', 'tname':tname, 'box':result[0].sp_aerogms}]);
+        }
+        else
+        {
+            return res.status(200).send({status:'fail', message:'Problem in finding box!'});
+        }
+        })
+        .catch(error => {
+        console.log('ERROR:', error);
+        return res.status(400).send({status:'error', message:error.message});
+        });
+        }
+}
 var deletevector = function(datasetName, callback){
     //dataset name is the name of the PostGIS table
    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -320,3 +445,138 @@ var deletevector = function(datasetName, callback){
    //post_req.write(s);
    post_req.end();
 };
+var reloadvector = function(layer_name, callback){
+    if(layer_name){
+        deletevector(layer_name, function(err){
+            if(err){
+                callback('error in deleting layer');
+            }
+            else{
+                registervector(layer_name, function(err){
+                    if(err){
+                        callback('error in publishing layer');
+                    }
+                    else{
+                        callback(null);
+                    }
+                })
+            }
+        })
+    }
+}
+module.exports.exis_layer_insert = function(req, res){
+    var tab_name = req.body.name.toLowerCase();
+    var tab_type = req.body.type;
+    if(tab_type == 'Point')
+    {
+        db.func('public.fn_insert_layer', ['Point', tab_name, req.body.geom])
+        .then(result => {
+        if(result[0].fn_insert_layer > 0)
+        {
+            console.log('inserted Points: ',result[0].fn_insert_layer);
+            return res.status(200).send({'status':'success', 'data': 'layer updated successfully.'});
+                // registervector(tab_name, function(err){
+                //     if(err){
+                //         console.log(err);
+                //         return res.status(400).send(err);
+                //     }
+                //     else{
+                //         console.log('TABLE PUBLISHED SUCCESSFULLY.');
+                //         //return res.status(200).json({'status':'published', 'message': 'table created and published successfully.', 'tname':tname});
+                //         return res.status(200).send({name:tab_name, orig_name:tab_name, type:tab_type, visible:true, lay_id:result[0].sp_aerogms});
+                //     }
+                // })
+        }
+        else
+        {
+            return res.status(200).send({message:'Problem in inserting records!'});
+        }
+        })
+        .catch(error => {
+        console.log('ERROR:', error);
+        return res.status(400).send(error);
+        });
+    }
+    else if(tab_type == 'Linestring' || tab_type == 'LineString')
+    {
+        db.func('public.fn_insert_layerline', ['Line', tab_name, req.body.geom])
+            .then(result => {
+            if(result[0].fn_insert_layerline > 0)
+            {
+                console.log('inserted Lines: ',result[0].fn_insert_layerline);
+                return res.status(200).send({'status':'success', 'data': 'layer updated successfully.'});
+                    // registervector(tab_name, function(err){
+                    //     if(err){
+                    //         console.log(err);
+                    //         return res.status(400).send(err);
+                    //     }
+                    //     else{
+                    //         console.log('TABLE PUBLISHED SUCCESSFULLY.');
+                    //         //return res.status(200).json({'status':'published', 'message': 'table created and published successfully.', 'tname':tname});
+                    //         return res.status(200).send({name:tab_name, orig_name:tab_name, type:tab_type, visible:true, lay_id:result[0].sp_aerogms});
+                    //     }
+                    // })
+            }
+            else
+            {
+                return res.status(200).send({message:'Problem in inserting records!'});
+            }
+            })
+            .catch(error => {
+            console.log('ERROR:', error);
+            return res.status(400).send(error);
+            });
+    }
+    else if(tab_type == 'Polygon')
+    {
+
+        db.func('public.fn_insert_layerline', ['Polygon', tab_name, req.body.geom])
+        .then(result => {
+        if(result[0].fn_insert_layerline > 0)
+        {
+            console.log('inserted Polygons: ',result[0].fn_insert_layerline);
+            return res.status(200).send({'status':'success', 'data': 'layer updated successfully.'});
+            // registervector(tab_name, function(err){
+            //     if(err){
+            //         console.log(err);
+            //         return res.status(400).send(err);
+            //     }
+            //     else{
+            //         console.log('TABLE PUBLISHED SUCCESSFULLY.');
+            //         //return res.status(200).json({'status':'published', 'message': 'table created and published successfully.', 'tname':tname});
+            //         return res.status(200).send({name:tab_name, orig_name:tab_name, type:tab_type, visible:true, lay_id:result[0].sp_aerogms});
+            //     }
+            // })
+        }
+        else
+        {
+            return res.status(200).send({message:'Problem in inserting records!'});
+        }
+        })
+        .catch(error => {
+        console.log('ERROR:', error);
+        return res.status(400).send(error);
+        });  
+    }
+
+}
+module.exports.update_layer_color = function(req, res){;
+    var layId = req.body.lay_id;
+    var layColor = req.body.color;
+
+    db.func('public.sp_aerogms', ['change_color', [layId.toString(), layColor.toString()]])
+    .then(result => {
+    if(result[0].sp_aerogms)
+    {
+        return res.status(200).send({'lay_id':layId, 'color': layColor});
+    }
+    else
+    {
+        return res.status(200).send({message:'Problem in changing layer color!'});
+    }
+    })
+    .catch(error => {
+    console.log('ERROR:', error); // print the error;
+    return res.status(400).send(error.message);
+    });
+}

@@ -13,8 +13,9 @@ import Feature from './featureInfo';
 import TextIcon from '../../images/TextIcon.png';
 import NumberIcon from '../../images/NumberIcon.png';
 import {connect} from 'react-redux';
-import {delete_layer} from '../../actions';
-// import Feature from './featureInfo';
+import {delete_layer, updateLayerActive, updateLayerColor} from '../../actions';
+import _ from 'lodash';
+
 
 const MenuImage = ( <Image src={InfoIcon} className="menu-icon inline-display margin-outside" />);
 const MenuIcon = ( <Image src={InfoIcon} className="attr-menu-icon" />);
@@ -30,15 +31,11 @@ class Layer extends Component {
             attributeType : '',
             attributeName : '',
             tempAttr : '',
-            attributes : [{type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'},
-            {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'},
-            {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'},
-            {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'},
-            {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'},
-            {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}, {type : 'text', name : 'abc'},
-        ],
+            isActive:false,
+            attributes : [{type : 'text', name : 'abc'}, {type : 'text', name : 'abc'}],
             showAttrForm : false,
             renameAttribute : false,
+            selectedColor : '0000ff',
         }
         this.makeLayerVisible = this.makeLayerVisible.bind(this);
         this.makeLayerInVisible = this.makeLayerInVisible.bind(this);
@@ -53,8 +50,30 @@ class Layer extends Component {
         this.deleteAttr = this.deleteAttr.bind(this);
         this.renameAttr = this.renameAttr.bind(this);
         this.deleteLayer = this.deleteLayer.bind(this);
+        this.getLayerSchema = this.getLayerSchema.bind(this);
+        this.servicecaller = this.servicecaller.bind(this);
+        this.handleColorChange = this.handleColorChange.bind(this);
     };
 
+    handleColorChange = (color) => {
+        if(this.props.layer.lay_id)
+        {
+            if(window.confirm('Do you really want to change the color!'))
+            {
+                this.setState({ selectedColor: color.hex.replace('#',''), colorPicker:false});
+                this.props.updateLayerColor(this.props.layer.lay_id, color.hex.replace('#',''));
+            }
+            else{
+                this.setState({colorPicker:false});
+            }
+        }
+        else
+        {
+            alert('First save layer then change its color!');
+            this.setState({colorPicker:false});
+        }
+      };
+    
     showColorPicker() {
         this.setState({ colorPicker : true });
     }
@@ -64,20 +83,18 @@ class Layer extends Component {
 
     makeLayerVisible() {
         this.setState({ layerVisibleState : true });
-        window.addWMSLayer(this.props.layer.orig_name);
+        window.addWMSLayer(this.props.layer.orig_name, this.props.layer.color);
 
     }
 
     makeLayerInVisible() {
         this.setState({ layerVisibleState : false });
         window.hideWMSLayer(this.props.layer.orig_name);
-
     } 
 
     closeChangeLayerModal(){
         this.setState({changelayername:false});
     }
-
 
     changeLayerName(){
         let newLayerTitle = document.getElementById('changeLayerName').value;
@@ -85,9 +102,8 @@ class Layer extends Component {
             lay_name: newLayerTitle
         })
         .then(responce=>{
-            debugger
             console.log(responce);
-            if(responce.data.status == 'not exists'){
+            if(responce.data.status === 'not exists'){
                 this.props.changeLayerNameParent(newLayerTitle);
                 this.closeChangeLayerModal();
             }
@@ -100,7 +116,7 @@ class Layer extends Component {
         })
     }
     closeAttrModal() {
-        this.setState({showAttributes : false});
+        this.setState({showAttributes : false, showAttrForm: false});
     }
     handleChange(event) {
         this.setState({attributeName : event.target.value});
@@ -108,73 +124,232 @@ class Layer extends Component {
     handleRadioChange(event) {
         this.setState({attributeType : event.target.value});
     }
-
     componentDidMount(){
-        debugger
-        window.addWMSLayer(this.props.layer.orig_name);
+        if(this.props.layer.lay_id){
+            window.addWMSLayer(this.props.layer.orig_name, this.props.layer.color);
+        }
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.layer.lay_id !== this.props.layer.lay_id) {
+            if(this.props.layer.lay_id)
+            {
+                window.addWMSLayer(this.props.layer.orig_name, this.props.layer.color);
+                window.createNewLayer(this.props.layer.type);
+                this.props.updateLayerActive({new_activeLayer_id:this.props.layer.lay_id});
+            }
+        }
+        else if(prevProps.layer.color !== this.props.layer.color){
+                window.addWMSLayer(this.props.layer.orig_name, this.props.layer.color);
+        }
+      }
 
     handleSubmit(event) {
         event.preventDefault();
+        let that = this;
         let newAttribute = {name: '', type: ''};
         newAttribute.name = this.state.attributeName;
         newAttribute.type = this.state.attributeType;
         if(this.state.attributeName ==='' || this.state.attributeType === ''){
             alert('Please fill all fields');
-        } else {
-            let flag = 0;
+        }
+        else {
+            if(isNaN(parseInt(this.state.attributeName.substr(0,1))) && this.state.attributeName.length > 0 && this.state.attributeName.indexOf(' ') == -1 && this.state.attributeName.indexOf('-') == -1){
+                let flag = 0;
+            event.target.reset();
             this.state.attributes.map((attr) => {
                 if(attr.name === this.state.attributeName) {
-                    event.target.reset();
                     flag = 1;
+                    this.setState({attributeName:''});
                     return(alert('Attribute with this name already exists.'));
                 }
             });
 
             if( flag === 0) {
-                let newAttribute = {name: '', type: ''};
-                newAttribute.name = this.state.attributeName;
-                newAttribute.type = this.state.attributeType;
-                this.setState({attributes : [...this.state.attributes, newAttribute], 
-                    showAttrForm : false, attributeName : '', attributeType : ''});
-                event.target.reset();
+                this.servicecaller('add_column', {layer:this.props.layer.orig_name, column:newAttribute.name, type:newAttribute.type}, function(err, data){
+                    if(!err && data){
+                        newAttribute.type = newAttribute.type === 'number'? 'numeric': 'character varying';
+                        that.setState({attributes : [...that.state.attributes, newAttribute], 
+                            showAttrForm : false, attributeName : '', attributeType : ''});
+                    }
+                    else
+                    {
+                        alert(err);
+                    }
+                });
             }
+            }
+            else{
+                alert('Attribute name doesn\'t have any space, hyphen and numbers in the starting!');
+            }
+            
         }
     }
     deleteAttr(event) {
         let attrArray = [...this.state.attributes];
         let attrIndex = attrArray.findIndex(attribute => attribute.name === event.target.name );
+        var that = this;
         if(attrIndex !== -1) {
-            attrArray.splice(attrIndex, 1);
-            window.confirm('Do you really want to delete this attribute ?') ? this.setState({attributes : attrArray}) : '';
+            //attrArray.splice(attrIndex, 1);
+            if(window.confirm('Do you really want to delete this attribute?'))
+            {
+                this.servicecaller('delete_column', {layer:this.props.layer.orig_name, column:event.target.name}, function(err, data){
+                    if(!err && data){
+                        debugger
+                        attrArray.splice(attrIndex, 1);
+                        that.setState({attributes : attrArray})
+                    }
+                    else
+                    {
+                        alert(err);
+                    }
+                });
+            }
         }
     }
     renameAttr(event) {
         event.preventDefault();
-        let tempAttribute = this.state.tempAttr;
-        let attrArray = [...this.state.attributes];
-        let attrIndex = attrArray.findIndex(attribute => attribute.name === tempAttribute );
-        if(attrIndex !== -1 && attrIndex !== 'undefined') {
-            console.log(`attr :  ${attrIndex}`);
-            attrArray[attrIndex].name = this.state.attributeName;
-            this.setState({ attributes : attrArray, renameAttribute : false, attributeName : '', tempAttr : '' })
+        debugger
+        let newName = isNaN(parseInt(this.state.attributeName.substr(0,1))) && this.state.attributeName.length > 0 && this.state.attributeName.indexOf(' ') == -1 && this.state.attributeName.indexOf('-') == -1 ? this.state.attributeName.trim().toLowerCase():'';
+        if(newName)
+        {
+            var that = this;
+            let tempAttribute = this.state.tempAttr;
+            let attrArray = [...this.state.attributes];
+            let attrIndex = attrArray.findIndex(attribute => attribute.name === tempAttribute );
+            if(attrIndex !== -1 && attrIndex !== 'undefined') {
+                console.log(`attr :  ${attrIndex}`);
+                    this.servicecaller('rename_column', {layer:this.props.layer.orig_name, old_column:tempAttribute, new_column:newName}, function(err, data){
+                        if(!err && data){
+                            debugger
+                            attrArray[attrIndex].name = newName;
+                            that.setState({ attributes : attrArray, renameAttribute : false, attributeName : '', tempAttr : '' });
+                        }
+                        else
+                        {
+                            alert(err);
+                        }
+                    });
+            }
+        }
+        else
+        {
+            alert('Attribute name doesn\'t have any space, hyphen and numbers in the starting!');
         }
     }
-    // removeLayer(){
-    //     window.hideWMSLayer(this.props.layer.orig_name);
-    // }
-
-    // addLayer(){
-    //     window.addWMSLayer(this.props.layer.orig_name);
-    // }
     deleteLayer(){
         if(window.confirm(`Do you really want to delete ${this.props.layer.name} layer.`)){
             if(this.props.layer.orig_name && this.props.layer.lay_id)
             {
+                debugger
                 this.props.delete_layer(this.props.layer.orig_name, this.props.layer.lay_id);
                 window.hideWMSLayer(this.props.layer.orig_name);
+                window.lyrhighlighter ? window.m.removeLayer(window.lyrhighlighter):false;
+            }
+            else
+            {
+                this.props.deleteTempLayer(this.props.layer.name);
+                var element = document.getElementById(this.props.layer.name);
+                element.parentNode.removeChild(element);
             }
         }
+    }
+    setActiveLayer(){
+        let that = this;
+        if(this.props.layer.lay_id){
+            this.servicecaller('get_bound', {layer:this.props.layer.orig_name}, function(err, data){
+                if(!err && data){
+                    let box = data.box;
+                    let style='';
+                    switch(that.props.layer.type)
+                    {
+                        case 'Point':
+                            style = 'point_hl';
+                            break;
+                        case 'Linestring':
+                            style = 'line_hl';
+                            break;
+                        case 'LineString':
+                            style = 'line_hl';
+                            break;
+                        case 'Polygon':
+                            style = 'polygon_hl';
+                            break;
+                    }
+                    window.updateWMSStyle(that.props.layer.orig_name, style);
+                    that.props.setActiveLayer(box);
+                    that.setState({isActive:true});
+                }
+                else{
+                    console.log(err);
+                }
+            })
+        }
+        else{
+            that.props.setActiveLayer('');
+            that.setState({isActive:true});
+        }
+       
+    }
+    resetActiveLayer(){
+        let style='';
+        switch(this.props.layer.type)
+        {
+            case 'Point':
+                style = 'point';
+                break;
+            case 'Linestring':
+                style = 'line';
+                break;
+            case 'LineString':
+                style = 'line';
+                break;
+            case 'Polygon':
+                style = 'polygon';
+                break;
+        }
+        window.updateWMSStyle(this.props.layer.orig_name, style);
+        this.props.resetActiveLayer();
+        this.setState({isActive:false});
+
+    }
+    servicecaller(ser_name, data, callback){
+        axios.post(`/api/${ser_name}`, data)
+        .then(response=>{
+            debugger
+            if(response.data.status === 'success'){
+                callback(false, response.data);
+            }
+            else{
+                callback(response.data.message, undefined);
+            }
+        })
+        .catch(err=>{
+            debugger
+            console.log('error: ' + err)
+            if(err.response)
+            {
+                callback(err.response.data, undefined);
+            }
+            else{
+                alert(err.message);
+            }
+        })
+    }
+
+    getLayerSchema(){
+        debugger
+        let layerName= this.props.layer.orig_name;
+        var that = this;
+       if(layerName)
+       {
+        this.servicecaller('layer_attribute', {layer:this.props.layer.orig_name}, function(err, data){
+            if(!err && data){
+                that.setState({attributes:data.data, showAttributes:true, renameAttribute:false});
+            }
+            else
+            {alert(err);}
+        });
+       }
     }
 
     render() {
@@ -352,29 +527,21 @@ class Layer extends Component {
                     );
                 } else {
                     return (
-                        <div>
-                        <div className="layer"> 
+                        <div id={this.props.layer.orig_name? this.props.layer.orig_name:this.props.layer.name}>
+                        <div className="layer">
                             {/* <input type="radio" name="group1" className="input-layer col-xs-2" /> */}
                             {
                                 this.state.layerVisibleState 
                                     ? <Image src={LayerVisible} onClick={this.makeLayerInVisible} className="visibility-icon on-hover inline-display margin-outside" />
                                     : <Image src={LayerInvisible} onClick={this.makeLayerVisible} className="visibility-icon on-hover inline-display margin-outside" />
                             }
-                            <div onClick={this.showColorPicker} className="color-rectangle on-hover inline-display "></div>
-                            <div className="inline-display layer-title-box">
-                                <h4 className="layer-title on-hover margin-outside" onClick={()=>this.setState({changelayername:true})}> {this.props.layer.name}</h4>
-                                <Modal className="modal-custom"
-                                        show={this.state.changelayername}
-                                        onHide={this.closeChangeLayerModal}
-                                        container={this}>
-                                        <Modal.Header closeButton>Enter Layer Name</Modal.Header>
-                                        <Modal.Body>
-                                            <input type="text" id="changeLayerName" placeholder="Enter Name"/>
-                                            <Button onClick={this.changeLayerName}>Update</Button>
-                                        </Modal.Body>
-                                </Modal>
+                            <div onClick={this.showColorPicker} className="color-rectangle on-hover inline-display " style={{backgroundColor:`#${this.props.layer.color}`}}></div>
+                            <div id={this.props.layer.lay_id}  className="inline-display layer-title-box" onClick={()=>{this.state.isActive? this.resetActiveLayer():this.setActiveLayer()}}>
+                                {/* <input id={this.props.layer.lay_id} type="hidden"/> */}
+                                <h4 className="layer-title on-hover margin-outside"> {this.props.layer.name}</h4>
                                 <h6 className="layer-type margin-outside">{'(' + this.props.layer.type + ')'}</h6>
                             </div>
+                          {/* <Button id="zoomBtn" onClick={}>Zoom</Button> */}
                             
                             <DropdownButton
                                 title={MenuImage}
@@ -388,16 +555,26 @@ class Layer extends Component {
                                   vertical-align: middle;
                               }
                             `}</style>
+                                <MenuItem onClick={()=>this.setState({changelayername:true})}>Rename</MenuItem>
+                                <Modal className="modal-custom"
+                                        show={this.state.changelayername}
+                                        onHide={this.closeChangeLayerModal}
+                                        container={this}>
+                                        <Modal.Header closeButton>Enter Layer Name</Modal.Header>
+                                        <Modal.Body>
+                                            <input type="text" id="changeLayerName" placeholder="Enter Name"/>
+                                            <Button onClick={this.changeLayerName}>Update</Button>
+                                        </Modal.Body>
+                                </Modal>
                                 <MenuItem>Download</MenuItem>
-                                <MenuItem onClick={() => this.setState({showAttributes : true})}>Attributes</MenuItem>
+                                <MenuItem onClick={() => this.getLayerSchema()}>Attributes</MenuItem>
                                     <Modal
                                         show={this.state.showAttributes}
                                         onHide={this.closeAttrModal}
                                         container={this}
                                     >
-                                        <Modal.Header closeButton>Layer Title</Modal.Header>
+                                        <Modal.Header closeButton>{this.props.layer.name}</Modal.Header>
                                         <Modal.Body>
-                                        
                                             {
                                                 !this.state.showAttrForm ? 
                                                     (
@@ -426,10 +603,13 @@ class Layer extends Component {
                                                                                     this.state.attributes.map((attr, index) => {
                                                                                         let typeIcon;
                                                                                         switch(attr.type) {
-                                                                                            case 'text':
+                                                                                            case 'character varying':
                                                                                                 typeIcon = TextIcon;
                                                                                                 break;
-                                                                                            case 'number':
+                                                                                            case 'integer':
+                                                                                                typeIcon = NumberIcon;
+                                                                                                break;
+                                                                                            case 'numeric':
                                                                                                 typeIcon = NumberIcon;
                                                                                                 break;
                                                                                             default:
@@ -438,14 +618,14 @@ class Layer extends Component {
                                                                                         return (<tr className="attr-list-item">
                                                                                                     <td><Image src={typeIcon} className="attr-type-icon" /></td>
                                                                                                     <td>{attr.name}</td>
-                                                                                                    <td>
-                                                                                                        <DropdownButton
+                                                                                                  <td>
+                                                                                                  {attr.name !== 'aero_id' ? <DropdownButton
                                                                                                             title={MenuIcon}
                                                                                                             noCaret pullRight
                                                                                                         >
                                                                                                             <MenuItem onClick={() => this.setState({renameAttribute : true, tempAttr : attr.name})}>Rename</MenuItem>
                                                                                                             <MenuItem onClick={this.deleteAttr} name={attr.name}>Delete</MenuItem>
-                                                                                                        </DropdownButton>
+                                                                                                        </DropdownButton>:''}
                                                                                                     </td>
                                                                                                 </tr>);
                                                                                     })
@@ -458,7 +638,7 @@ class Layer extends Component {
                                                                 (
                                                                     <form>
                                                                         <label>Name
-                                                                            <input type="text" onChange={this.handleChange} placeholder="Enter attribute name" />
+                                                                            <input type="text" onChange={this.handleChange} placeholder={this.state.tempAttr} />
                                                                         </label>
                                                                         <Button type="submit" onClick={this.renameAttr} className="custom-button">Rename</Button>
                                                                     </form>
@@ -501,7 +681,8 @@ class Layer extends Component {
                             </DropdownButton>
                             
                             {
-                                this.state.colorPicker ? (<CompactPicker />) : null
+                                this.state.colorPicker ? (<CompactPicker  color={ this.state.selectedColor }
+                                    onChangeComplete={ this.handleColorChange }/>) : null
                             }
                         </div>
                         <hr className="layer-separator" />
@@ -515,4 +696,4 @@ class Layer extends Component {
     }
 }
 
-export default connect(null, {delete_layer})(Layer);
+export default connect(null, {delete_layer, updateLayerActive, updateLayerColor})(Layer);

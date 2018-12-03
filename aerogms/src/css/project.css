@@ -36,22 +36,35 @@ h4 {
 .navbar-default .navbar-nav>li>a {
     color: #fff;
 }
+.layer-btn {
+    margin-left: 10px !important;
+    width: 60px !important;
+}
+.hide-btn{
+    display: none;
+}
+.show-btn{
+    display: inline-block;
+}
 .project-layer-box {
     -webkit-box-shadow: 1px 2px 5px rgba(0,0,0,.75);
 	-moz-box-shadow: 1px 2px 5px rgba(0,0,0,.75);
     box-shadow: 1px 2px 5px rgba(0,0,0,.75);
-    top: 60px;
+    top: 49px;
     left: 0;
     width: 300px;
     overflow-y: auto;
-    max-height: 698px;
-    min-height: 698px;
+    min-height: 93.5vh;
+    max-height: 93.5vh;
     z-index: 999;
     background-color: white;
     position: absolute;
 }
 input[type=button] {
-    width: 80px;
+    width: 90px;
+}
+.btnLogout {
+    margin-left: 10px;
 }
 .input-layer {
     display: inline-block;
@@ -68,19 +81,20 @@ input[type=button] {
     border: none !important;
     box-shadow: none !important;
 }
-input[type=button] {
-    width: 120px;
-}
 .project-infobox{
-    width: 266px;
-    height: 590px;
+    width: 300px;
+    min-height: 330px;
+    max-height: 719px;
     position: absolute;
     z-index: 1000;
     right: 0;
-    top: 60px;
+    top: 49px;
     background:#fff;
-    display: none;
+    display: block;
     box-shadow: #036;
+}
+.infoDiv{
+        display: none;
     }
 
 .text-area{
@@ -102,17 +116,24 @@ input[type=button] {
 .info-panel-attr-list {
     max-height: 150px;
     overflow: auto;
+    border-bottom: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
+
 }
 .query-table-div {
     position: absolute;
     top: 70px;
-    left: 400px;
-    max-width: 800px;
+    left: 35%;
+    margin: auto;
+    width: 800px;
     max-height: 600px;
     border: 2px solid lightgray;
     background-color: #fff;
     overflow: auto;
-    z-index: 1999;
+    z-index: 9999;
+}
+.query-row:hover {
+    cursor: pointer;
 }
 /* tbody {
     display: block;
@@ -125,12 +146,14 @@ thead, tbody, tr {
     table-layout: fixed;
 } */
 .table-cross-icon {
-    position: absolute;
+    /* position: absolute; */
     top: 5px;
     right: 5px;
     width: 20px;
     height: 20px;
     z-index: 100000;
+    float: right;
+    margin-right: 15px;
 }
 .cross-icon {
     width: 20px;
@@ -147,7 +170,7 @@ thead, tbody, tr {
     margin-top: 20px;
 }
 .tempButnWid{
-    width: 170px !important;
+    width: 130px !important;
     float: right;
 }
 .btnLogout{
@@ -162,21 +185,103 @@ thead, tbody, tr {
 .paymentModal{
     widows: 244px;
 }
+
+.table-div {
+    max-width: 800px;
+    margin: auto;
+    background-color: transparent;
+}
+.tempBtn {
+    /* width: 250px; */
+    /* float: right; */
+    /* margin-right: 15px; */
+}
+.query-head {
+    margin-left: 10px;
+}
+.query-items {
+    margin-left: 10px;
+}
+.query-items:hover {
+    cursor: pointer;
+}
+.query-list-dropdown {
+    margin-left: 10px;
+}
+table.scroll {
+    width: 300px;
+}
+table.scroll tbody,
+table.scroll thead tr {
+    display: block;
+}
+table.scroll tbody {
+    max-height: 185px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+table.scroll tbody td,
+table.scroll thead th, td {
+    width: 142px;
+    text-align: center;
+}
+.layerHL{
+    background-color: #e4da9b;
+}
 .layer-upload {
-    /* position: absolute; */
-    top: 100px;
-    left: 212%;
+    position: absolute;
+    /* top: 70px; */
+    left: 1%;
     width: 300px;
     height: 100px;
     margin: auto;
     background-color: rgb(190, 194, 193);
     border-radius: 10px;
     display: none;
+    z-index: 1000;
 }
 .upload-btn {
-    color: rgb(0,0,0);
+    color: rgb(0, 0, 0);
+    /* background-color: #4db6ac; */
+    /* margin-top: 10px; */
     display: block;
     margin: 18px auto;
+}
+.cross-icon {
+    width: 20px;
+    height: 20px;
+}
+.query-form {
+    margin-left: 10px;
+    margin-right: 10px;
+    border: 2px solid lightgray;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    min-height: 272px;
+    max-height: 350px;
+}
+.textArea {
+    width: 100%;
+    border-radius: 5px;
+}
+.custom-height {
+    height: 100px;
+}
+.query-form-btn {
+    width: 100px;
+    color: #fff;
+    background-color: #4db6ac;
+    margin-top: 10px;
+}
+.query-form-btn:hover {
+    background-color: #4db6ac;
+}
+.cancel-btn {
+    margin-left: 22px;
+}
+.submit-btn {
+    margin-left: 15px;
 }
 
 @media only screen and (max-width : 768px) {

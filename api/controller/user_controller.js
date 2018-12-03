@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const async = require('async');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const fs = require("fs");
+const path = require('path');
 
 module.exports.user_signup =  function(req, res){
 
@@ -424,3 +426,219 @@ module.exports.pro_name_exists = function(req, res){
         return res.status(400).send(error);
         });
     }
+
+//---------mobile---------------
+
+module.exports.m_signup =  function(req, res){
+    let valArr =[];
+    if(req.body.kuchbhi)
+    {
+        let jsonarr = JSON.parse(req.body.kuchbhi); 
+
+        if(jsonarr.acc_type === 'google')
+        {
+            valArr.push(jsonarr.fname);
+            valArr.push(jsonarr.lname);
+            valArr.push(jsonarr.email);
+            valArr.push(jsonarr.mobile ? jsonarr.mobile : '0');
+            let pw = bcrypt.hashSync(jsonarr.pw, 10)
+            valArr.push(pw);
+            valArr.push(jsonarr.photo);
+        
+        if(valArr.length == 6)
+        {
+            db.func('public.sp_aerogms', ['m_user_existance', [valArr[2]]])
+            .then(
+                result => {
+            if(result[0].sp_aerogms)
+            {
+                return res.send({status:'exists',message:'Email id is already exists!'});
+            }
+            else
+            {
+                db.func('public.sp_aerogms', ['m_user_regist', valArr])
+                .then(result2 => {
+                if(result2[0].sp_aerogms)
+                {
+                    console.log(result2[0].sp_aerogms);
+                    return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:jsonarr.photo,fname:jsonarr.fname, lname:jsonarr.lname, mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                }
+                })
+                .catch(error => {
+                    console.log('ERROR:', error); // print the error;
+                    if(error.constraint === 'mobile_user_uk_mobile')
+                    {
+                        return res.send({status:'error', message:'Mobile number already registered!'});
+                    }
+                    else
+                    {
+                        return res.send({status:'error', message:error});
+                    }
+                });
+            }
+            })
+            .catch(error => {
+                console.log('ERROR:', error); // print the error;
+                return res.send({status:'error', message:error});
+            });
+        }
+        }
+        else if(jsonarr.acc_type === 'aerogms')
+        {
+            valArr.push(jsonarr.fname);
+            valArr.push(jsonarr.lname);
+            valArr.push(jsonarr.email);
+            valArr.push(jsonarr.mobile ? jsonarr.mobile : '0');
+            let pw = bcrypt.hashSync(jsonarr.pw, 10)
+            valArr.push(pw);
+            const imageloc = '/images/m_profile/'+ `${jsonarr.email}.png`;
+            var imageDirloc = path.join(__dirname, '../../aerogms/public/images/m_profile/');
+            var base64Data = jsonarr.photo.replace(/^data:image\/png;base64,/, "");
+            var photo_path = `${imageDirloc}${jsonarr.email}.png`;
+
+                db.func('public.sp_aerogms', ['m_user_existance', [valArr[2]]])
+                .then(result => {
+                if(result[0].sp_aerogms)
+                {
+                    return res.send({status:'exists',message:'Email id is already exists!'});
+                }
+                else
+                {
+                    if(base64Data)
+                    {
+                        valArr.push(imageloc);
+                        fs.writeFile(photo_path, base64Data, 'base64', function(err) {
+                            if(err){
+                                return res.send({status:'fail',message:'Image is not valid!'});
+                            }
+                            else
+                            {
+                                if(valArr.length == 6)
+                                {
+                                    db.func('public.sp_aerogms', ['m_user_regist', valArr])
+                                    .then(result2 => {
+                                    if(result2[0].sp_aerogms)
+                                    {
+                                        console.log(result2[0].sp_aerogms);
+                                        return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:imageloc,fname:jsonarr.fname, lname:jsonarr.lname, mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                                    }
+                                    })
+                                    .catch(error => {
+                                        console.log('ERROR:', error); // print the error;
+                                        if(error.constraint === 'mobile_user_uk_mobile')
+                                        {
+                                            fs.unlinkSync(photo_path);
+                                            return res.send({status:'error', message:'Mobile number already registered!'});
+                                        }
+                                        else
+                                        {
+                                            return res.send({status:'error', message:error});
+                                        }
+                                    });
+                                }           
+                            }
+                    });
+                    }
+                    else
+                    {
+                        valArr.push('');
+                        if(valArr.length == 6)
+                        {
+                            db.func('public.sp_aerogms', ['m_user_regist', valArr])
+                            .then(result2 => {
+                            if(result2[0].sp_aerogms)
+                            {
+                                console.log(result2[0].sp_aerogms);
+                                return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:'/images/m_profile/default.png', fname:jsonarr.fname, lname:jsonarr.lname,mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                            }
+                            })
+                            .catch(error => {
+                                console.log('ERROR:', error); // print the error;
+                                if(error.constraint === 'mobile_user_uk_mobile')
+                                {
+                                    fs.unlinkSync(photo_path);
+                                    return res.send({status:'error', message:'Mobile number already registered!'});
+                                }
+                                else
+                                {
+                                    return res.send({status:'error', message:error});
+                                }
+                            });
+                        }
+                    }
+                }
+                })
+                .catch(error => {
+                    console.log('ERROR:', error); // print the error;
+                    return res.send({status:'error', message:error});
+                });
+            }
+            else
+            {
+                return res.send({status:'fail', message:'Please enter valid account type!'});
+            }
+    }
+    else
+    {
+        return res.send({message:'Please fill all the required fields!'});
+    }
+}
+
+module.exports.m_signin = function(req, res){
+    let userjsdata;
+    if(req.body.kuchbhi)
+    {
+        userjsdata = JSON.parse(req.body.kuchbhi);
+        let uname = userjsdata.email.length > 0 ? userjsdata.email: '';
+        let upw = userjsdata.pw.length > 0 ? userjsdata.pw : '';
+
+        if(uname && upw)
+        {
+            db.func('public.sp_aerogms', ['m_user_signin', [uname]])
+            .then(result => {
+            if(result[0].sp_aerogms)
+            {
+                const hpw = result[0].sp_aerogms;
+                bcrypt.compare(upw, hpw, function(err, result) {
+                    if(!err && result) {
+                        console.log('Logged in successfully!');
+                        db.func('public.sp_m_getuserdata', [uname.toString()])
+                        .then(result2 => {
+                        if(result2)
+                        {
+                            console.log(result2);
+                            return res.send({status:'success', message:'Logged in successfully!', data:{uid:result2[0].uid, email:result2[0].email, photo:result2[0].photo, fname:result2[0].f_name, lname:result2[0].l_name,mobile:result2[0].mobile_user}});
+                        }
+                        })
+                        .catch(error => {
+                            return res.send({status:'error', message:error});
+                        });
+                        //return res.send({status:'success', message:'Logged in successfully.'});
+                    } else {
+                        console.log('Please enter valid password!');
+                        return res.send({status:'fail', message:'Please enter valid password!'});
+                    }
+                })
+            }
+            else
+            {
+                console.log('Please enter valid username!');
+                return res.send({status:'fail', message:'Please enter valid username!'});
+            }
+            })
+            .catch(error => {
+                console.log('ERROR:', error); // print the error;
+                return res.send({status:'error', message:error.messgae});
+            });
+        }
+        else{
+            console.log('enter valid credentials');
+            return res.send({message:'Please enter valid credentials!'});
+        }
+    }
+    else
+    {
+        console.log('fill all the required fields!');
+        return res.send({message:'Please fill all the required fields!'});
+    }
+}

@@ -1,4 +1,5 @@
 var geourl ='http://localhost:8080/geoserver/ows?';
+//var geourl ='http://122.176.113.56:8080/geoserver/ows?';
 var m;
 var layControl;
 var currentLayer=null;
@@ -8,9 +9,32 @@ var jalandhar_prop_layer;
 var jalandhar_wfs_layer;
 var selcted_fea_info = {};
 var getLayerDataFromJS;
+var setAttrInfo;
+var activeMapLayer;
+var activeMapLayer_id = '';
+var hideInfoBox, showInfoBox;
+
+function enablemap(){
+    debugger
+    m.on('click', function(e){
+        getInfo(e);
+    });
+}
+
+function zoomTo(box){
+    if(box)
+    {
+        debugger
+        var box = box.replace(/[\'BOX'\(\)]/g, '').split(',');
+        var corner1 = L.latLng(parseFloat(box[0].split(' ')[1]) + 0.001, box[0].split(' ')[0]),
+        corner2 = L.latLng(box[1].split(' ')[1] , box[1].split(' ')[0]),
+        bounds = L.latLngBounds(corner1, corner2);
+        m.fitBounds(bounds);
+    }
+}
 
 function addJalandharLayer(){
-var owsrootUrl = 'http://localhost:8080/geoserver/ows';
+var owsrootUrl = geourl;
 var defaultParameters = {
     service : 'WFS',
     version : '2.0',
@@ -51,13 +75,49 @@ var ajax = $.ajax({
         }).addTo(m);
     }
 });
+}   
+
+function capFL(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+function getFeatureInfoUrl(map, layer, latlng, params) {
+
+    var point = map.latLngToContainerPoint(latlng, map.getZoom()),
+        size = map.getSize(),
+        bounds = map.getBounds(),
+        sw = bounds.getSouthWest(),
+        ne = bounds.getNorthEast();
+        //sw = crs.projection._proj.forward([sw.lng, sw.lat]),
+        //ne = crs.projection._proj.forward([ne.lng, ne.lat]);
+
+    var defaultParams = {
+        request: 'GetFeatureInfo',
+        service: 'WMS',
+        srs: 'EPSG:4326',//layer._crs.code,
+        styles: '',
+        version: layer._wmsVersion,
+        format: layer.options.format,
+        //bbox: m.getBounds(),//[sw.join(','), ne.join(',')].join(','),
+        bbox:[sw.lng, sw.lat, ne.lng, ne.lat],
+        height: size.y,
+        width: size.x,
+        layers: layer.options.layers,
+        query_layers: layer.options.layers,
+        info_format: 'text/html'
+    };
+
+    params = L.Util.extend(defaultParams, params || {});
+
+    params[params.version === '1.3.0' ? 'i' : 'x'] = point.x;
+    params[params.version === '1.3.0' ? 'j' : 'y'] = point.y;
+
+    return layer._url + L.Util.getParamString(params, layer._url, true);
+
 }
 
 function initMap()
     {
         if(m){ m.remove();}
-       
-        //document.getElementById('map').nodeValue= null;
         document.getElementById('map').style.display = 'block';
         m = L.map("map", {
             //crs: L.CRS.EPSG4326,
@@ -98,7 +158,6 @@ function initMap()
         // 		maxZoom: 24,
         // 		type:'satellite'
         // 	});
-        
         L.control.scale().addTo(m);
          var baseLayers = {
             "OSM":osmMap,
@@ -107,22 +166,19 @@ function initMap()
             "No Maps":dummyMap
             };
             var overlays = {};//{"WaterBody":water_bodies_MLayer};
-        
             layControl = L.control.orderlayers(baseLayers, overlays,{
                 collapsed: true,
                 title: 'Layers'
             })//.addTo(m);
-            
            //layControl.addOverlay(water_bodies_MLayer, 'WaterBody');
            //layControl.removeLayer(water_bodies_MLayer);
            
-        //    var osmGeocoder = new L.Control.OSMGeocoder();
-        //    m.addControl(osmGeocoder);
+           var osmGeocoder = new L.Control.OSMGeocoder();
+           m.addControl(osmGeocoder);
 
            m.on('overlayadd', function(e){
             var activeOverlay = e.layer.options.layers;
-        });  
-
+        });
         // jalandhar_prop_layer = new L.tileLayer.wms(geourl, {
         //     layers: 'AeroGMS:jalandhar', format:'image/png', 'transparent': true, 'tiled': true
         // }).addTo(m);
@@ -131,7 +187,6 @@ function initMap()
         //     alert(ev.latlng); // ev is an event object (MouseEvent in this case)
         // });
         //-----------------------------------------------------------
-        
         $('#btnGoToLoc').on('click', function()
         {m.locate({setView : true})});   
         //make the map
@@ -141,7 +196,6 @@ function initMap()
             iconSize:     [12, 12], // size of the icon
         });
         var myPolyStyle = {color: '#0000ff', weight:12 ,radius:4, clickTolerance:15};
-        
         var multipolygon = L.featureGroup({color:'#0000ff'}).addTo(m);
         
         //for area
@@ -177,110 +231,12 @@ function initMap()
                     opacity: 1,
                     fillOpacity: 0.7,
                     color: feature.properties.__color__
-                });
-            }
-        };
+                }); 
+            }};
 
-         //--------------info-----------------
-        
-         m.on('click', function(e) {
-            // Build the URL for a GetFeatureInfo
-            var jalandharLayer = wmsLayers.filter(layer=>{
-                if(layer.options){
-                    if(layer.options.layers.split(':')[1] == 'jalandhar'){
-                        return layer;
-                    }
-                }
-            })
-            var url = getFeatureInfoUrl(
-                            m,
-                            jalandharLayer[0],
-                            e.latlng,
-                            {
-                                'info_format': 'application/json',
-                                'propertyName': 'sid,name,address,zone,nature,covered_area,vacant_area'
-                                //'FEATURE_COUNT': 50
-                            }
-                        );
-            //Send the request and create a popup showing the response
-            reqwest({
-                url: url,
-                type: 'json',
-            }).then(function (data) {
-                if(data.features.length > 0){
-                    debugger
-                    selcted_fea_info={};
-                    var feature = data.features[0];
-                    selcted_fea_info = feature.properties;
-                    // selcted_fea_info['sid'] = feature.properties.sid;
-                    // selcted_fea_info['covered_area'] = feature.properties.covered_area;
-                    // selcted_fea_info['unit_price'] = feature.properties.unit_price;
-                    // L.popup()
-                    // .setLatLng(e.latlng)
-                    // .setContent(L.Util.template("<h2>{covered_area}</h2><p>{unit_price}</p>", feature.properties))
-                    // .openOn(m);
-
-                    let pro_tax = null;
-                    if(feature.properties.zone == 1){
-                        pro_tax = parseInt(feature.properties.covered_area)*5 + parseInt(feature.properties.vacant_area)*2.5;
-                    }
-                    if(feature.properties.zone == 2){
-                        pro_tax = parseInt(feature.properties.covered_area)*3 + parseInt(feature.properties.vacant_area)*2;
-                    }
-                    document.getElementById('infoText').innerHTML = '';
-                    document.getElementById('infoDiv').style.display = 'block';
-                    document.getElementById('infoText').innerHTML =  'AeroGMS_id : '+ feature.properties.sid + '<br/>' 
-                    + 'Name : '+feature.properties.name + '<br/>' 
-                    + 'Address : ' + feature.properties.address + '<br/>' 
-                    + 'Zone : '+feature.properties.zone + '<br/>' 
-                    + 'Nature : ' + feature.properties.nature + '<br/>' 
-                    + 'Covered Area : '+feature.properties.covered_area + '<br/>' 
-                    + 'Vacant Area : ' + feature.properties.vacant_area + '<br/>' 
-                    + 'Property Tax : ' + pro_tax;
-                }
-              
-            }).catch(err=>{
-                //alert(err);
-            });
-        });
-        
-
-         function getFeatureInfoUrl(map, layer, latlng, params) {
-
-            var point = map.latLngToContainerPoint(latlng, map.getZoom()),
-                size = map.getSize(),
-                bounds = map.getBounds(),
-                sw = bounds.getSouthWest(),
-                ne = bounds.getNorthEast();
-                //sw = crs.projection._proj.forward([sw.lng, sw.lat]),
-                //ne = crs.projection._proj.forward([ne.lng, ne.lat]);
-        
-            var defaultParams = {
-                request: 'GetFeatureInfo',
-                service: 'WMS',
-                srs: 'EPSG:4326',//layer._crs.code,
-                styles: '',
-                version: layer._wmsVersion,
-                format: layer.options.format,
-                //bbox: m.getBounds(),//[sw.join(','), ne.join(',')].join(','),
-                bbox:[sw.lng, sw.lat, ne.lng, ne.lat],
-                height: size.y,
-                width: size.x,
-                layers: layer.options.layers,
-                query_layers: layer.options.layers,
-                info_format: 'text/html'
-            };
-        
-            params = L.Util.extend(defaultParams, params || {});
-        
-            params[params.version === '1.3.0' ? 'i' : 'x'] = point.x;
-            params[params.version === '1.3.0' ? 'j' : 'y'] = point.y;
-        
-            return layer._url + L.Util.getParamString(params, layer._url, true);
-        
-        }
-          //--------------------------------------------
-
+            m.on('click', function(e){
+            getInfo(e);
+         });
         let url_string = window.location.href;
         let prourl = new URL(url_string);
 
@@ -376,118 +332,33 @@ function initMap()
         //m.addEventListener('click', Identify);
     }
 
-    function getBound(){
-        // $.ajax({
-        //     type:'GET',
-        //     url:'http://localhost:8080/geoserver/rest/workspaces/AeroGMS/datastores/aeroGMS/featuretypes/canal.json',
-        //     //data:{},
-        //     dataType: 'jsonp',
-        //     jsonpCallback: 'callback',
-        //     //headers: {'Authorization': "Basic " + btoa('admin' + ":" + 'geoserver')},
-        //     // beforeSend: function (xhr) {
-        //     //     xhr.setRequestHeader ("Authorization", "Basic " + btoa('admin:geoserver'));
-        //     // },
-        //     //headers:{'Authorization': "Basic " + btoa('admin:geoserver')},
-        //     success: function(data){
-        //         debugger
-        //         alert('success');
-        //         var result =JSON.parse(data);
-        //     },
-        //     error: function(err){
-        //         alert(err);
-        //     }
-        // })
-
-        // $.ajax({
-        //     type: 'GET',
-        //     dataType: 'jsonp',
-        //     url: 'http://localhost:8080/geoserver/rest/workspaces/AeroGMS/datastores/aeroGMS/featuretypes/canal.json',
-        //     data: {},
-        //     username: 'admin',
-        //     password: 'geoserver',
-        //     success: function(data)
-        //     { 
-        //         debugger
-        //         var d =data;
-        //         alert('fetched successfully. Status: '+textStatus); 
-        //     },
-        //     error: function(jqXHR, textStatus, errorThrown)
-        //     { 
-        //         debugger
-        //         alert('error: ' + textStatus); 
-        //     }
-        //     });
-
-
-        //     $.ajax({
-        //         type:'POST',
-        //         url:"http://localhost:8080/geoserver/rest/workspaces/AeroGMS/datastores/aeroGMS/featuretypes/canal.json",
-        //         dataType: 'jsonp'// Notice! JSONP <-- P (lowercase)
-          
-        //    }).then(function(data) {
-        //        debugger
-        //     console.log('success callback 2', data) 
-        //   })
-        //   .catch(function(xhr) {
-        //       debugger
-        //     console.log('error callback 1', xhr);
-        //   })
-
-
-        // $.ajax({
-        //     type:'GET',
-        //     url: 'http://localhost:8080/geoserver/rest/workspaces/AeroGMS/datastores/aeroGMS/featuretypes/canal.json',
-        //     dataType: 'json',
-        //     //jsonpcallback: 'callback',
-        //     crossDomain: true, // tell browser to allow cross domain.
-        //     beforeSend: function (xhr) {
-        //             xhr.setRequestHeader("Authorization", "Basic " + btoa('admin:geoserver'));
-        //      },
-        //      success: function(data){
-        //          alert(data);
-        //      },
-        //      error: function(err){
-
-        //      }
-        // });
-        // function callback(json) {
-        //     alert(json);
-        // }
-
-            $.ajax({
-              type: 'GET',
-              url:'http://localhost:8080/geoserver/rest/workspaces/AeroGMS/datastores/aeroGMS/featuretypes/canal.json',
-              dataType: 'jsonp',
-              jsonpCallback: 'myCallBackMethod',
-              async: false, // this is by default false, so not need to mention
-              crossDomain: true, // tell the browser to allow cross domain calls.
-              error: function(err){
-                  alert(err);
-              }
-              // success: successResopnse, jsonpCallback will call the successCallback
-              //error: failureFunction jsonp does not support errorCallback. So cannot use this 
-            });
-          
-        
-          window.myCallBackMethod = function(data) {
-           successResponse(data);
-          }
-          
-          successResponse = function(data) {
-          //functionality goes here;
-          alert('Success')
-          }
-    }
-
     var type;
     function createNewLayer(layer_type){
         type = layer_type;
+        m.off("click");
+        m.off("dblclick");
+        L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
+        debugger
+        if(currentLayer?currentLayer.getLayers().length>0:false){
+            m.removeLayer(currentLayer)
+        }
+        //currentLayer.addLayer(polyLineLayer);
+
+        currentLayer = null;
+        markerPoints = null;
+        polyLineLayer=null;
+        polygonLayer=null;
+        enablemap();
+        
         if(currentLayer === null){
             switch(type){
                 case 'Point':
                     currentLayer = new L.featureGroup([]).addTo(m);
                     break;
-                case 'Line':
+                case 'Linestring':
+                    currentLayer = new L.featureGroup([]).addTo(m);
+                    break;
+                case 'LineString':
                     currentLayer = new L.featureGroup([]).addTo(m);
                     break;
                 case 'Polygon':
@@ -502,19 +373,115 @@ function initMap()
                 e.sourceTarget.editing.enable();
                 selFeature =  e.sourceTarget._leaflet_id;
                 if(currentLayer)
-                $('#removeFeature').css('visibility', 'visible');
+                $('#removeFeature').css('display', 'inline-block');
             })
         }
     }
+
+    function resetNewLayer(){
+        m.off("click");
+        m.off("dblclick");
+        if(currentLayer?currentLayer.getLayers().length>0:false){
+            m.removeLayer(currentLayer)
+        }
+        currentLayer = null;
+        markerPoints = null;
+        polyLineLayer=null;
+        polygonLayer=null;
+        L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
+        enablemap();
+    }
+
+    function getInfo(e) {
+        debugger
+        //document.getElementById('infoDiv').style.display = 'none';
+       if(activeMapLayer && activeMapLayer_id && currentLayer?currentLayer.getLayers().length == 0:true){
+           var selectedWMSLayer = wmsLayers.filter(layer=>{
+               if(layer.options){
+                   if(layer.options.layers.split(':')[1] == activeMapLayer){
+                       return layer;
+                   }
+               }
+           })
+           if(selectedWMSLayer.length==0)
+           {
+            return;
+           }
+           var url = getFeatureInfoUrl(
+                           m,
+                           selectedWMSLayer[0],
+                           e.latlng,
+                           {
+                               'info_format': 'application/json'
+                               //'propertyName': 'sid,name,address,zone,nature,covered_area,vacant_area'
+                               //'FEATURE_COUNT': 50
+                           }
+                       );
+           //Send the request and create a popup showing the response
+           reqwest({
+               url: url,
+               type: 'json',
+           }).then(function (data) {
+               if(data.features.length > 0){
+                   var feature = data.features[0];
+                   // L.popup()
+                   // .setLatLng(e.latlng)
+                   // .setContent(L.Util.template("<h2>{covered_area}</h2><p>{unit_price}</p>", feature.properties))
+                   // .openOn(m);
+                   featureHL(activeMapLayer, feature.geometry.type.toLowerCase(), feature.properties.aero_id);
+                   if(activeMapLayer == 'jalandhar')
+                   {
+                       let pro_tax = null;
+                       if(feature.properties.zone == 1){
+                           pro_tax = parseInt(feature.properties.covered_area)*5 + parseInt(feature.properties.vacant_area)*2.5;
+                       }
+                       if(feature.properties.zone == 2){
+                           pro_tax = parseInt(feature.properties.covered_area)*3 + parseInt(feature.properties.vacant_area)*2;
+                       }
+                       let keysArray = Object.keys(feature.properties);
+                       keysArray.sort();
+                       finalInfoArray = keysArray.map(key => {
+                           return {name:capFL(key), value:(key == 'creation_date')?`${feature.properties[key].split('T')[0]} ${feature.properties[key].split('T')[1].substring(0, 5)}` :feature.properties[key]}
+                       })
+                       finalInfoArray.push({name:'Property Tax', value:pro_tax});
+                       setAttrInfo(finalInfoArray);
+                   }
+                   else
+                   {
+                       debugger
+                       let keysArray = Object.keys(feature.properties);
+                       keysArray.sort();
+                       finalInfoArray = keysArray.map(key => {
+                           return {name:capFL(key), value:(key == 'creation_date')?`${feature.properties[key].split('T')[0]} ${feature.properties[key].split('T')[1].substring(0, 5)}` :feature.properties[key]}
+                       })
+                       setAttrInfo(finalInfoArray);
+                   }
+                   showInfoBox();
+                   //document.getElementById('infoDiv').style.display = 'block';
+
+               }
+               else
+               {
+                lyrhighlighter ? m.removeLayer(lyrhighlighter):false;
+                hideInfoBox();
+               }
+             
+           }).catch(err=>{
+               //alert(err);
+           });
+       }
+       // else{
+       //     alert('please select a layer!');
+       // }
+   }
 
     var selFeature = null;
     function removeSelFeature(){
         if(selFeature !== null  && currentLayer !== null ){
             currentLayer.removeLayer(currentLayer._layers[selFeature]);
         }
-        $('#removeFeature').css('visibility', 'hidden');
+        $('#removeFeature').css('display', 'none');
     }
-
     
     function addPoint(){
         debugger
@@ -526,7 +493,6 @@ function initMap()
                     let pointMarker = new L.Marker([e.latlng.lat, e.latlng.lng]);
                     //pointArrayLL.push([e.latlng.lat, e.latlng.lng]);
                     currentLayer.addLayer(pointMarker);
-                    //L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
                  })
             }
         }
@@ -534,7 +500,7 @@ function initMap()
 
     function addLine(){
         debugger
-        if(type === 'Line' && currentLayer !== null){
+        if((type === 'Linestring' || type === 'LineString') && currentLayer !== null){
             L.DomUtil.addClass(m._container,'crosshair-cursor-enabled');
             var polyLineLayer = new L.Polyline([], {color: 'red',  weight: 4, dashArray: '10,5',}).addTo(m);
             m.on("click", function(e)
@@ -552,6 +518,7 @@ function initMap()
                 m.removeLayer(polyLineLayer);
                 polyLineLayer=null;
                 currentLayer.addTo(m);
+                enablemap();
              })
         }
     }
@@ -576,65 +543,123 @@ function initMap()
                 m.removeLayer(polygonLayer);
                 polygonLayer=null;
                 currentLayer.addTo(m);
+                enablemap();
              })
         }
     }
 
     function saveLayer(type, name){
         //alert(type);
-        $('#removeFeature').css('visibility', 'hidden');
-        if(type === 'Point' && currentLayer !== null){
-            L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
-            let markerPoints = currentLayer.getLayers();
-            let latlngs =[];
-            markerPoints.map(marker => {
-                latlngs.push([marker._latlng.lat, marker._latlng.lng]);
-            })
-            //alert(latlngs);
-            console.log(latlngs);
-            m.off("click");
-            currentLayer.off('click');  
-            m.removeLayer(currentLayer);
-            currentLayer = null;
-            markerPoints = null;
+        debugger
+        $('#removeFeature').css('display', 'none');
+        if(Object.keys(currentLayer._layers).length>0)
+        {
+            if(type === 'Point' && currentLayer !== null){
+                L.DomUtil.removeClass(m._container,'crosshair-cursor-enabled');
+                let markerPoints = currentLayer.getLayers();
+                let latlngs =[];
+                markerPoints.map(marker => {
+                    latlngs.push([marker._latlng.lat, marker._latlng.lng]);
+                })
+                //alert(latlngs);
+                console.log(latlngs);
+                m.off("click");
+                currentLayer.off('click');  
+                m.removeLayer(currentLayer);
+                currentLayer = null;
+                markerPoints = null;
+                enablemap();
+                if(pid != null && pid != undefined)
+                return { layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
+            }
+            else if((type === 'Linestring' || type === 'LineString') && currentLayer !== null){
+                debugger
+                let latlngs =[];
+                let invalidflag =false;
+                latlngs = currentLayer.getLayers().map(line => {
+                    line.editing.disable();
+                    debugger
+                    let comArray =[];
+                    comArray = line.getLatLngs().filter((ele, index, self) =>
+                        index === self.findIndex((t) => (
+                        t.lat === ele.lat && t.lng === ele.lng
+                    )))
+                    if(comArray.length >= 2)
+                    {
+                        return comArray;
+                    }
+                    else{
+                        invalidflag = true;
+                        line.editing.enable();
+                    }
+                    //return line.getLatLngs();
 
-            if(pid != null && pid != undefined)
-            return { layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
+                })
+                if(!invalidflag)
+                {
+                    console.log('original lines latlng Array:');
+                    console.log(latlngs);
+                    currentLayer.off('click');
+                    m.removeLayer(currentLayer);
+                    currentLayer = null;
+                    return { status:'success', layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
+                }
+                else{
+                    console.log(latlngs);
+                    return {status:'fail', layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
+                }
+            }
+            else if(type === 'Polygon' && currentLayer !== null){
+                let latlngs =[];
+                let invalidflag =false;
+                latlngs = currentLayer.getLayers().map(polygon => {
+                    polygon.editing.disable();
+                    let comArray =[];
+                    comArray = polygon.getLatLngs().map((array1)=>{
+                        return array1.filter((ele, index, self) =>
+                                        index === self.findIndex((t) => (
+                                        t.lat === ele.lat && t.lng === ele.lng
+                                    )))
+                    })
+                    if(comArray[0].length >= 3)
+                    {
+                        return comArray;
+                    }
+                    else{
+                        invalidflag = true;
+                        polygon.editing.enable();
+                    }
+                })
+                if(!invalidflag)
+                {
+                    console.log(latlngs);
+                    currentLayer.off('click');
+                    m.removeLayer(currentLayer);
+                    currentLayer = null;
+                    return {status:'success', layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
+                }
+                else{
+                    console.log(latlngs);
+                    return {status:'fail', layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
+                }
+             
+            }
         }
-        else if(type === 'Line' && currentLayer !== null){
-            debugger
-            let latlngs =[];
-            latlngs = currentLayer.getLayers().map(line => {
-                line.editing.disable();
-                return line.getLatLngs();
-            })
-            console.log('original lines latlng Array:');
-            console.log(latlngs);
-            currentLayer.off('click');
-            m.removeLayer(currentLayer);
-            currentLayer = null;
-            debugger
-            return { layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
-        }
-        else if(type === 'Polygon' && currentLayer !== null){
-            let latlngs =[];
-            latlngs = currentLayer.getLayers().map(polygon => {
-                polygon.editing.disable();
-                return polygon.getLatLngs();
-                //latlngs.push(polygon.getLatLngs());
-            })
-            console.log(latlngs);
-            currentLayer.off('click');
-            m.removeLayer(currentLayer);
-            currentLayer = null;
-            return { layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
+        else{
+            alert('First add some feature then save the layer!');
         }
     }
 
 
     var wmsLayers =[];
-    function addWMSLayer(layName){
+    function addWMSLayer(layName, color){
         debugger
+        color = color ? color:'0000ff';
+        if(activeMapLayer_id && document.getElementById(activeMapLayer_id))
+        {
+            lyrhighlighter ? m.removeLayer(lyrhighlighter):false;
+            document.getElementById(activeMapLayer_id).click();
+        }
         let isLayerExist = null;
         if(layName != undefined && layName!= null){
             isLayerExist = wmsLayers.filter(layer=>{
@@ -647,9 +672,74 @@ function initMap()
             if(isLayerExist.length == 0){
                 var layer = layName;
                 layer = new L.tileLayer.wms(geourl, {
-                layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true
+                layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, env:"color:"+color
                 }).addTo(m);
-                wmsLayers.push(layer);
+                wmsLayers.push(layer);//env:'color:00FF00'
+            }
+            else if(isLayerExist.length == 1){
+                isLayerExist[0].setParams({env:"color:"+color}, false);
+            }
+        }
+    }
+    var lyrhighlighter = '';
+    function featureHL(layName, laytype, aeroid){
+        debugger
+            if(laytype && layName && aeroid){
+                lyrhighlighter ? m.removeLayer(lyrhighlighter):false;
+                if(laytype === 'polygon' || laytype === 'linestring')
+                {
+                    lyrhighlighter = new L.tileLayer.wms(geourl, {
+                    layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, CQL_FILTER:"aero_id="+ aeroid , env:'color:00FFFF'  
+                    }).addTo(m);
+                    //wmsLayers.push(layer);//env:'color:00FF00'
+                }
+                else if(laytype === 'point')
+                {
+                    lyrhighlighter = new L.tileLayer.wms(geourl, {
+                        layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, CQL_FILTER:"aero_id="+ aeroid , env:'color:00FFFF;size:8'  
+                        }).addTo(m);
+                }
+            }
+    }
+
+    function updateWMSLayer(layName){
+        debugger
+        let isLayerExist = null;
+        if(layName != undefined && layName!= null){
+            isLayerExist = wmsLayers.filter(layer=>{
+                if(layer.options){
+                    if(layer.options.layers.split(':')[1] == layName){
+                        return layer;
+                    }
+                }
+            })
+            if(isLayerExist.length == 1){
+                debugger
+                isLayerExist[0].setParams({date:Date.now()}, false);
+            }
+        }
+    }
+  
+    function updateWMSStyle(layName, laystyle){
+        debugger
+        let isLayerExist = null;
+        if(layName != undefined && layName!= null){
+            isLayerExist = wmsLayers.filter(layer=>{
+                if(layer.options){
+                    debugger
+                    if(layer.options.layers.split(':')[1] == layName){
+                        return layer;
+                    }
+                    else{
+                        if(layer.wmsParams.styles.split('_')[1])
+                        {
+                            layer.wmsParams.styles = layer.wmsParams.styles.split('_')[0];
+                        }
+                    }
+                }
+            })
+            if(isLayerExist.length == 1){
+                isLayerExist[0].setParams({styles:laystyle}, false);
             }
         }
     }
@@ -668,10 +758,6 @@ function initMap()
             }
         })
         console.log(wmsLayers);
-    }
-
-    function closeInfoDiv(){
-        document.getElementById('infoDiv').style.display = 'none';
     }
 
     function getSelectedFeaValue(){

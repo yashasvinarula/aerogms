@@ -3,6 +3,7 @@ body {
   padding: 0;
   font-family: sans-serif;
   /* background-color: rgb(220, 220, 220); */
+  position: relative;
 }
 #map {
   position: relative;

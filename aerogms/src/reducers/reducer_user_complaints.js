@@ -5,7 +5,6 @@ import { stat } from 'fs';
 const initialState={};
 
 export default function(state=initialState, action){
-debugger
     switch(action.type){
         case type.GET_USER_COMPLAINTS:
             return _.mapKeys(action.payload, 'comp_id');

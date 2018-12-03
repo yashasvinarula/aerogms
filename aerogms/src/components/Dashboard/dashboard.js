@@ -251,12 +251,18 @@ class Dashboard extends Component {
                         </Navbar>
                         <div className="top-padding">
                             <Table striped condensed hover>
-                                <thead className="container">
+                            <style type="text/css">{`
+                                table {
+                                    width: 85% !important;
+                                    margin: 0 auto !important;
+                                }
+                            `}</style>
+                                <thead className="">
                                     <tr>
-                                        <th>UserId</th>
-                                        <th>User Name <span><Glyphicon glyph="sort" /></span></th>
-                                        <th>Regn. Date <span><Glyphicon glyph="sort" /></span></th>
-                                        <th>Status <span><Glyphicon glyph="sort" /></span></th>
+                                        <th className="text-center">UserId</th>
+                                        <th className="text-center">User Name <span><Glyphicon glyph="sort" /></span></th>
+                                        <th className="text-center">Regn. Date <span><Glyphicon glyph="sort" /></span></th>
+                                        <th className="text-center">Status <span><Glyphicon glyph="sort" /></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -11,10 +11,8 @@ const passport = require('passport');
 require('./passport')(passport);
 
 
-
 app.set('port', process.env.PORT || 3001);
 app.use(express.static(path.join(__dirname, './aerogms/public')));
-
 
 //Adding CORS support
 app.all('*', function (req, res, next) {

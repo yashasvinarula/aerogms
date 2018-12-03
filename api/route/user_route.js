@@ -29,13 +29,24 @@ router.post('/delete_project', auth.loggedIn, cntrlr.delete_project);
 router.post('/rename_project', auth.loggedIn, cntrlr.rename_project);
 router.post('/pro_name_exists', auth.loggedIn, cntrlr.pro_name_exists);
 
-router.post('/get_layers', layer_cntrlr.get_layers)
-router.post('/create_layer', layer_cntrlr.create_layer);
-router.post('/rename_layer', layer_cntrlr.rename_layer);
-router.post('/lay_name_exists', layer_cntrlr.lay_name_exists);
-router.post('/delete_layer', layer_cntrlr.delete_layer);
+router.post('/get_layers', auth.loggedIn, layer_cntrlr.get_layers)
+router.post('/create_layer', auth.loggedIn, layer_cntrlr.create_layer);
+router.post('/rename_layer', auth.loggedIn, layer_cntrlr.rename_layer);
+router.post('/lay_name_exists', auth.loggedIn, layer_cntrlr.lay_name_exists);
+router.post('/delete_layer', auth.loggedIn, layer_cntrlr.delete_layer);
+router.post('/layer_attribute', auth.loggedIn, layer_cntrlr.layer_attribute);
+router.post('/delete_column', auth.loggedIn, layer_cntrlr.delete_column);
+router.post('/rename_column', auth.loggedIn, layer_cntrlr.rename_column);
+router.post('/add_column', auth.loggedIn, layer_cntrlr.add_column);
+router.post('/get_bound', auth.loggedIn, layer_cntrlr.get_bound);
+router.post('/exis_layer_insert', auth.loggedIn, layer_cntrlr.exis_layer_insert);
+router.post('/update_layer_color', auth.loggedIn, layer_cntrlr.update_layer_color);
 
-
+/*for mobile user*/
+//-----------------------------
+router.post('/m_signup', cntrlr.m_signup);
+router.post('/m_signin', cntrlr.m_signin);
+ //---------------------------
 let storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './files')

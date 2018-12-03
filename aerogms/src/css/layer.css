@@ -1,6 +1,6 @@
 .layer-on-off {
     width: 40px;
-    height: 18px;
+    height: 20px;
 }
 /* li {
     position: relative;
@@ -14,6 +14,12 @@
     margin-bottom: 8px;
     position: relative;
 }
+#zoomBtn{
+        position: absolute;
+        top: 17%;
+        right: 14%;
+}
+
 .layer-title-box {
     vertical-align: middle;
     margin-left: 10px;
@@ -26,7 +32,7 @@
     height: 20px;
     margin-left: 10px;
     vertical-align: middle;
-    background-color: #4D4D4D;
+    /* background-color: #4D4D4D; */
     outline: #B3B3B3 solid 4px;
 }
 .inline-display {
@@ -92,8 +98,8 @@ label {
     display: block;
 }
 input {
-    margin-left: 20px;
-    width: 70%;
+    /* margin-left: 20px; */
+    width: 100%;
     font-weight: 400;
 
 }
@@ -130,7 +136,7 @@ input {
 
 @media only screen and (max-width : 768px ) {
     .layer-on-off {
-        width: 40px;
+        width: 30px;
         height: 20px;
     }
     .layer-title {

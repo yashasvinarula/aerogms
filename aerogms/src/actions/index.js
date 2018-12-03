@@ -95,7 +95,6 @@ export function getProjects(owner_email){
 }
 
 export function deleteProject(pro_id){
-    debugger
     const request = axios.post(`${type.ROOT_URL}/delete_project`, {
         pro_id:pro_id
     })
@@ -107,7 +106,6 @@ export function deleteProject(pro_id){
 }
 
 export function renameProject(pro_id, pro_name){
-    debugger
     const request = axios.post(`${type.ROOT_URL}/rename_project`, {
         pro_id:pro_id,
         pro_name:pro_name
@@ -120,7 +118,6 @@ export function renameProject(pro_id, pro_name){
 }
 
 export function create_layer(lay_name, lay_type, pro_id, mail_id, geom){
-    debugger
     const request = axios.post(`${type.ROOT_URL}/create_layer`, {
         name: lay_name,
         type: lay_type,
@@ -136,7 +133,6 @@ export function create_layer(lay_name, lay_type, pro_id, mail_id, geom){
 }
 
 export function rename_layer(lay_id, lay_name){
-    debugger
     const request = axios.post(`${type.ROOT_URL}/rename_layer`, {
         lay_id:lay_id,
         name: lay_name
@@ -161,7 +157,6 @@ export function get_layers(pro_id, user_id){
 }
 
 export function delete_layer(layName, layId){
-    debugger
     const request = axios.post(`${type.ROOT_URL}/delete_layer`, {
         layer_name:layName,
         lay_id:layId
@@ -181,7 +176,6 @@ export function resetLayerStore(){
 }
 
 export function getUserComplaints(complaintObj){
-    debugger
     return{
         type: type.GET_USER_COMPLAINTS,
         payload: [complaintObj]
@@ -189,7 +183,6 @@ export function getUserComplaints(complaintObj){
 }
 
 export function addUserComplaint(complaintObj){
-    debugger
     return{
         type: type.ADD_USER_COMPLAINT,
         payload: [complaintObj]
@@ -197,10 +190,38 @@ export function addUserComplaint(complaintObj){
 }
 
 export function makelayerafterimport(data){
-    debugger
     var data = {data}
     return{
         type: type.CREATE_LAYER,
         payload: data
+    }
+}
+
+export function makeLayerActive(data){
+    debugger
+    return{
+        type: type.MAKE_ACTIVE_LAYER,
+        payload: data
+    }
+}
+
+export function updateLayerActive(data){
+    debugger
+    return{
+        type: type.UPDATE_ACTIVE_LAYER,
+        payload: data
+    }
+}
+
+export function updateLayerColor(layId, color){
+    debugger
+    const request = axios.post(`${type.ROOT_URL}/update_layer_color`, {
+        lay_id:layId,
+        color:color,
+    })
+
+    return{
+        type: type.UPDATE_LAYER_COLOR,
+        payload: request
     }
 }
