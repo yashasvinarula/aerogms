@@ -1,4 +1,4 @@
-var geourl ='http://localhost:8080/geoserver/ows?';
+var geourl ='http://localhost:8081/geoserver/ows?';
 //var geourl ='http://122.176.113.56:8080/geoserver/ows?';
 var m;
 var layControl;
@@ -13,6 +13,7 @@ var setAttrInfo;
 var activeMapLayer;
 var activeMapLayer_id = '';
 var hideInfoBox, showInfoBox;
+var nf_hl_Layer =  new L.featureGroup([]);
 
 function enablemap(){
     debugger
@@ -20,7 +21,6 @@ function enablemap(){
         getInfo(e);
     });
 }
-
 function zoomTo(box){
     if(box)
     {
@@ -32,7 +32,6 @@ function zoomTo(box){
         m.fitBounds(bounds);
     }
 }
-
 function addJalandharLayer(){
 var owsrootUrl = geourl;
 var defaultParameters = {
@@ -76,7 +75,6 @@ var ajax = $.ajax({
     }
 });
 }   
-
 function capFL(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -114,7 +112,6 @@ function getFeatureInfoUrl(map, layer, latlng, params) {
     return layer._url + L.Util.getParamString(params, layer._url, true);
 
 }
-
 function initMap()
     {
         if(m){ m.remove();}
@@ -240,7 +237,7 @@ function initMap()
         let url_string = window.location.href;
         let prourl = new URL(url_string);
 
-        //--------------import ---------
+        //--------------import --------------
         try{
             $(document).ready(function() {
                 //$('#divCompTable').draggable();
@@ -326,7 +323,7 @@ function initMap()
             document.getElementById('divImportLayer').style.display='none';
             alert(err);
         }
-        //--------------
+        //-----------------
         pid = prourl.searchParams.get("pro_id");
         return pid;
         //m.addEventListener('click', Identify);
@@ -343,7 +340,6 @@ function initMap()
             m.removeLayer(currentLayer)
         }
         //currentLayer.addLayer(polyLineLayer);
-
         currentLayer = null;
         markerPoints = null;
         polyLineLayer=null;
@@ -393,8 +389,7 @@ function initMap()
     }
 
     function getInfo(e) {
-        debugger
-        //document.getElementById('infoDiv').style.display = 'none';
+       nf_hl_Layer ? resetnfhl():'';        
        if(activeMapLayer && activeMapLayer_id && currentLayer?currentLayer.getLayers().length == 0:true){
            var selectedWMSLayer = wmsLayers.filter(layer=>{
                if(layer.options){
@@ -405,7 +400,7 @@ function initMap()
            })
            if(selectedWMSLayer.length==0)
            {
-            return;
+                return;
            }
            var url = getFeatureInfoUrl(
                            m,
@@ -470,9 +465,11 @@ function initMap()
                //alert(err);
            });
        }
-       // else{
-       //     alert('please select a layer!');
-       // }
+   }
+
+   function resetnfhl(){
+    nf_hl_Layer ? m.removeLayer(nf_hl_Layer):'';
+    nf_hl_Layer = new L.featureGroup([]);
    }
 
     var selFeature = null;
@@ -563,10 +560,13 @@ function initMap()
                 })
                 //alert(latlngs);
                 console.log(latlngs);
+                resetnfhl();
                 m.off("click");
-                currentLayer.off('click');  
+                currentLayer.off('click');
+                currentLayer.addTo(nf_hl_Layer);
                 m.removeLayer(currentLayer);
                 currentLayer = null;
+                m.addLayer(nf_hl_Layer);  
                 markerPoints = null;
                 enablemap();
                 if(pid != null && pid != undefined)
@@ -599,9 +599,13 @@ function initMap()
                 {
                     console.log('original lines latlng Array:');
                     console.log(latlngs);
+                    resetnfhl();
                     currentLayer.off('click');
+                    currentLayer.setStyle({color:'#00ffff'});
+                    currentLayer.addTo(nf_hl_Layer);
                     m.removeLayer(currentLayer);
                     currentLayer = null;
+                    m.addLayer(nf_hl_Layer);
                     return { status:'success', layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
                 }
                 else{
@@ -632,10 +636,17 @@ function initMap()
                 })
                 if(!invalidflag)
                 {
+                    debugger
                     console.log(latlngs);
+                    resetnfhl();
                     currentLayer.off('click');
+                    currentLayer.setStyle({color:'#00ffff'});
+                    //nf_hl_Layer.addLayer(Object.assign({}, currentLayer.getLayers()));
+                    currentLayer.addTo(nf_hl_Layer);
                     m.removeLayer(currentLayer);
                     currentLayer = null;
+                    //nf_hl_Layer.addTo(m);
+                    m.addLayer(nf_hl_Layer);
                     return {status:'success', layer_name:name, type:type, latlngs:latlngs, pro_id:pid};
                 }
                 else{

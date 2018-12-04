@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const fs = require("fs");
 const path = require('path');
+const config = require('../../config');
 
 module.exports.user_signup =  function(req, res){
 
@@ -39,8 +40,7 @@ module.exports.user_signup =  function(req, res){
             if(result2[0].sp_aerogms)
             {
                 console.log(result2[0].sp_aerogms);
-
-                let from = process.env.mail_id;
+                let from = config.secdata.mail_id;//process.env.mail_id;
                 let to = req.body.email;
                 let sub = 'AeroGMS account confirmation';
                 let content ='Welcome to AeroGMS Family.\n\n' + 
@@ -200,7 +200,7 @@ module.exports.pw_forgot = async function(req, res) {
             if(result[0].sp_aerogms)
             {
                 console.log(result[0].sp_aerogms);
-                let from = process.env.mail_id;
+                let from = config.secdata.mail_id;;
                 let to = req.body.email;
                 let sub = 'AeroGMS Password Reset Token';
                 let content ='You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
@@ -270,7 +270,7 @@ module.exports.getUserlist = function(req, res){
 })
 .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
 });
 }   
 
@@ -286,12 +286,12 @@ module.exports.removeUser = function(req, res){
     }
     else
     {
-        return res.status(200).send({message:'User already removed!'});
+        return res.status(500).send({status:'fail', message:'User already removed!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
     });
 }
 
@@ -304,7 +304,7 @@ module.exports.toggleUserStatus = function(req, res){
         let retVal = result[0].sp_aerogms.split('#');
         console.log(result[0].sp_aerogms);
         if(retVal[0] == "true"){
-            let from = process.env.mail_id;
+            let from = config.secdata.mail_id;
             let to = retVal[1];
             let sub = 'AeroGMS account Activation Status';
             let content ='Welcome to AeroGMS Family.\n\n' + 
@@ -313,7 +313,7 @@ module.exports.toggleUserStatus = function(req, res){
             sendMail(req, res, from, to, sub, content, message);
         }
         else{
-            let from = process.env.mail_id;
+            let from = config.secdata.mail_id;;
             let to = retVal[1];
             let sub = 'AeroGMS account Activation Status';
             let content = 'Your account has been de-activated. Now you can not login. For more details contact to admin.\n\n';
@@ -325,12 +325,12 @@ module.exports.toggleUserStatus = function(req, res){
     else
     {
         console.log('Problem in status toggling');
-        return res.status(200).send({message:'Problem in status toggling'});
+        return res.status(500).send({status:'fail', message:'Problem in status toggling'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
     });
     }
 
@@ -342,18 +342,17 @@ module.exports.create_project = function(req, res){
             console.log(result[0].sp_aerogms);
             let date_time =new Date().toLocaleString();//new Date().toString().replace(/T/, ' ').replace(/\..+/, '');
             return res.status(200).send({pro_id:result[0].sp_aerogms,pro_name:req.body.pro_name, date_time:date_time});
-            //return res.status(200).send({message:'User removed successfully!'});
         }
         else
         {
-            return res.status(200).send({message:'Problem in creating new project!'});
+            return res.status(500).send({status:'fail', message:'Problem in creating new project!'});
         }
         })
         .catch(error => {
         console.log('ERROR:', error); // print the error;
-        return res.status(400).send(error);
+        return res.status(400).send({status:'error', message:error.message});
         });
-    }
+}
 
 module.exports.get_projects = function(req, res){
         db.func('public.sp_getprojectlist', [req.body.owner_email])
@@ -364,12 +363,12 @@ module.exports.get_projects = function(req, res){
         }
         else
         {
-            return res.status(200).send({message:'Problem in fetching project list!'});
+            return res.status(500).send({status:'fail', message:'Problem in fetching project list!'});
         }
         })
         .catch(error => {
         console.log('ERROR:', error); // print the error;
-        return res.status(400).send(error);
+        return res.status(400).send({status:'error', message:error.message});
         });
     }
 
@@ -382,12 +381,12 @@ module.exports.delete_project = function(req, res){
         }
         else
         {
-            return res.status(200).send({message:'Problem in deleting project!'});
+            return res.status(500).send({status:'fail', message:'Problem in deleting project!'});
         }
         })
         .catch(error => {
         console.log('ERROR:', error); // print the error;
-        return res.status(400).send(error);
+        return res.status(400).send({status:'error', message:error.message});
         });
     }
 
@@ -400,12 +399,12 @@ module.exports.rename_project = function(req, res){
         }
         else
         {
-            return res.status(200).send({message:'Problem in renaming project!'});
+            return res.status(500).send({status:'fail', message:'Problem in renaming project!'});
         }
         })
         .catch(error => {
         console.log('ERROR:', error); // print the error;
-        return res.status(400).send(error);
+        return res.status(400).send({status:'error', message:error.message});
         });
     }
 
@@ -640,5 +639,125 @@ module.exports.m_signin = function(req, res){
     {
         console.log('fill all the required fields!');
         return res.send({message:'Please fill all the required fields!'});
+    }
+}
+
+module.exports.m_getprofile = function(req, res){
+    if(req.query.email)
+    {
+        //var userjsdata = JSON.parse(req.query.email);
+        let uname = req.query.email.length > 0 ? req.query.email: '';
+        if(uname)
+        {
+            db.any('SELECT u_id, f_name, l_name, email, mobile, passward, photo, date_time, status, profession, website, street, city, state, pincode, country FROM public.mobile_user where email=$1', [uname.toString()])
+            .then((result2) =>{
+                if(result2.length>0)
+                {
+                    console.log(result2);
+                    return res.send({status:'success', message:'Profile data is fetch successfully!', data:{uid:result2[0].uid, email:result2[0].email, photo:result2[0].photo, fname:result2[0].f_name, lname:result2[0].l_name,mobile:result2[0].mobile, website:result2[0].website, street:result2[0].street, city:result2[0].city, state:result2[0].state, pincode:result2[0].pincode, country:result2[0].country, profession:result2[0].profession}});
+                }
+                else
+                {
+                    return res.send({status:'fail', message:'no records found!'});
+                }
+            })
+            .catch(error => {
+                return res.send({status:'error', message:error});
+            });
+
+            // db.func('public.sp_m_getuserdata', [uname.toString()])
+            // .then(result2 => {
+            // if(result2)
+            // {
+            //     console.log(result2);
+            //     return res.send({status:'success', message:'Profile data is fetch successfully!', data:{uid:result2[0].uid, email:result2[0].email, photo:result2[0].photo, fname:result2[0].f_name, lname:result2[0].l_name,mobile:result2[0].mobile, website:result2[0].website, street:result2[0].street, city:result2[0].city, sytate:result2[0].state, pincode:result2[0].pincode, country:result2[0].country, profession:result2[0].profession}});
+            // }
+            // })
+            // .catch(error => {
+            //     return res.send({status:'error', message:error});
+            // });
+        }
+        else{
+            console.log('enter valid credentials');
+            return res.send({message:'Please enter valid email!'});
+        }
+    }
+    else
+    {
+        console.log('please send email id!');
+        return res.send({message:'Please send email id!'});
+    }
+}
+
+module.exports.m_updateprofile = function(req, res){
+    let valArr =[];
+    if(req.body.kuchbhi)
+    {
+        var jsonarr = JSON.parse(req.body.kuchbhi);
+        valArr.push(jsonarr.data.fname);
+        valArr.push(jsonarr.data.lname);
+        valArr.push(jsonarr.data.mobile ? jsonarr.data.mobile : '0');
+        valArr.push(jsonarr.data.profession);
+        valArr.push(jsonarr.data.website);
+        valArr.push(jsonarr.data.street);
+        valArr.push(jsonarr.data.city);
+        valArr.push(jsonarr.data.state);
+        valArr.push(jsonarr.data.pincode);
+        valArr.push(jsonarr.data.country);
+        if(jsonarr.data.photo === "")
+        {
+            valArr.push("");
+            valArr.push(jsonarr.email);
+            db.func('public.sp_aerogms', ['m_updateprofile', valArr])
+            .then(result=> {
+            if(result[0].sp_aerogms)
+            {
+                console.log(result[0].sp_aerogms);
+                return res.send({status:'success', message:'Profile Updated successfully.'});
+            }
+            else{
+                return res.send({status:'fail', message:'Problem in profile updation.'});
+            }
+            })
+            .catch(error => {
+                console.log('ERROR:', error); // print the error;
+                return res.send({status:'error', message:error});
+            });
+        }
+        else{
+            const imageloc = '/images/m_profile/'+ `${jsonarr.email}.png`;
+            var imageDirloc = path.join(__dirname, '../../aerogms/public/images/m_profile/');
+            var base64Data = jsonarr.data.photo.replace(/^data:image\/png;base64,/, "");
+            var photo_path = `${imageDirloc}${jsonarr.email}.png`;
+            if(base64Data)
+            {
+                fs.writeFile(photo_path, base64Data, 'base64', function(err) {
+                    if(err){
+                        return res.send({status:'fail',message:'Image is not valid!'});
+                    }
+                    else
+                    {
+                        valArr.push(imageloc);
+                        valArr.push(jsonarr.email);
+                        db.func('public.sp_aerogms', ['m_updateprofile', valArr])
+                        .then(result2 => {
+                        if(result2[0].sp_aerogms)
+                        {
+                            console.log(result2[0].sp_aerogms);
+                            return res.send({status:'success', message:'Profile updated successfully.'});
+                        }
+                        })
+                        .catch(error => {
+                            return res.send({status:'error', message:error});
+                        });
+                    }
+                });
+            }
+        }
+    }
+    else
+    {
+        console.log('please send all fields!');
+        return res.send({message:'Please send all fields'});
     }
 }

@@ -19,8 +19,8 @@
 }
 
 .leaflet-touch .leaflet-control-geocoder a {
-	width: 44px;
-	height: 44px;
+	width: 32px;
+	height: 32px;
 }
 
 .leaflet-control-geocoder .leaflet-control-geocoder-form,
@@ -55,4 +55,12 @@
 .leaflet-touch .leaflet-control-info a {
 	width: 44px;
 	height: 44px;
+}
+.leaflet-top
+{
+	z-index: 999999;
+	top: 1px !important;
+} 
+.leaflet-right{
+	right: 206px !important;
 }

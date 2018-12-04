@@ -26,21 +26,6 @@ export function getUsers(){
     }
 }
 
-// function getStuffSuccess(result) {
-//     return {
-//       type: type.GET_SUCCESS,
-//       payload: result
-//     }
-//   }
-  
-// function getStuffError(err) {
-//     return {
-//       type: type.GET_ERROR,
-//       payload: err
-//     }
-//   }
-  
-
 export function removeUser(u_id){
     // debugger
     // return function(dispatch){

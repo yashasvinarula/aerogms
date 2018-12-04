@@ -89,15 +89,32 @@ class UserDashboard extends Component {
             }
         })
         .catch(err=>{
-            console.log(err);
+            if(err.response.data.status === 'unauthorised')
+            {
+                alert(err.response.data.message);
+                this.props.doLogout();
+            }
+            else{
+                alert(err.response.data.message);
+            }
         })
     }
 
     renderProjects(){
         debugger
+        if(Object.keys(this.props.projects).indexOf('error') >-1)
+        {
+            let {message, status} = this.props.projects.error;
+            alert(message);
+            delete this.props.projects['error'];
+            if(status === 'unauthorised')
+            {
+                this.props.doLogout();
+            }
+        }
         if(Object.keys(this.props.projects).length>0){
             return _.map(this.props.projects, project=>{
-                return (<ProjectItem key={project.pro_id}  prodetails={project} email={this.props.userDetails.email} />)
+                return (<ProjectItem key={project.pro_id}  prodetails={project} email={this.props.userDetails.email} doLogout={()=>this.props.doLogout()}/>)
             })
         }
     }

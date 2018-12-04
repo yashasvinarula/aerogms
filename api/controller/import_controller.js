@@ -3,6 +3,7 @@ const userpw=geocred;
 const ogr2ogr = require('ogr2ogr');
 const fs = require('fs');
 const JSONStream = require('JSONStream');
+const config = require('../../config');
 
 
 module.exports.fileuploaddprocess = function(req, res){
@@ -108,7 +109,6 @@ module.exports.fileuploaddprocess = function(req, res){
         return res.end(err.message);
     }
 }
-
 function readjson(newfilepath, req, res){
     try
     {
@@ -389,9 +389,9 @@ catch(err)
    //be sure to turn it into a string
    var s = JSON.stringify(post_data);
    var post_options = {
-      host:'localhost',
-      port: '8080',
-      path: 'http://localhost:8080/geoserver/rest/workspaces/AeroGMS/datastores/aeroGMS/featuretypes',
+      host:config.secdata.geo_host,
+      port: config.secdata.geo_port,
+      path: config.secdata.geo_path,
       method: 'POST',
       headers: {
         'Content-Length': s.length,
@@ -433,9 +433,9 @@ module.exports.deletelayer = function(request, responce){
    //be sure to turn it into a string
    var s = JSON.stringify(post_data);
    var post_options = {
-      host:'localhost',
-      port: '8080',
-      path: 'http://localhost:8080/geoserver/rest/workspaces/AeroGMS/datastores/aeroGMS/featuretypes',
+      host:config.secdata,
+      port: config.secdata.geo_port,
+      path: config.secdata.geo_path,
       method: 'DELETE',
       headers: {
         'Content-Length': s.length,

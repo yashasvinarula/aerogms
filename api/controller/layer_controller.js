@@ -1,6 +1,7 @@
 const { db, pg, pool, geocred}=require('../db.js');
 const {registervector, getBbox} = require('../controller/import_controller');
 const userpw=geocred;
+const config = require('../../config');
 
 module.exports.get_layers = function(req, res){
     db.func('public.sp_getlayerlist', [req.body.pro_id, req.body.u_id])
@@ -11,12 +12,12 @@ module.exports.get_layers = function(req, res){
     }
     else
     {
-        return res.status(200).send({message:'Problem in fetching layer list!'});
+        return res.status(500).send({status:'fail', message:'Problem in fetching layer list!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
     });
 }
 module.exports.rename_layer = function(req, res){
@@ -30,12 +31,12 @@ module.exports.rename_layer = function(req, res){
     }
     else
     {
-        return res.status(200).send({message:'Problem in renaming layer!'});
+        return res.status(500).send({status:'fail', message:'Problem in renaming layer!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
     });
 }
 module.exports.create_layer = function(req, res){
@@ -62,7 +63,7 @@ module.exports.create_layer = function(req, res){
                     registervector(tab_name, function(err){
                         if(err){
                             console.log(err);
-                            return res.status(400).send(err);
+                            return res.status(400).send({status:'error', message:err});
                         }
                         else{
                             console.log('TABLE PUBLISHED SUCCESSFULLY.');
@@ -73,34 +74,33 @@ module.exports.create_layer = function(req, res){
                 }
                 else
                 {
-                    return res.status(200).send({message:'Problem in layer entry!'});
+                    return res.status(500).send({status:'fail', message:'Problem in layer entry!'});
                 }
                 })
                 .catch(error => {
                 console.log('ERROR:', error);
-                return res.status(400).send(error);
+                return res.status(400).send({status:'error', message:error.message});
                 });
             }
             else
             {
-                return res.status(200).send({message:'Problem in inserting records!'});
+                return res.status(500).send({status:'fail', message:'Problem in inserting records!'});
             }
             })
             .catch(error => {
             console.log('ERROR:', error);
-            return res.status(400).send(error);
+            return res.status(400).send({status:'error', message:error.message});
             });
-            
         }
     }
     else
     {
-        return res.status(200).send({message:'Problem in creating new layer!'});
+        return res.status(500).send({status:'fail', message:'Problem in creating new layer!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
     });
     }
     else if(tab_type == 'Linestring' || tab_type == 'LineString')
@@ -123,9 +123,9 @@ module.exports.create_layer = function(req, res){
                 {
                     console.log(result[0].sp_aerogms);
                     registervector(tab_name, function(err){
-                        if(err){
-                            console.log(err);
-                            return res.status(400).send(err);
+                        if(error){
+                            console.log(error);
+                            return res.status(400).send({status:'error', message:error});
                         }
                         else{
                             console.log('TABLE PUBLISHED SUCCESSFULLY.');
@@ -136,34 +136,34 @@ module.exports.create_layer = function(req, res){
                 }
                 else
                 {
-                    return res.status(200).send({message:'Problem in layer entry!'});
+                    return res.status(500).send({status:'fail',message:'Problem in layer entry!'});
                 }
                 })
                 .catch(error => {
                 console.log('ERROR:', error);
-                return res.status(400).send(error);
+                return res.status(400).send({status:'error', message:error.message});
                 });
             }
             else
             {
-                return res.status(200).send({message:'Problem in inserting records!'});
+                return res.status(500).send({status:'fail',message:'Problem in inserting records!'});
             }
             })
             .catch(error => {
             console.log('ERROR:', error);
-            return res.status(400).send(error);
+            return res.status(400).send({status:'error', message:error.message});
             });
             
         }
     }
     else
     {
-        return res.status(200).send({message:'Problem in creating new layer!'});
+        return res.status(500).send({status:'fail',message:'Problem in creating new layer!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
     });
     }
     else if(tab_type == 'Polygon')
@@ -187,7 +187,7 @@ module.exports.create_layer = function(req, res){
                     registervector(tab_name, function(err){
                         if(err){
                             console.log(err);
-                            return res.status(400).send(err);
+                            return res.status(400).send({status:'error', message:err});
                         }
                         else{
                             console.log('TABLE PUBLISHED SUCCESSFULLY.');
@@ -198,34 +198,33 @@ module.exports.create_layer = function(req, res){
                 }
                 else
                 {
-                    return res.status(200).send({message:'Problem in layer entry!'});
+                    return res.status(500).send({status:'fail', message:'Problem in layer entry!'});
                 }
                 })
                 .catch(error => {
                 console.log('ERROR:', error);
-                return res.status(400).send(error);
+                return res.status(400).send({status:'error', message:error.message});
                 });
             }
             else
             {
-                return res.status(200).send({message:'Problem in inserting records!'});
+                return res.status(500).send({status:'fail', message:'Problem in inserting records!'});
             }
             })
             .catch(error => {
             console.log('ERROR:', error);
-            return res.status(400).send(error);
+            return res.status(400).send({status:'error', message:error.message});
             });
-            
         }
     }
     else
     {
-        return res.status(200).send({message:'Problem in creating new layer!'});
+        return res.status(500).send({status:'fail', message:'Problem in creating new layer!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
     });
     }
 }
@@ -243,7 +242,7 @@ module.exports.lay_name_exists = function(req, res){
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
     });
 }
 module.exports.delete_layer = function(req, res){
@@ -259,7 +258,7 @@ module.exports.delete_layer = function(req, res){
             deletevector(layName, function(err){
                 if(err){
                     console.log(err);
-                    return res.status(400).send({error:err, message:'layer deleted from database but not from geoserver', status:'partially deleted'});
+                    return res.status(500).send({error:err, message:'layer deleted from database but not from geoserver', status:'partially deleted'});
                 }
                 else{
                     console.log('LAYER DELETED SUCCESSFULLY.');
@@ -269,12 +268,12 @@ module.exports.delete_layer = function(req, res){
         }
         else
         {
-            return res.status(200).send({message:'Problem in deleting layer!'});
+            return res.status(500).send({status:'fail', message:'Problem in deleting layer!'});
         }
         })
         .catch(error => {
         console.log('ERROR:', error); // print the error;
-        return res.status(400).send(error);
+        return res.status(400).send({status:'error', message:error.message});
         });
     }
 }
@@ -288,12 +287,12 @@ module.exports.layer_attribute = function(req, res){
     }
     else
     {
-        return res.status(200).send({message:'Problem in getting layer attributes or there is no attributes!'});
+        return res.status(200).send({status:'fail', message:'Problem in getting layer attributes or there is no attributes!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error);
+    return res.status(400).send({status:'error', message:error.message});
     });
 }
 module.exports.delete_column = function(req, res){
@@ -305,7 +304,7 @@ module.exports.delete_column = function(req, res){
     {
         reloadvector(tab_name, function(err){
             if(err){
-                return res.status(200).send({message:'Problem in updating attribute in layer!'});
+                return res.status(200).send({status:'fail', message:'Problem in updating attribute in layer!'});
             }
             else{
                 return res.status(200).send({'status':'success', 'data': 'deleted'});
@@ -314,13 +313,30 @@ module.exports.delete_column = function(req, res){
     }
     else
     {
-        return res.status(200).send({message:'Problem in deleting attribute!'});
+        return res.status(200).send({status:'fail', message:'Problem in deleting attribute!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error.message);
+    return res.status(400).send({status:'error', message:error.message});
     });
+}
+module.exports.lay_stats = function(req, res){
+    db.func('public.select_dall', [])
+        .then(result => {
+        if(result[0].select_dall > 0)
+        {
+            return res.status(200).send({'status':'success', 'data':result[0].select_dall});
+        }
+        else
+        {
+            return res.status(200).send({status:'fail', message:result[0]});
+        }
+        })
+        .catch(error => {
+        console.log('ERROR:', error);
+        return res.status(400).send({status:'error', message:error.message});
+        });
 }
 module.exports.rename_column = function(req, res){
     var tab_name = req.body.layer;
@@ -333,7 +349,7 @@ module.exports.rename_column = function(req, res){
     {
         reloadvector(tab_name, function(err){
             if(err){
-                return res.status(200).send({message:'Problem in updating attribute in layer!'});
+                return res.status(200).send({status:'fail', message:'Problem in updating attribute in layer!'});
             }
             else{
                 return res.status(200).send({'status':'success', 'data': 'renamed'});
@@ -342,12 +358,12 @@ module.exports.rename_column = function(req, res){
     }
     else
     {
-        return res.status(200).send({message:'Problem in renaming attribute!'});
+        return res.status(200).send({status:'fail', message:'Problem in renaming attribute!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error.message);
+    return res.status(400).send({status:'error', message:error.message});
     });
 }
 module.exports.add_column = function(req, res){
@@ -370,7 +386,7 @@ module.exports.add_column = function(req, res){
     {
         reloadvector(tab_name, function(err){
             if(err){
-                return res.status(200).send({message:'Problem in adding attribute in layer!'});
+                return res.status(200).send({status:'fail',message:'Problem in adding attribute in layer!'});
             }
             else{
                 return res.status(200).send({'status':'success', 'data': 'added'});
@@ -379,12 +395,12 @@ module.exports.add_column = function(req, res){
     }
     else
     {
-        return res.status(200).send({message:'Problem in adding attribute!'});
+        return res.status(200).send({status:'fail', message:'Problem in adding attribute!'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error.message);
+    return res.status(400).send({status:'error', message:error.message});
     });
 }
 module.exports.get_bound = function(req, res){
@@ -405,6 +421,7 @@ module.exports.get_bound = function(req, res){
         .catch(error => {
         console.log('ERROR:', error);
         return res.status(400).send({status:'error', message:error.message});
+        //return res.status(400).send({status:'error', message:error.message});
         });
         }
 }
@@ -414,9 +431,9 @@ var deletevector = function(datasetName, callback){
    var http = require('http'); //using SSL because of basic auth in this example
    var auth = 'Basic ' + new Buffer(userpw).toString('base64');
    var post_options = {
-      host:'localhost',
-      port: '8080',
-      path: `http://localhost:8080/geoserver/rest/layers/${datasetName}.json?recurse=true`,
+      host:config.secdata.geo_host,
+      port: config.secdata.geo_port,
+      path: `${config.secdata.geo_del}/${datasetName}.json?recurse=true`,
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -475,26 +492,15 @@ module.exports.exis_layer_insert = function(req, res){
         {
             console.log('inserted Points: ',result[0].fn_insert_layer);
             return res.status(200).send({'status':'success', 'data': 'layer updated successfully.'});
-                // registervector(tab_name, function(err){
-                //     if(err){
-                //         console.log(err);
-                //         return res.status(400).send(err);
-                //     }
-                //     else{
-                //         console.log('TABLE PUBLISHED SUCCESSFULLY.');
-                //         //return res.status(200).json({'status':'published', 'message': 'table created and published successfully.', 'tname':tname});
-                //         return res.status(200).send({name:tab_name, orig_name:tab_name, type:tab_type, visible:true, lay_id:result[0].sp_aerogms});
-                //     }
-                // })
         }
         else
         {
-            return res.status(200).send({message:'Problem in inserting records!'});
+            return res.status(200).send({status:'fail', message:'Problem in inserting records!'});
         }
         })
         .catch(error => {
         console.log('ERROR:', error);
-        return res.status(400).send(error);
+        return res.status(400).send({status:'error', message:error.message});
         });
     }
     else if(tab_type == 'Linestring' || tab_type == 'LineString')
@@ -505,26 +511,15 @@ module.exports.exis_layer_insert = function(req, res){
             {
                 console.log('inserted Lines: ',result[0].fn_insert_layerline);
                 return res.status(200).send({'status':'success', 'data': 'layer updated successfully.'});
-                    // registervector(tab_name, function(err){
-                    //     if(err){
-                    //         console.log(err);
-                    //         return res.status(400).send(err);
-                    //     }
-                    //     else{
-                    //         console.log('TABLE PUBLISHED SUCCESSFULLY.');
-                    //         //return res.status(200).json({'status':'published', 'message': 'table created and published successfully.', 'tname':tname});
-                    //         return res.status(200).send({name:tab_name, orig_name:tab_name, type:tab_type, visible:true, lay_id:result[0].sp_aerogms});
-                    //     }
-                    // })
             }
             else
             {
-                return res.status(200).send({message:'Problem in inserting records!'});
+                return res.status(200).send({status:'fail', message:'Problem in inserting records!'});
             }
             })
             .catch(error => {
             console.log('ERROR:', error);
-            return res.status(400).send(error);
+            return res.status(400).send({status:'error', message:error.message});
             });
     }
     else if(tab_type == 'Polygon')
@@ -536,31 +531,19 @@ module.exports.exis_layer_insert = function(req, res){
         {
             console.log('inserted Polygons: ',result[0].fn_insert_layerline);
             return res.status(200).send({'status':'success', 'data': 'layer updated successfully.'});
-            // registervector(tab_name, function(err){
-            //     if(err){
-            //         console.log(err);
-            //         return res.status(400).send(err);
-            //     }
-            //     else{
-            //         console.log('TABLE PUBLISHED SUCCESSFULLY.');
-            //         //return res.status(200).json({'status':'published', 'message': 'table created and published successfully.', 'tname':tname});
-            //         return res.status(200).send({name:tab_name, orig_name:tab_name, type:tab_type, visible:true, lay_id:result[0].sp_aerogms});
-            //     }
-            // })
         }
         else
         {
-            return res.status(200).send({message:'Problem in inserting records!'});
+            return res.status(200).send({status:'fail',message:'Problem in inserting records!'});
         }
         })
         .catch(error => {
         console.log('ERROR:', error);
-        return res.status(400).send(error);
+        return res.status(400).send({status:'error', message:error.message});
         });  
     }
-
 }
-module.exports.update_layer_color = function(req, res){;
+module.exports.update_layer_color = function(req, res){
     var layId = req.body.lay_id;
     var layColor = req.body.color;
 
@@ -572,11 +555,11 @@ module.exports.update_layer_color = function(req, res){;
     }
     else
     {
-        return res.status(200).send({message:'Problem in changing layer color!'});
+        return res.status(500).send({message:'Problem in changing layer color!', status:'fail'});
     }
     })
     .catch(error => {
     console.log('ERROR:', error); // print the error;
-    return res.status(400).send(error.message);
+    return res.status(400).send({status:'error', message:error.message});
     });
 }

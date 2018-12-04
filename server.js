@@ -9,9 +9,10 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 require('./passport')(passport);
+const config = require('./config');
 
 
-app.set('port', process.env.PORT || 3001);
+app.set('port', config.secdata.ser_port);
 app.use(express.static(path.join(__dirname, './aerogms/public')));
 
 //Adding CORS support

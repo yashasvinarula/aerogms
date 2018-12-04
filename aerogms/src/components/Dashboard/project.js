@@ -54,7 +54,10 @@ class Project extends Component {
     }
 
     deleteProject(){
-        this.props.deleteProject(this.props.prodetails.pro_id);
+        if(window.confirm(`Do you really want to delete ${this.state.projectName} project!`))
+        {
+            this.props.deleteProject(this.props.prodetails.pro_id);
+        }
     }
     renameProject(){
         //this.props.renameProject(this.props.prodetails.pro_id, this.state.projectName);
@@ -72,7 +75,14 @@ class Project extends Component {
             }
         })
         .catch(err=>{
-            console.log(err);
+            if(err.response.data.status === 'unauthorised')
+            {
+                alert(err.response.data.message);
+                this.props.doLogout();
+            }
+            else{
+                alert(err.response.data.message);
+            }
         })
     }
 

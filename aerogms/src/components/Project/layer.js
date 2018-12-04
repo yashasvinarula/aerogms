@@ -17,6 +17,7 @@ import {delete_layer, updateLayerActive, updateLayerColor} from '../../actions';
 import _ from 'lodash';
 
 
+
 const MenuImage = ( <Image src={InfoIcon} className="menu-icon inline-display margin-outside" />);
 const MenuIcon = ( <Image src={InfoIcon} className="attr-menu-icon" />);
 
@@ -107,8 +108,15 @@ class Layer extends Component {
                 this.props.changeLayerNameParent(newLayerTitle);
                 this.closeChangeLayerModal();
             }
-            else{
-                alert('layer name is already exists! Please try with another name.')
+            else{   
+                if(responce.data.status === 'unauthorised')
+                {
+                    alert(responce.data.message);
+                    this.props.doLogout();
+                }
+                else{
+                    alert('layer name is already exists! Please try with another name.')
+                }
             }
         })
         .catch(err=>{
@@ -173,15 +181,21 @@ class Layer extends Component {
                     }
                     else
                     {
-                        alert(err);
+                        if(err.status === 'unauthorised')
+                        {
+                            alert(err.message);
+                            that.props.doLogout();
+                        }
+                        else{
+                            alert(err.message);
+                        }
                     }
                 });
             }
             }
             else{
                 alert('Attribute name doesn\'t have any space, hyphen and numbers in the starting!');
-            }
-            
+            } 
         }
     }
     deleteAttr(event) {
@@ -200,7 +214,14 @@ class Layer extends Component {
                     }
                     else
                     {
-                        alert(err);
+                        if(err.status === 'unauthorised')
+                        {
+                            alert(err.message);
+                            that.props.doLogout();
+                        }
+                        else{
+                            alert(err.message);
+                        }
                     }
                 });
             }
@@ -226,7 +247,14 @@ class Layer extends Component {
                         }
                         else
                         {
-                            alert(err);
+                            if(err.status === 'unauthorised')
+                        {
+                            alert(err.message);
+                            that.props.doLogout();
+                        }
+                        else{
+                            alert(err.message);
+                        }
                         }
                     });
             }
@@ -280,7 +308,14 @@ class Layer extends Component {
                     that.setState({isActive:true});
                 }
                 else{
-                    console.log(err);
+                    if(err.status === 'unauthorised')
+                    {
+                        alert(err.message);
+                        that.props.doLogout();
+                    }
+                    else{
+                        alert(err.message);
+                    }
                 }
             })
         }
@@ -290,7 +325,7 @@ class Layer extends Component {
         }
        
     }
-    resetActiveLayer(){
+resetActiveLayer(){
         let style='';
         switch(this.props.layer.type)
         {
@@ -310,7 +345,6 @@ class Layer extends Component {
         window.updateWMSStyle(this.props.layer.orig_name, style);
         this.props.resetActiveLayer();
         this.setState({isActive:false});
-
     }
     servicecaller(ser_name, data, callback){
         axios.post(`/api/${ser_name}`, data)
@@ -320,7 +354,7 @@ class Layer extends Component {
                 callback(false, response.data);
             }
             else{
-                callback(response.data.message, undefined);
+                callback(response.data, undefined);
             }
         })
         .catch(err=>{
@@ -347,7 +381,16 @@ class Layer extends Component {
                 that.setState({attributes:data.data, showAttributes:true, renameAttribute:false});
             }
             else
-            {alert(err);}
+            {
+                if(err.status === 'unauthorised')
+                {
+                    alert(err.message);
+                    that.props.doLogout();
+                }
+                else{
+                    alert(err.message);
+                }
+            }
         });
        }
     }
@@ -566,7 +609,7 @@ class Layer extends Component {
                                             <Button onClick={this.changeLayerName}>Update</Button>
                                         </Modal.Body>
                                 </Modal>
-                                <MenuItem>Download</MenuItem>
+                                {/* <MenuItem>Download</MenuItem> */}
                                 <MenuItem onClick={() => this.getLayerSchema()}>Attributes</MenuItem>
                                     <Modal
                                         show={this.state.showAttributes}
@@ -676,7 +719,7 @@ class Layer extends Component {
                                             }
                                         </Modal.Body>
                                     </Modal>
-                                <MenuItem>Table</MenuItem>
+                                {/* <MenuItem>Table</MenuItem> */}
                                 <MenuItem onClick={()=>this.deleteLayer()}>Delete</MenuItem>
                             </DropdownButton>
                             

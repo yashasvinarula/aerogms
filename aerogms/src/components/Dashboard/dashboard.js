@@ -80,6 +80,7 @@ class Dashboard extends Component {
         if(this.props.users['error']){
             debugger
             alert('Your session is expired. Please login!')
+            delete this.props.users['error'];
             console.log('error session out!');
             this.props.doLogout();
             return <Redirect to='/login' />

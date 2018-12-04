@@ -69,11 +69,6 @@ class ProjectView extends Component{
             info : true,
             showVisibles : false,
             showFeatures : false,
-            //activelayerdata:{  activeLayer : '',activeLayer_id :'', activeLayer_type :'',activeLayer_box:'',},
-            // activeLayer : '',
-            // activeLayer_id :'',
-            // activeLayer_type :'',
-            // activeLayer_box:'',
             infoBoxShow:false,
             compBoxShow:false,
             compboxvalue:'',
@@ -90,6 +85,7 @@ class ProjectView extends Component{
             enablePrev : 'disable-btn', // to enable css class on previous button
             //drawingTools : [{pointBtn : false}, {lineBtn : false}, {polygonBtn : false}, {saveLayerBtn : false}, {remFeature : false}],
             attrInfoList:[],
+            gotouserdash:false,
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -116,6 +112,7 @@ class ProjectView extends Component{
         this.deleteTempLayer = this.deleteTempLayer.bind(this);
         this.showRespectiveButtons =this.showRespectiveButtons.bind(this);
         this.createNewLayer = this.createNewLayer.bind(this);
+        this.GoToUserDash = this.GoToUserDash.bind(this);
     }
 
     renderAttrInfo() {
@@ -244,6 +241,9 @@ class ProjectView extends Component{
                     break;
         }
     }
+    GoToUserDash(){
+       this.setState({gotouserdash:true});
+    }
     servicecaller(ser_name, data, callback){
         axios.post(`/api/${ser_name}`, data)
         .then(response=>{
@@ -252,7 +252,7 @@ class ProjectView extends Component{
                 callback(false, response.data);
             }
             else{
-                callback(response.data.message, undefined);
+                callback(response.data, undefined);
             }
         })
         .catch(err=>{
@@ -310,6 +310,7 @@ class ProjectView extends Component{
                 else if(responce.data.status === 'unauthorised')
                 {
                     alert(responce.data.message);
+                    this.props.doLogout();
                 }
                 else{
                     alert('layer name is already exists! Please try with another name.')
@@ -333,9 +334,20 @@ class ProjectView extends Component{
     }
     renderLayers() {
         debugger
+        if(Object.keys(this.props.layers).indexOf('error') > -1)
+        {
+            debugger
+            let {message, status} = this.props.layers.error;
+            alert(message);
+            delete this.props.layers['error'];
+            if(status === 'unauthorised')
+            {
+                this.props.doLogout();
+            }
+        }
         if(Object.keys(this.props.layers).length>0){
             return _.map(this.props.layers, layer=>{
-                return (<li key={layer.orig_name}><Layer layer={layer} changeLayerNameParent={(name)=>{this.props.rename_layer(layer.lay_id, name)}}  setActiveLayer={(box)=>{this.props.makeLayerActive({activelayerdata:{activeLayer:layer.orig_name, activeLayer_id:layer.lay_id, activeLayer_type:layer.type, activeLayer_box:box}});this.createNewLayer(layer.type);window.zoomTo(box)}} resetActiveLayer={()=>{window.lyrhighlighter ? window.m.removeLayer(window.lyrhighlighter):'';this.props.makeLayerActive({activelayerdata:{activeLayer:'', activeLayer_id:'', activeLayer_type:'', activeLayer_box:''}})}} deleteTempLayer={(name)=>{this.deleteTempLayer(name)}}/></li>);
+                return (<li key={layer.orig_name}><Layer layer={layer} changeLayerNameParent={(name)=>{this.props.rename_layer(layer.lay_id, name)}}  setActiveLayer={(box)=>{this.props.makeLayerActive({activelayerdata:{activeLayer:layer.orig_name, activeLayer_id:layer.lay_id, activeLayer_type:layer.type, activeLayer_box:box}});this.createNewLayer(layer.type);window.zoomTo(box)}} resetActiveLayer={()=>{window.lyrhighlighter ? window.m.removeLayer(window.lyrhighlighter):'';this.props.makeLayerActive({activelayerdata:{activeLayer:'', activeLayer_id:'', activeLayer_type:'', activeLayer_box:''}})}} deleteTempLayer={(name)=>{this.deleteTempLayer(name)}} doLogout={()=>{this.props.doLogout()}}/></li>);
             })
         }
     }
@@ -357,7 +369,6 @@ class ProjectView extends Component{
         window.addPolygon();
     }
     saveLayer(){
-        debugger
         var latlngArray;
         let that = this;
         //latlngArray =  window.saveLayer(this.state.layer.type, this.state.layer.name);
@@ -378,7 +389,14 @@ class ProjectView extends Component{
                             alert(data.data);
                         }
                         else{
-                            alert(err);
+                            if(err.status === 'unauthorised')
+                            {
+                                alert(err.message);
+                                that.props.doLogout();
+                            }
+                            else{
+                                alert(err.message);
+                            }
                         }
                     });
                 }
@@ -412,7 +430,14 @@ class ProjectView extends Component{
                             alert(data.data);
                         }
                         else{
-                            alert(err);
+                            if(err.status === 'unauthorised')
+                            {
+                                alert(err.message);
+                                that.props.doLogout();
+                            }
+                            else{
+                                alert(err.message);
+                            }
                         }
                     });
                 }
@@ -461,7 +486,14 @@ class ProjectView extends Component{
                             alert(data.data);
                         }
                         else{
-                            alert(err);
+                            if(err.status === 'unauthorised')
+                            {
+                                alert(err.message);
+                                that.props.doLogout();
+                            }
+                            else{
+                                alert(err.message);
+                            }
                         }
                     });
                 }
@@ -539,11 +571,18 @@ class ProjectView extends Component{
     }
 
     render(){
+        debugger
         if(!this.props.userDetails.isLoggedIn)
         {
             window.wmsLayers=[];
             document.getElementById('map').style.display='none';
             return <Redirect to={{pathname:'/login'}}/>
+        }
+        if(this.state.gotouserdash)
+        {
+            window.wmsLayers=[];
+            document.getElementById('map').style.display='none';
+            return <Redirect to='/userDashboard' />
         }
         if(this.props.activelayerdata.activeLayer){
             debugger
@@ -722,40 +761,31 @@ class ProjectView extends Component{
                     } else {
                         return (
                             <div>
-                                <Navbar fixedTop>
+                                <Navbar fixedTop style={{backgroundColor:'#9096a0'}}>
                                     {
-                                        //this.state.drawingTools[0].pointBtn ? 
                                             (<NavItem className="nav-items"><input type="button" id="btnMakePoint" className="hide-btn"
                                             value="AddPoint" onClick={this.addPoint}/></NavItem>)
-                                        //: ''    
                                     }
                                     { 
-                                        //this.state.drawingTools[1].lineBtn ? 
                                             (<NavItem className="nav-items layer-btn"><input type="button" id="btnMakeLine" className="hide-btn"
                                             value="AddLine" onClick={this.addLine}/></NavItem>)
-                                        //: ''
                                     }
                                     {
-                                       //this.state.drawingTools[2].polygonBtn ? 
                                             (<NavItem className="nav-items layer-btn"><input type="button" id="btnMakePolygon" className="hide-btn"
                                             value="AddPolygon" onClick={this.addPolygon}/></NavItem>)  
-                                        //: ''    
                                     }  
                                     {
-                                        //this.state.drawingTools[4].remFeature ?
                                             (<NavItem className="nav-items layer-btn"><input type="button" id="removeFeature" className="hide-btn"
                                             value="Remove Feature" onClick={this.removeFeature}/></NavItem>)
-                                        //: ''
                                     }  
                                     {
-                                        //this.state.drawingTools[0].pointBtn || this.state.drawingTools[1].lineBtn || this.state.drawingTools[2].polygonBtn ? 
                                             (<NavItem className="nav-items layer-btn"><input type="button" id="saveLayer" className="hide-btn"
                                             value="Save Layer" onClick={this.saveLayer}/></NavItem>)
-                                        //: ''
                                     }   
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Logout" onClick={this.props.doLogout}/></NavItem>
-                                    <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Query Dashboard" 
-                                        onClick={()=>{this.setState({queryTable : true})}}/></NavItem>
+                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Dashboard" onClick={()=>{this.GoToUserDash()}}/></NavItem>
+                                    {/* <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Query Dashboard" 
+                                        onClick={()=>{this.setState({queryTable : true})}}/></NavItem> */}
                                 </Navbar>
                                 {
                                     this.state.queryTable ?
@@ -897,17 +927,18 @@ class ProjectView extends Component{
                                 {
                                     !this.state.queryForm ?
                                         (
-                                            <DropdownButton
-                                                bsStyle="default"
-                                                id="dropdown-default"
-                                                title={`Interact with Admin`}
-                                                className="query-list-dropdown"
-                                            >
-                                                <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Suggestion'})}>Suggestion</MenuItem>
-                                                <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Complaint'})}>Complaint</MenuItem>
-                                                <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Question'})}>Question</MenuItem>
-                                                <MenuItem onClick={() => this.setState({queryForm : true, editReq : true})}>Edit Request</MenuItem>
-                                            </DropdownButton>
+                                            // <DropdownButton
+                                            //     bsStyle="default"
+                                            //     id="dropdown-default"
+                                            //     title={`Interact with Admin`}
+                                            //     className="query-list-dropdown"
+                                            // >
+                                            //     <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Suggestion'})}>Suggestion</MenuItem>
+                                            //     <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Complaint'})}>Complaint</MenuItem>
+                                            //     <MenuItem onClick={() => this.setState({queryForm : true, queryType : 'Question'})}>Question</MenuItem>
+                                            //     <MenuItem onClick={() => this.setState({queryForm : true, editReq : true})}>Edit Request</MenuItem>
+                                            // </DropdownButton>
+                                            true
                                         )
                                     :   
                                         !this.state.editReq ? 
@@ -956,7 +987,7 @@ class ProjectView extends Component{
                                 }
                                 <div id="infoText">
                                 </div>
-                                <br/>
+                                {/* <br/> */}
                                 {/* <input id="btnAddComp" type="Button" value="Add Complaint" onClick={this.showCompBox}></input>
                                 <input style={{marginLeft:5, marginTop:10, visibility:"true"}}  type="button" id="hideInfo" value="Payment" onClick={()=>{this.setState({showPaymentModal:true})}}/> */}
                                         <Modal 
@@ -979,7 +1010,7 @@ class ProjectView extends Component{
                                                 </Modal.Body>
                                             </Modal>
 
-                                <br/><hr/>
+                                {/* <br/><hr/> */}
                                 <div id="divCompBox" className={this.state.compBoxShow? '':'comp-box-div'}>
                                     <div>
                                         <textarea id="taCompDesc" onChange={this.getCompBoxValue} type="text" value={this.state.compboxvalue} className="text-area"></textarea>

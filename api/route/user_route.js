@@ -33,6 +33,7 @@ router.post('/get_layers', auth.loggedIn, layer_cntrlr.get_layers)
 router.post('/create_layer', auth.loggedIn, layer_cntrlr.create_layer);
 router.post('/rename_layer', auth.loggedIn, layer_cntrlr.rename_layer);
 router.post('/lay_name_exists', auth.loggedIn, layer_cntrlr.lay_name_exists);
+router.get('/lay_stats', layer_cntrlr.lay_stats);
 router.post('/delete_layer', auth.loggedIn, layer_cntrlr.delete_layer);
 router.post('/layer_attribute', auth.loggedIn, layer_cntrlr.layer_attribute);
 router.post('/delete_column', auth.loggedIn, layer_cntrlr.delete_column);
@@ -46,6 +47,8 @@ router.post('/update_layer_color', auth.loggedIn, layer_cntrlr.update_layer_colo
 //-----------------------------
 router.post('/m_signup', cntrlr.m_signup);
 router.post('/m_signin', cntrlr.m_signin);
+router.get('/m_getprofile', cntrlr.m_getprofile);
+router.post('/m_updateprofile', cntrlr.m_updateprofile);
  //---------------------------
 let storage = multer.diskStorage({
     destination: function(req, file, cb) {
