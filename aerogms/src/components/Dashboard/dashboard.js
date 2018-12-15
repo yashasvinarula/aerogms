@@ -27,31 +27,15 @@ class Dashboard extends Component {
     }
 
     componentDidMount(){
-        debugger
-        if(Object.keys(this.props.users).length === 0)
-        {
-            this.props.getUsers();
-        }
-        // axios.get('/api/userlist')
-        // .then(response => {
-        //     debugger
-        //     console.log('user response: ')
-        //     console.log(response.data.message)
-        //     if (response.status === 200) {
-        //         // update App.js state
-        //     }
-        // }).catch(error => {
-        //     if(error.response.status===401)
-        //     {
-        //         alert('user list error');
-        //     }
-        //     console.log(error);
-        // })
+        this.props.getUsers();
+        // if(Object.keys(this.props.users).length === 0)
+        // {
+        //     this.props.getUsers();
+        // }
     }
 
     handleLogout(event) {
         event.preventDefault();
-        console.log(this.props);
         this.props.doLogout();
     }
 
@@ -68,7 +52,6 @@ class Dashboard extends Component {
 
     render()
     {
-        //debugger;
         if(!this.props.userDetails.isLoggedIn)
         {
           return <Redirect to={{pathname:'/login'}}/>
@@ -78,7 +61,6 @@ class Dashboard extends Component {
             return <Redirect to={{pathname:'/userDashboard'}}/>
         }
         if(this.props.users['error']){
-            debugger
             alert('Your session is expired. Please login!')
             delete this.props.users['error'];
             console.log('error session out!');

@@ -1,10 +1,9 @@
 var geourl ='http://localhost:8081/geoserver/ows?';
-//var geourl ='http://122.176.113.56:8080/geoserver/ows?';
+//var geourl ='http://122.176.113.56:8081/geoserver/ows?';
 var m;
 var layControl;
 var currentLayer=null;
 var pid = null;
-
 var jalandhar_prop_layer;
 var jalandhar_wfs_layer;
 var selcted_fea_info = {};
@@ -166,7 +165,7 @@ function initMap()
             layControl = L.control.orderlayers(baseLayers, overlays,{
                 collapsed: true,
                 title: 'Layers'
-            })//.addTo(m);
+            });//.addTo(m);
            //layControl.addOverlay(water_bodies_MLayer, 'WaterBody');
            //layControl.removeLayer(water_bodies_MLayer);
            
@@ -697,7 +696,7 @@ function initMap()
         debugger
             if(laytype && layName && aeroid){
                 lyrhighlighter ? m.removeLayer(lyrhighlighter):false;
-                if(laytype === 'polygon' || laytype === 'linestring')
+                if(laytype === 'polygon' || laytype === 'multipolygon' || laytype === 'linestring')
                 {
                     lyrhighlighter = new L.tileLayer.wms(geourl, {
                     layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, CQL_FILTER:"aero_id="+ aeroid , env:'color:00FFFF'  

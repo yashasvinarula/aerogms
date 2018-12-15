@@ -69,6 +69,7 @@ export function createProject(pro_name, owner_email){
 }
 
 export function getProjects(owner_email){
+    debugger
     const request = axios.post(`${type.ROOT_URL}/get_projects`, {
         owner_email:owner_email
     })

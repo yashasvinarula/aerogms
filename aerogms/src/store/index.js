@@ -8,6 +8,10 @@ import promise from 'redux-promise';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import rootReducer from '../reducers'; // the value from combineReducers
 
+
+import createHistory from 'history/createBrowserHistory';
+export const history = createHistory();
+
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 
 const persistConfig = {

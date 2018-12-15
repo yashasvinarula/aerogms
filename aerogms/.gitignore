@@ -5,7 +5,7 @@ node_modules
 
 # testing
 /coverage
-
+/public/images/m_profile
 # production
 /build
 

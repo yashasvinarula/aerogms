@@ -1,8 +1,11 @@
+const secconfig = require('../config/config');
+
 const initOptions = {
     capSQL: true // generate capitalized SQL 
 };
 
 var config = {
+    host:secconfig.secdata.pghost,
     user: 'postgres',
     database: 'aeroGMS',
     password: 'postgres', 

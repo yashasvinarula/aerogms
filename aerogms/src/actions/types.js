@@ -1,3 +1,4 @@
+
 export const LOGIN = 'login';
 export const LOGOUT = 'logout';
 export const GET_USERS = 'get_users';
@@ -18,7 +19,6 @@ export const ADD_USER_COMPLAINT = 'add_user_complaint';
 export const MAKE_ACTIVE_LAYER = 'make_active_layer';
 export const UPDATE_ACTIVE_LAYER = 'update_active_layer';
 export const UPDATE_LAYER_COLOR = 'update_layer_color';
-
 export const ROOT_URL = '/api';
 export const GET_SUCCESS = 'get_success';
 export const GET_ERROR = 'get_error';

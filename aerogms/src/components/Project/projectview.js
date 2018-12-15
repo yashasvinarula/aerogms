@@ -25,6 +25,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import SpecificQuery from './specificQuery';
 import { throws } from 'assert';
+import {BASE_URL} from '../../config';
 
 const queryList = [
     {
@@ -245,9 +246,8 @@ class ProjectView extends Component{
        this.setState({gotouserdash:true});
     }
     servicecaller(ser_name, data, callback){
-        axios.post(`/api/${ser_name}`, data)
+        axios.post(`${BASE_URL}/${ser_name}`, data)
         .then(response=>{
-            debugger
             if(response.data.status === 'success'){
                 callback(false, response.data);
             }
@@ -256,7 +256,6 @@ class ProjectView extends Component{
             }
         })
         .catch(err=>{
-            debugger
             console.log('error: ' + err)
             callback(err.response.data, undefined);
         })
@@ -264,7 +263,6 @@ class ProjectView extends Component{
 
     addLayer() {
         let that = this;
-        debugger
             let newLayerTitle = document.getElementById('layer-title').value;
             newLayerTitle = isNaN(parseInt(newLayerTitle.substr(0,1))) && newLayerTitle.length > 0 && newLayerTitle.indexOf(' ') == -1 && newLayerTitle.indexOf('-') == -1? newLayerTitle.trim().toLowerCase():'';
             if(!newLayerTitle)
@@ -274,12 +272,10 @@ class ProjectView extends Component{
             }
         
         if(newLayerTitle !== ''){
-            axios.post('/api/lay_name_exists', {
+            axios.post(`${BASE_URL}/lay_name_exists`, {
                 lay_name: newLayerTitle
             })
             .then(responce=>{
-                debugger
-                console.log(responce);
                 if(responce.data.status === 'not exists'){
                     if(Object.keys(that.props.layers).length>0){
                         _.map(that.props.layers, layer=>{
@@ -309,7 +305,7 @@ class ProjectView extends Component{
                 }
                 else if(responce.data.status === 'unauthorised')
                 {
-                    alert(responce.data.message);
+                    responce.data.message ? alert(responce.data.message):'';
                     this.props.doLogout();
                 }
                 else{
@@ -333,12 +329,10 @@ class ProjectView extends Component{
         this.hideLayerbtns();
     }
     renderLayers() {
-        debugger
         if(Object.keys(this.props.layers).indexOf('error') > -1)
         {
-            debugger
             let {message, status} = this.props.layers.error;
-            alert(message);
+            message ? alert(message):'';
             delete this.props.layers['error'];
             if(status === 'unauthorised')
             {
@@ -377,25 +371,22 @@ class ProjectView extends Component{
             //this.setState({activeLayer:''});
             if(latlngArray.latlngs.length > 0 && latlngArray.type == 'Point')
             {
-                debugger
                 delete this.props.layers[this.state.layer.name];
-                console.log('in react return ');
-                //console.log(latlngArray.latlngs);
                 if(this.props.activelayerdata.activeLayer_id){
                     this.servicecaller('exis_layer_insert', {name:latlngArray.layer_name, type:latlngArray.type, geom:latlngArray.latlngs}, function(err, data){
                         if(!err && data){
                             window.updateWMSLayer(that.props.activelayerdata.activeLayer);
                             that.createNewLayer(that.props.activelayerdata.activeLayer_type);
-                            alert(data.data);
+                            data.data?alert(data.data):'';
                         }
                         else{
                             if(err.status === 'unauthorised')
                             {
-                                alert(err.message);
+                                err.message?alert(err.message):'';
                                 that.props.doLogout();
                             }
                             else{
-                                alert(err.message);
+                                err.message?alert(err.message):'';
                             }
                         }
                     });
@@ -409,7 +400,6 @@ class ProjectView extends Component{
             {
                if(latlngArray.status === 'success')
                {
-                debugger
                 var stringArray = [];
                 var lnglatString = '';
                 latlngArray.latlngs.map((array1)=>{
@@ -432,11 +422,11 @@ class ProjectView extends Component{
                         else{
                             if(err.status === 'unauthorised')
                             {
-                                alert(err.message);
+                                err.message?alert(err.message):'';
                                 that.props.doLogout();
                             }
                             else{
-                                alert(err.message);
+                                err.message?alert(err.message):'';
                             }
                         }
                     });
@@ -454,7 +444,6 @@ class ProjectView extends Component{
             }
             else if(latlngArray.latlngs.length > 0 && latlngArray.type == 'Polygon')
             {
-                debugger
                 if(latlngArray.status==='success')
                 {
                     var stringArray = [];
@@ -471,13 +460,10 @@ class ProjectView extends Component{
                             }
                         })
                      })
-                    debugger
                     stringArray.push(lnglatString);
                     lnglatString = '';
                 })
                 delete this.props.layers[this.state.layer.name];
-                console.log('in react return Polygon latlng Array: ');
-                console.log(stringArray);
                 if(this.props.activelayerdata.activeLayer_id){
                     this.servicecaller('exis_layer_insert', {name:latlngArray.layer_name, type:latlngArray.type, geom:stringArray}, function(err, data){
                         if(!err && data){
@@ -488,11 +474,11 @@ class ProjectView extends Component{
                         else{
                             if(err.status === 'unauthorised')
                             {
-                                alert(err.message);
+                                err.message?alert(err.message):'';
                                 that.props.doLogout();
                             }
                             else{
-                                alert(err.message);
+                                err.message ? alert(err.message):'';
                             }
                         }
                     });
@@ -541,8 +527,6 @@ class ProjectView extends Component{
         
         if(Object.keys(this.props.userComplaint).length>0){
             return  _.map(this.props.userComplaint, complaint=>{
-                debugger
-                console.log(complaint);
                 return (<tr><td>{complaint.sid}</td>
                 <td>{complaint.comp_id}</td>
                 <td>{complaint.complaint}</td>
@@ -557,7 +541,6 @@ class ProjectView extends Component{
     }
 
     getLayerDataFromJS(data){
-        debugger
         if(data){
             this.props.makelayerafterimport(data);
         }
@@ -571,7 +554,6 @@ class ProjectView extends Component{
     }
 
     render(){
-        debugger
         if(!this.props.userDetails.isLoggedIn)
         {
             window.wmsLayers=[];
@@ -585,7 +567,6 @@ class ProjectView extends Component{
             return <Redirect to='/userDashboard' />
         }
         if(this.props.activelayerdata.activeLayer){
-            debugger
             //let pre_act_lay_id = window.activeMapLayer_id;
             // if(pre_act_lay_id){
             //     document.getElementById(pre_act_lay_id).click();

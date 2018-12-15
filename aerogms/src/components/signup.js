@@ -5,7 +5,7 @@ import MediaQuery from 'react-responsive';
 import '../App.css';
 import Navbar from './navbar';
 import AeroLogo from '../images/AeroLOGO.png';
-// import FormErrors from './formErrors';
+import {BASE_URL} from '../config';
 
 class Signup extends Component {
 	constructor() {
@@ -90,7 +90,7 @@ class Signup extends Component {
 		event.preventDefault()
 
 		//request to server to add a new username/password
-		axios.post('/api/signup', {
+		axios.post(`${BASE_URL}/signup`, {
 			firstName : this.state.firstName,
 			lastName : this.state.lastName,
 			email : this.state.email,
@@ -100,7 +100,6 @@ class Signup extends Component {
 			.then(response => {
 				console.log(response);
 				debugger;
-				//alert(response.data.message);
 				if (response.data) {
 					if(response.data.message === 'Email exists')
 					{
@@ -108,7 +107,7 @@ class Signup extends Component {
 						return;
 					}
 					console.log('successful signup')
-					alert(response.data.message);
+					response.data.message?alert(response.data.message):'';
 					this.setState({ //redirect to login page
 						redirectTo: '/login'
 					})

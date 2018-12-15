@@ -33,7 +33,6 @@ class TableRow extends Component{
     }
 
     showMenu(event) {
-        debugger
         event.preventDefault();
         this.setState({showMenu : true}, () => {
             document.addEventListener('click', this.closeMenu);
@@ -41,7 +40,6 @@ class TableRow extends Component{
     }
 
     closeMenu(event) {
-        debugger
         if(this.dropdownMenu){
         if(!this.dropdownMenu.contains(event.target)) {
             this.setState({showMenu : false}, () => {

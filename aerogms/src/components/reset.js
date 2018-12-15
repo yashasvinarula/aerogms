@@ -7,7 +7,7 @@ import BuildingsImage from '../images/login-page-image.png'
 import Navbar from './navbar';
 import HomeFooter from './footer-home';
 import MediaQuery from 'react-responsive';
-// import Loader from './loader';
+import {BASE_URL} from '../config';
 
 class ResetPassword extends Component {
     constructor(){
@@ -69,21 +69,20 @@ class ResetPassword extends Component {
         event.preventDefault();
         console.log('handleSubmit');
         axios
-            .post('/api/reset', {
+            .post(`${BASE_URL}/reset`, {
                 token : this.state.token,
                 newPassword : this.state.newPassword
             })
             .then(response => {
                 debugger;
-                alert(response.data.message);
+                response.data.message?alert(response.data.message):'';
                 console.log('login response: ')
                 console.log(response)
                 if (response.status === 200) {
                    this.setState({redirectTo:'/login'});
                 }
             }).catch(error => {
-                debugger
-                alert(error.response.data.message)
+                error.response.data.message?alert(error.response.data.message):'';
                 console.log('login error: ')
                 console.log(error);  
             })

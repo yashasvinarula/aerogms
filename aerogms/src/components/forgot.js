@@ -6,7 +6,7 @@ import AeroLogo from '../images/AeroLOGO.png';
 import BuildingsImage from '../images/login-page-image.png';
 import Navbar from './navbar';
 import HomeFooter from './footer-home';
-// import Loader from './loader';
+import {BASE_URL} from '../config';
 
 class Forgot extends Component {
     constructor(props){
@@ -46,19 +46,19 @@ class Forgot extends Component {
         console.log('handleSubmit');
 
         axios
-            .post('/api/forgot', {
+            .post(`${BASE_URL}/forgot`, {
                 email : this.state.email
             })
             .then(response => {
                 debugger
                 console.log('forgot password response: ')
-                alert(response.data.message);
+                response.data.message?alert(response.data.message):'';
                 if (response.status === 200) {
                     this.setState({redirectTo:'/reset'});
                 }
             }).catch(error => {
                 debugger
-                alert(error.response.data.message)
+                error.response.data.message?alert(error.response.data.message):'';
                 console.log('forgot password error: ')
             })
     }

@@ -1,7 +1,7 @@
 const { db, pg, pool, geocred}=require('../db.js');
 const {registervector, getBbox} = require('../controller/import_controller');
 const userpw=geocred;
-const config = require('../../config');
+const config = require('../../config/config');
 
 module.exports.get_layers = function(req, res){
     db.func('public.sp_getlayerlist', [req.body.pro_id, req.body.u_id])
@@ -122,7 +122,7 @@ module.exports.create_layer = function(req, res){
                 if(result[0].sp_aerogms)
                 {
                     console.log(result[0].sp_aerogms);
-                    registervector(tab_name, function(err){
+                    registervector(tab_name, function(error){
                         if(error){
                             console.log(error);
                             return res.status(400).send({status:'error', message:error});
@@ -322,11 +322,11 @@ module.exports.delete_column = function(req, res){
     });
 }
 module.exports.lay_stats = function(req, res){
-    db.func('public.select_dall', [])
+    db.func('public.dall_version', [])
         .then(result => {
-        if(result[0].select_dall > 0)
+        if(result[0].dall_version > 0)
         {
-            return res.status(200).send({'status':'success', 'data':result[0].select_dall});
+            return res.status(200).send({'status':'success', 'data':result[0].dall_version});
         }
         else
         {
@@ -424,6 +424,24 @@ module.exports.get_bound = function(req, res){
         //return res.status(400).send({status:'error', message:error.message});
         });
         }
+}
+module.exports.layer_col_update = function(req, res){
+    var funName = req.body.funname;
+    db.func('public.' + funName, [])
+    .then(result => {
+    if('result[0].'+funName > 0)
+    {
+        return res.status(200).send({'status':'success', 'data':`${result[0]}.${funName}`});
+    }
+    else
+    {
+        return res.status(200).send({status:'fail', message:result[0]});
+    }
+    })
+    .catch(error => {
+    console.log('ERROR:', error);
+    return res.status(400).send({status:'error', message:error.message});
+    });
 }
 var deletevector = function(datasetName, callback){
     //dataset name is the name of the PostGIS table

@@ -19,7 +19,6 @@ class SpecificQuery extends Component {
         this.setState({chatText : event.target.value})
     }
     handleChat(event) {
-        debugger;
         event.preventDefault();
         if(this.state.chatText === '' || this.state.chatText === 'undefined'  || this.state.chatText === null) {
             alert('Please enter something');
@@ -34,8 +33,6 @@ class SpecificQuery extends Component {
     }
 
     render() {
-        // debugger;
-        console.log(this.props.query);
         return (
             <div>
                 <div id="subject">

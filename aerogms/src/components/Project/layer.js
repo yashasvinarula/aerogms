@@ -15,6 +15,7 @@ import NumberIcon from '../../images/NumberIcon.png';
 import {connect} from 'react-redux';
 import {delete_layer, updateLayerActive, updateLayerColor} from '../../actions';
 import _ from 'lodash';
+import {BASE_URL} from '../../config';
 
 
 
@@ -99,11 +100,10 @@ class Layer extends Component {
 
     changeLayerName(){
         let newLayerTitle = document.getElementById('changeLayerName').value;
-        axios.post('/api/lay_name_exists', {
+        axios.post(`${BASE_URL}/lay_name_exists`, {
             lay_name: newLayerTitle
         })
         .then(responce=>{
-            console.log(responce);
             if(responce.data.status === 'not exists'){
                 this.props.changeLayerNameParent(newLayerTitle);
                 this.closeChangeLayerModal();
@@ -111,7 +111,7 @@ class Layer extends Component {
             else{   
                 if(responce.data.status === 'unauthorised')
                 {
-                    alert(responce.data.message);
+                    responce.data.message?alert(responce.data.message):'';
                     this.props.doLogout();
                 }
                 else{
@@ -183,11 +183,11 @@ class Layer extends Component {
                     {
                         if(err.status === 'unauthorised')
                         {
-                            alert(err.message);
+                            err.message ? alert(err.message):'';
                             that.props.doLogout();
                         }
                         else{
-                            alert(err.message);
+                            err.message ? alert(err.message):'';
                         }
                     }
                 });
@@ -208,7 +208,6 @@ class Layer extends Component {
             {
                 this.servicecaller('delete_column', {layer:this.props.layer.orig_name, column:event.target.name}, function(err, data){
                     if(!err && data){
-                        debugger
                         attrArray.splice(attrIndex, 1);
                         that.setState({attributes : attrArray})
                     }
@@ -216,11 +215,11 @@ class Layer extends Component {
                     {
                         if(err.status === 'unauthorised')
                         {
-                            alert(err.message);
+                            err.message ? alert(err.message):'';
                             that.props.doLogout();
                         }
                         else{
-                            alert(err.message);
+                            err.message ? alert(err.message):'';
                         }
                     }
                 });
@@ -229,7 +228,6 @@ class Layer extends Component {
     }
     renameAttr(event) {
         event.preventDefault();
-        debugger
         let newName = isNaN(parseInt(this.state.attributeName.substr(0,1))) && this.state.attributeName.length > 0 && this.state.attributeName.indexOf(' ') == -1 && this.state.attributeName.indexOf('-') == -1 ? this.state.attributeName.trim().toLowerCase():'';
         if(newName)
         {
@@ -238,10 +236,8 @@ class Layer extends Component {
             let attrArray = [...this.state.attributes];
             let attrIndex = attrArray.findIndex(attribute => attribute.name === tempAttribute );
             if(attrIndex !== -1 && attrIndex !== 'undefined') {
-                console.log(`attr :  ${attrIndex}`);
                     this.servicecaller('rename_column', {layer:this.props.layer.orig_name, old_column:tempAttribute, new_column:newName}, function(err, data){
                         if(!err && data){
-                            debugger
                             attrArray[attrIndex].name = newName;
                             that.setState({ attributes : attrArray, renameAttribute : false, attributeName : '', tempAttr : '' });
                         }
@@ -249,11 +245,11 @@ class Layer extends Component {
                         {
                             if(err.status === 'unauthorised')
                         {
-                            alert(err.message);
+                            err.message ? alert(err.message):'';
                             that.props.doLogout();
                         }
                         else{
-                            alert(err.message);
+                            err.message ? alert(err.message):'';
                         }
                         }
                     });
@@ -268,7 +264,6 @@ class Layer extends Component {
         if(window.confirm(`Do you really want to delete ${this.props.layer.name} layer.`)){
             if(this.props.layer.orig_name && this.props.layer.lay_id)
             {
-                debugger
                 this.props.delete_layer(this.props.layer.orig_name, this.props.layer.lay_id);
                 window.hideWMSLayer(this.props.layer.orig_name);
                 window.lyrhighlighter ? window.m.removeLayer(window.lyrhighlighter):false;
@@ -310,11 +305,11 @@ class Layer extends Component {
                 else{
                     if(err.status === 'unauthorised')
                     {
-                        alert(err.message);
+                        err.message ? alert(err.message):'';
                         that.props.doLogout();
                     }
                     else{
-                        alert(err.message);
+                        err.message ? alert(err.message):'';
                     }
                 }
             })
@@ -347,9 +342,8 @@ resetActiveLayer(){
         this.setState({isActive:false});
     }
     servicecaller(ser_name, data, callback){
-        axios.post(`/api/${ser_name}`, data)
+        axios.post(`${BASE_URL}/${ser_name}`, data)
         .then(response=>{
-            debugger
             if(response.data.status === 'success'){
                 callback(false, response.data);
             }
@@ -358,20 +352,18 @@ resetActiveLayer(){
             }
         })
         .catch(err=>{
-            debugger
             console.log('error: ' + err)
             if(err.response)
             {
                 callback(err.response.data, undefined);
             }
             else{
-                alert(err.message);
+                err.message?alert(err.message):'';
             }
         })
     }
 
     getLayerSchema(){
-        debugger
         let layerName= this.props.layer.orig_name;
         var that = this;
        if(layerName)
@@ -384,11 +376,11 @@ resetActiveLayer(){
             {
                 if(err.status === 'unauthorised')
                 {
-                    alert(err.message);
+                    err.message ? alert(err.message):'';
                     that.props.doLogout();
                 }
                 else{
-                    alert(err.message);
+                    err.message ? alert(err.message):'';
                 }
             }
         });

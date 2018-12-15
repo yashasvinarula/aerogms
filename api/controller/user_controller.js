@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const fs = require("fs");
 const path = require('path');
-const config = require('../../config');
+const config = require('../../config/config');
 
 module.exports.user_signup =  function(req, res){
 
@@ -62,9 +62,6 @@ module.exports.user_signup =  function(req, res){
             return res.status(400).send(error);
         });
     }
-   
-
-   
   // pool.query('select * from user_info;', (err, result) => {
     //     if (err) {
     //         console.error('Error executing query', err.stack);
@@ -582,7 +579,6 @@ module.exports.m_signup =  function(req, res){
         return res.send({message:'Please fill all the required fields!'});
     }
 }
-
 module.exports.m_signin = function(req, res){
     let userjsdata;
     if(req.body.kuchbhi)
@@ -641,7 +637,6 @@ module.exports.m_signin = function(req, res){
         return res.send({message:'Please fill all the required fields!'});
     }
 }
-
 module.exports.m_getprofile = function(req, res){
     if(req.query.email)
     {
@@ -688,7 +683,6 @@ module.exports.m_getprofile = function(req, res){
         return res.send({message:'Please send email id!'});
     }
 }
-
 module.exports.m_updateprofile = function(req, res){
     let valArr =[];
     if(req.body.kuchbhi)
@@ -759,5 +753,231 @@ module.exports.m_updateprofile = function(req, res){
     {
         console.log('please send all fields!');
         return res.send({message:'Please send all fields'});
+    }
+}
+module.exports.m_submitPoint = function(req, res){
+    if(req.body.kuchbhi)
+    {
+        let jsonarr = JSON.parse(req.body.kuchbhi);
+        let polyInfo = jsonarr.poly ? jsonarr.poly : '';
+        let pointInfo =  jsonarr.point ? jsonarr.point : '';
+        let email = jsonarr.email ? jsonarr.email : '';
+
+        if(polyInfo && pointInfo && email)
+        {
+            if(polyInfo.geometry != '' && polyInfo.id == '')
+            {
+                db.any('INSERT INTO public.mobile_poly(type, geometry, email) VALUES($1, $2, $3) returning aerogmsid;', [polyInfo.type.toString(), polyInfo.geometry.toString(), email.toString()])
+                .then((result2) =>{
+                    if(result2.length>0)
+                    {
+                        console.log(result2);
+                        //return res.send({status:'success', id:result2[0].aerogmsid});
+                        var imagedate = new Date();
+                        var timeStamp = imagedate.getTime();
+                        var imageloc = '/images/m_profile/'+ `${timeStamp}.png`;
+                        var imageDirloc = path.join(__dirname, '../../aerogms/public/images/m_profile/');
+                        var base64Data = pointInfo.photo.replace(/^data:image\/png;base64,/, "");
+                        var photo_path = `${imageDirloc}${timeStamp}.png`;
+                        if(base64Data == '')
+                        {
+                            db.any('INSERT INTO public.mobile_poly_points(poly_id, name, descrip, photo, geom, email) VALUES($1::integer, $2, $3, $4,ST_SetSRID(st_makepoint($5::double precision, $6::double precision),4326), $7) returning poly_id;', [result2[0].aerogmsid, pointInfo.name.toString(), pointInfo.desc.toString(), '', pointInfo.lng, pointInfo.lat, email.toLocaleString()])
+                            .then((result1) =>{
+                                if(result1.length>0)
+                                {
+                                    console.log(result1);
+                                    return res.send({status:'success', message:'Information saved successfully!', poly_id:result1[0].poly_id});
+                                }
+                                else
+                                {
+                                    return res.send({status:'fail', message:'problem in insertig point records!'});
+                                }
+                            })
+                            .catch(error => {
+                                return res.send({status:'error', message:error});
+                            });
+                        }
+                        else{
+                            fs.writeFile(photo_path, base64Data, 'base64', function(err) {
+                                if(err){
+                                    return res.send({status:'fail',message:'Image is not valid!'});
+                                }
+                                else
+                                {
+                                    db.any('INSERT INTO public.mobile_poly_points(poly_id, name, descrip, photo, geom, email) VALUES($1::integer, $2, $3, $4,ST_SetSRID(st_makepoint($5::double precision, $6::double precision),4326), $7) returning poly_id;', [result2[0].aerogmsid, pointInfo.name.toString(), pointInfo.desc.toString(), imageloc.toString(), pointInfo.lng, pointInfo.lat, email.toLocaleString()])
+                                    .then((result1) =>{
+                                        if(result1.length>0)
+                                        {
+                                            console.log(result1);
+                                            return res.send({status:'success', message:'Information saved successfully!', poly_id:result1[0].poly_id});
+                                        }
+                                        else
+                                        {
+                                            return res.send({status:'fail', message:'problem in insertig point records!'});
+                                        }
+                                    })
+                                    .catch(error => {
+                                        return res.send({status:'error', message:error});
+                                    });
+                                }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return res.send({status:'fail', message:'problem in insertig poly records!'});
+                    }
+                })
+                .catch(error => {
+                    return res.send({status:'error', message:error});
+                });
+            }
+            else if(polyInfo.geometry != '' && polyInfo.id != ''){
+                var imagedate = new Date();
+                var timeStamp = imagedate.getTime();
+                var imageloc = '/images/m_profile/'+ `${timeStamp}.png`;
+                var imageDirloc = path.join(__dirname, '../../aerogms/public/images/m_profile/');
+                var base64Data = pointInfo.photo.replace(/^data:image\/png;base64,/, "");
+                var photo_path = `${imageDirloc}${timeStamp}.png`;
+                if(base64Data == '')
+                {
+                    db.any('INSERT INTO public.mobile_poly_points(poly_id, name, descrip, photo, geom, email) VALUES($1::integer, $2, $3, $4,ST_SetSRID(st_makepoint($5::double precision, $6::double precision),4326), $7) returning poly_id;', [polyInfo.id, pointInfo.name.toString(), pointInfo.desc.toString(), '', pointInfo.lng, pointInfo.lat, email.toLocaleString()])
+                    .then((result1) =>{
+                        if(result1.length>0)
+                        {
+                            console.log(result1);
+                            return res.send({status:'success', message:'Information saved successfully!', poly_id:result1[0].poly_id});
+                        }
+                        else
+                        {
+                            return res.send({status:'fail', message:'problem in insertig point records!'});
+                        }
+                    })
+                    .catch(error => {
+                        return res.send({status:'error', message:error});
+                    });
+                }   
+                else{
+                fs.writeFile(photo_path, base64Data, 'base64', function(err) {
+                    if(err){
+                        return res.send({status:'fail',message:'Image is not valid!'});
+                    }
+                    else
+                    {
+                        db.any('INSERT INTO public.mobile_poly_points(poly_id, name, descrip, photo, geom, email) VALUES($1::integer, $2, $3, $4,ST_SetSRID(st_makepoint($5::double precision, $6::double precision),4326), $7) returning poly_id;', [polyInfo.id, pointInfo.name.toString(), pointInfo.desc.toString(), imageloc.toString(), pointInfo.lng, pointInfo.lat, email.toLocaleString()])
+                        .then((result1) =>{
+                            if(result1.length>0)
+                            {
+                                console.log(result1);
+                                return res.send({status:'success', message:'Information saved successfully!',
+                                 poly_id:result1[0].poly_id});
+                            }
+                            else
+                            {
+                                return res.send({status:'fail', message:'problem in insertig point records!'});
+                            }
+                        })
+                        .catch(error => {
+                            return res.send({status:'error', message:error});
+                        });
+                    }
+                });
+                }
+            }
+            else
+            {
+                return res.send({message:'Please send valid polygon details!'});
+            }
+        }
+        else{
+            console.log('Please send all required details!');
+            return res.send({message:'Please send all required details!'});
+        }
+    }
+    else
+    {
+        return res.send({message:'Please send the required fields!'});
+    }
+}
+module.exports.m_getPoly = function(req, res){
+    if(req.body.kuchbhi)
+    {
+        jsondata = JSON.parse(req.body.kuchbhi);
+        if(jsondata.email)
+        {
+            db.any('SELECT aerogmsid as poly_id, type, geometry, date FROM public.mobile_poly where email=$1 order by date', [jsondata.email.toString()])
+            .then(result=>{
+                if(result.length>0)
+                {
+                    let finalresult = [];
+                    result.map(element => {
+                        finalresult.push({date:element.date, geometry:JSON.parse(element.geometry), poly_id:element.poly_id, type:element.type})
+                    })
+                    //return res.send({status:'success', data:{date:result[0].date, geometry:JSON.parse(result[0].geometry), poly_id:result[0].poly_id, type:result[0].type}});
+                    return res.send({status:'success', data:finalresult});
+                }
+                else
+                {
+                    return res.send({status:'success', message:'no records found!'});
+                }
+            })
+            .catch(error=>{
+                return res.send({status:'error', message:error});
+            })
+        }
+        else{
+            return res.send({status:'fail',message:'Please send the email!'});
+        }
+    }
+    else{
+        return res.send({status:'fail',message:'Please send the required fields!'});
+    }
+}
+module.exports.m_getPolyPoints = function(req, res){
+    if(req.body.kuchbhi)
+    {
+        jsondata = JSON.parse(req.body.kuchbhi);
+        if(jsondata.email && jsondata.poly_id)
+        {
+
+            db.any('SELECT aerogmsid as poly_id, type, geometry, date FROM public.mobile_poly where email=$1 and aerogmsid=$2::integer order by date', [jsondata.email.toString(), jsondata.poly_id])
+            .then(result=>{
+                if(result.length>0)
+                {
+                    let finalresult = [];
+                    result.map(element => {
+                        finalresult.push({date:element.date, geometry:JSON.parse(element.geometry), poly_id:element.poly_id, type:element.type})
+                    })
+
+                    db.any('SELECT aerogmsid as poi_id, poly_id, name, descrip, photo, st_x(geom) lng, st_y(geom) lat, SUBSTRING(date::text, 0, 11) as date FROM public.mobile_poly_points where email=$1 and poly_id=$2::integer;', [jsondata.email.toString(), jsondata.poly_id])
+                    .then(result1=>{
+                        if(result1.length>0)
+                        {
+                            return res.send({status:'success', data:result1, poly_geo:finalresult});
+                        }
+                        else
+                        {
+                            return res.send({status:'success', message:'no records found!'});
+                        }
+                    })
+                    .catch(error=>{
+                        return res.send({status:'error', message:error});
+                    })
+                }
+                else
+                {
+                    return res.send({status:'success', message:'no records found!'});
+                }
+            })
+            .catch(error=>{
+                return res.send({status:'error', message:error});
+            })
+        }
+        else{
+            return res.send({status:'fail',message:'Please send the email and poly_id!'});
+        }
+    }
+    else{
+        return res.send({status:'fail',message:'Please send the required fields!'});
     }
 }

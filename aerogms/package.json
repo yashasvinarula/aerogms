@@ -21,6 +21,7 @@
     "react-redux": "5.0.7",
     "react-responsive": "5.0.0",
     "react-router-dom": "4.3.1",
+    "react-router-redux": "4.0.8",
     "react-scripts": "1.1.5",
     "redux": "4.0.0",
     "redux-logger": "3.0.6",
@@ -34,5 +35,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3001/"
+"proxy": "http://localhost:3001/"
 }

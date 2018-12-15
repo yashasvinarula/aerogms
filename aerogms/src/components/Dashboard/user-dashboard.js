@@ -11,6 +11,7 @@ import '../../css/dashboard.css';
 import AeroLogoHeader from '../../images/AeroLogoHeader.png';
 import AeroLogoMObile from '../../images/AeroLOGO.png';
 import ProjectItem from './project';
+import {BASE_URL} from '../../config';
 
 class UserNavs extends Component {
     render() {
@@ -65,19 +66,17 @@ class UserDashboard extends Component {
     }
 
     logOut(){
-        debugger
         this.setState({showUserMenu : false});
         this.props.doLogout();
     }
 
     createProject(){
-        debugger
         let pro_name = this.state.projectName;
         if(pro_name === null || pro_name ===''){
             return alert('Please enter name for project!');
         }
         let email = this.props.userDetails.email;
-        axios.post('/api/pro_name_exists', {pro_name:pro_name, owner_email:email})
+        axios.post(`${BASE_URL}/pro_name_exists`, {pro_name:pro_name, owner_email:email})
         .then(response => {
             if(response.data.pro_id == null ){
                 this.props.createProject(pro_name, email);
@@ -91,21 +90,20 @@ class UserDashboard extends Component {
         .catch(err=>{
             if(err.response.data.status === 'unauthorised')
             {
-                alert(err.response.data.message);
+                err.response.data.message ? alert(err.response.data.message):'';
                 this.props.doLogout();
             }
             else{
-                alert(err.response.data.message);
+                err.response.data.message ? alert(err.response.data.message):'';
             }
         })
     }
 
     renderProjects(){
-        debugger
         if(Object.keys(this.props.projects).indexOf('error') >-1)
         {
             let {message, status} = this.props.projects.error;
-            alert(message);
+            message ? alert(message):'';
             delete this.props.projects['error'];
             if(status === 'unauthorised')
             {

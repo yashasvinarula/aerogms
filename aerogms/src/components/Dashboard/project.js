@@ -4,6 +4,7 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { Image, Modal, DropdownButton, MenuItem } from 'react-bootstrap/lib/';
 import mapThumbnail from '../../images/map_thumbnail.jpeg';
 import axios from 'axios';
+import {BASE_URL} from '../../config';
 
 import {connect} from 'react-redux';
 import {deleteProject, renameProject, resetLayerStore} from '../../actions';
@@ -61,10 +62,9 @@ class Project extends Component {
     }
     renameProject(){
         //this.props.renameProject(this.props.prodetails.pro_id, this.state.projectName);
-        debugger
         let pro_name = this.state.projectName;
         let email = this.props.email;
-        axios.post('/api/pro_name_exists', {pro_name:pro_name, owner_email:email})
+        axios.post(`${BASE_URL}/pro_name_exists`, {pro_name:pro_name, owner_email:email})
         .then(response => {
             if(response.data.pro_id == null ){
                 this.props.renameProject(this.props.prodetails.pro_id, pro_name);
@@ -77,11 +77,11 @@ class Project extends Component {
         .catch(err=>{
             if(err.response.data.status === 'unauthorised')
             {
-                alert(err.response.data.message);
+                err.response.data.message ? alert(err.response.data.message):'';
                 this.props.doLogout();
             }
             else{
-                alert(err.response.data.message);
+                err.response.data.message ? alert(err.response.data.message):'';
             }
         })
     }
@@ -91,7 +91,6 @@ class Project extends Component {
             this.props.resetLayerStore();
         return <Redirect to={`/projectView?pro_id=${this.props.prodetails.pro_id}`} />
         }
-        debugger
         return (
             <div className="col-md-2 col-xs-6 col-sm-4 project-Item">
             <div className="project">

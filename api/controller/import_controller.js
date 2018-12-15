@@ -3,7 +3,7 @@ const userpw=geocred;
 const ogr2ogr = require('ogr2ogr');
 const fs = require('fs');
 const JSONStream = require('JSONStream');
-const config = require('../../config');
+const config = require('../../config/config');
 
 
 module.exports.fileuploaddprocess = function(req, res){

@@ -68,7 +68,6 @@ class Login extends Component {
         this.setState({ password:""});
     }
     render() {
-        debugger
         const {userDetails} = this.props;
         console.log(userDetails);
         if(userDetails.isLoggedIn){
