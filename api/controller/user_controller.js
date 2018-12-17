@@ -981,3 +981,41 @@ module.exports.m_getPolyPoints = function(req, res){
         return res.send({status:'fail',message:'Please send the required fields!'});
     }
 }
+
+module.exports.m_getPolyPointsById = function(req, res){
+    if(req.body.kuchbhi)
+    {
+        jsondata = JSON.parse(req.body.kuchbhi);
+        if(jsondata.lat && jsondata.lng)
+        {
+            db.any('SELECT aerogmsid as poi_id, poly_id, name, descrip, photo, st_x(geom) lng, st_y(geom) lat, SUBSTRING(date::text, 0, 11) as date FROM public.mobile_poly_points where st_x(geom)=$1::double precision and st_y(geom)=$2::double precision;', [jsondata.lng, jsondata.lat])
+            .then(result1=>{
+                if(result1.length>0)
+                {
+                    return res.send({status:'success', data:result1});
+                }
+                else
+                {
+                    return res.send({status:'success', message:'no records found!'});
+                }
+            })
+            .catch(error=>{
+                return res.send({status:'error', message:error});
+            })
+        }
+        else
+        {
+            console.log('please send poi_id!');
+            return res.send({message:'Please send poi_id!'});
+        }
+    }
+    else{
+        console.log('please send required field!');
+        return res.send({message:'Please send required field'});
+    }
+
+}
+
+module.exports.m_updatePolyPointsById = function(req, res){
+
+}

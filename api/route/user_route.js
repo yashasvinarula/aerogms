@@ -51,8 +51,9 @@ router.post('/m_updateprofile', cntrlr.m_updateprofile);
 router.post('/m_submitPoint', cntrlr.m_submitPoint);
 router.post('/m_getPoly', cntrlr.m_getPoly);
 router.post('/m_getPolyPoints', cntrlr.m_getPolyPoints);
+router.post('/m_getPolyPointsById', cntrlr.m_getPolyPointsById);
+router.post('/m_updatePolyPointsById', cntrlr.m_updatePolyPointsById);
 
-//------------------------------
 let storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './files')

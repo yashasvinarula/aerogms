@@ -141,7 +141,7 @@ function initMap()
         var dummyMap = L.tileLayer('', '');
         osmMap.addTo(m);
         
-         var water_bodies_MLayer = new L.tileLayer.wms(geourl, {
+        var water_bodies_MLayer = new L.tileLayer.wms(geourl, {
             layers: 'AeroGMS:water_bodies', format:'image/png', 'transparent': true, 'tiled': true
         });//.addTo(m);
         
