@@ -1017,5 +1017,70 @@ module.exports.m_getPolyPointsById = function(req, res){
 }
 
 module.exports.m_updatePolyPointsById = function(req, res){
+    if(req.body.kuchbhi)
+    {
+        jsondata = JSON.parse(req.body.kuchbhi);
+        if(jsondata.poi_id && jsondata.data)
+        {
+            if(jsondata.data.photo === '')
+            {
+                db.any('UPDATE public.mobile_poly_points SET name=$1, descrip=$2 WHERE aerogmsid=$3::integer returning aerogmsid;', [jsondata.data.name.toString(), jsondata.data.descrip.toString(), jsondata.poi_id])
+                .then(result1=>{
+                    if(result1.length>0)
+                    {
+                        return res.send({status:'success', message:'Record updated successfully!'});
+                    }
+                    else
+                    {
+                        return res.send({status:'success', message:'Try again. Problem in updating record!'});
+                    }
+                })
+                .catch(error=>{
+                    return res.send({status:'error', message:error});
+                })
+            }
+            else
+            {
+                let imagedate = new Date();
+                let timeStamp = imagedate.getTime();
+                let imageloc = '/images/m_profile/'+ `${timeStamp}.png`;
+                let imageDirloc = path.join(__dirname, '../../aerogms/public/images/m_profile/');
+                let base64Data = jsondata.data.photo.replace(/^data:image\/png;base64,/, "");
+                let photo_path = `${imageDirloc}${timeStamp}.png`;
+
+                fs.writeFile(photo_path, base64Data, 'base64', function(err) {
+                    if(err){
+                        return res.send({status:'fail',message:'Image is not valid!'});
+                    }
+                    else
+                    {
+                        db.any('UPDATE public.mobile_poly_points SET name=$1, descrip=$2, photo=$3 WHERE aerogmsid=$4::integer returning aerogmsid;', [jsondata.data.name.toString(), jsondata.data.descrip.toString(), imageloc.toString(), jsondata.poi_id])
+                        .then(result1=>{
+                            if(result1.length>0)
+                            {
+                                return res.send({status:'success', message:'Record updated successfully!'});
+                            }
+                            else
+                            {
+                                return res.send({status:'success', message:'Try again. Problem in updating record!'});
+                            }
+                        })
+                        .catch(error=>{
+                            return res.send({status:'error', message:error});
+                        })
+                    }
+                });
+            }
+        }
+        else
+        {
+            console.log('please send poi_id and data!');
+            return res.send({message:'Please send poi_id and data!'});
+        }
+    }
+    else{
+        console.log('please send required field!');
+        return res.send({message:'Please send required field'});
+    }
 
 }

@@ -41,6 +41,7 @@ router.post('/get_bound', auth.loggedIn, layer_cntrlr.get_bound);
 router.post('/layer_col_update', layer_cntrlr.layer_col_update)
 router.post('/exis_layer_insert', auth.loggedIn, layer_cntrlr.exis_layer_insert);
 router.post('/update_layer_color', auth.loggedIn, layer_cntrlr.update_layer_color);
+router.post('/update_layer_attrib', auth.loggedIn, layer_cntrlr.update_layer_attrib);
 
 /*for mobile user*/
 //-----------------------------

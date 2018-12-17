@@ -122,8 +122,8 @@ class ProjectView extends Component{
             return this.state.attrInfoList.map((item) => {
                 return (<tr key={item.name}>
                     <td>{item.name}</td>
-                    <td>{item.value}</td>
-                </tr>)
+                    <td><input defaultValue={item.value}></input></td>
+                </tr>)  
             });
         }
     }
