@@ -38,10 +38,12 @@ const queryList = [
     }
 ];
 
-// const attrInfoList = [
-//     {name : 'Area', value : '1234'},
-//     {name : 'Perimeter', value : '4567'},
-// ];
+const attrInfoList = [
+    {name : 'aero_id', value : '22'},
+    {name : 'Area', value : '1234'},
+    {name : 'Perimeter', value : '4567'},
+    {name : 'date', value : '23 July, 2018'},
+];
 
 const AddLayer = (
     <div className="icons-display text-center col-xs-6">
@@ -70,7 +72,7 @@ class ProjectView extends Component{
             info : true,
             showVisibles : false,
             showFeatures : false,
-            infoBoxShow:false,
+            infoBoxShow:true,
             compBoxShow:false,
             compboxvalue:'',
             queryTable : false,
@@ -87,6 +89,9 @@ class ProjectView extends Component{
             //drawingTools : [{pointBtn : false}, {lineBtn : false}, {polygonBtn : false}, {saveLayerBtn : false}, {remFeature : false}],
             attrInfoList:[],
             gotouserdash:false,
+            editAttributes : false, // to enable attributes edit mode
+            updatedAttrInfoList : [], // array of only updates attributes
+            updatedAttr : {name : null, value : null}, // updated attr which will be newly inserted
         }
         
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -114,18 +119,47 @@ class ProjectView extends Component{
         this.showRespectiveButtons =this.showRespectiveButtons.bind(this);
         this.createNewLayer = this.createNewLayer.bind(this);
         this.GoToUserDash = this.GoToUserDash.bind(this);
+        this.updateAttributes = this.updateAttributes.bind(this);
     }
 
     renderAttrInfo() {
         if(this.state.attrInfoList.length>0)
         {
-            return this.state.attrInfoList.map((item) => {
-                return (<tr key={item.name}>
-                    <td>{item.name}</td>
-                    <td>{item.value}</td>
-                </tr>)
-            });
+            if(!this.state.editAttributes) {
+                return this.state.attrInfoList.map((item) => {
+                    return (<tr key={item.name}>
+                                <td>{item.name}</td>
+                                <td>{item.value}</td>
+                            </tr>)
+                });
+            } else {
+                return this.state.attrInfoList.map((item) => {
+                    if(item.name === 'aero_id' || item.name === 'date'){
+                        return (<tr key={item.name}>
+                            <td>{item.name}</td>
+                            <td><input id={item.name} readOnly value={item.value} /></td>
+                        </tr>)
+                    } else {
+                        return (<tr key={item.name}>
+                            <td>{item.name}</td>
+                            <td><input id={item.name} name={item.name} defaultValue={item.value} /></td>
+                        </tr>)
+                    }
+                });
+            }
         }
+    }
+    updateAttributes() {
+        let attrList = [...this.state.attrInfoList];
+        let updatedList = [...this.state.updatedAttrInfoList];
+        attrList.map((item) => {
+            let attribute = {name : null, value : null};
+            attribute.name = item.name;
+            attribute.value = document.getElementById(item.name).value;
+            updatedList.push(attribute);
+        });
+        this.setState({updatedAttrInfoList : updatedList});
+        console.log(this.state.updatedAttrInfoList);
     }
     getAttrInfo(infoArr){
         if(infoArr.length>0){
@@ -888,9 +922,12 @@ class ProjectView extends Component{
                                     </ul>
                                 </div>
                             </div>
-                            <div  id="infoDiv" className={this.state.infoBoxShow ? 'project-infobox':'project-infobox infoDiv'}>    
+                            <div  id="infoDiv" className={this.state.infoBoxShow ? 'project-infobox':'project-infobox'}>    
+                            {/* <div  id="infoDiv" className="project-infobox">    */}
                                 <Image src={CrossIcon} className="cross-icon" onClick={()=>this.setState({infoBoxShow:false})}/>
                                 <h3 className="text-center">Info Panel</h3>
+                                <Button onClick={() => this.setState({editAttributes : true})}>Edit Attributes</Button>
+                                <Button onClick={this.updateAttributes} >Save</Button>
                                 <Table striped className="info-panel-attr-list scroll">
                                     <caption className="text-center">Attributes Information</caption>
                                     <thead>
@@ -899,12 +936,13 @@ class ProjectView extends Component{
                                             <th className=" text-center">Value</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="attr-tbody">
                                         {
                                            this.renderAttrInfo()
                                         }
                                     </tbody>
                                 </Table>
+                               
                                 {
                                     !this.state.queryForm ?
                                         (
