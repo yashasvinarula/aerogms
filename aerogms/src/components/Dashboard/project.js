@@ -61,7 +61,7 @@ class Project extends Component {
         }
     }
     renameProject(){
-        //this.props.renameProject(this.props.prodetails.pro_id, this.state.projectName);
+        // this.props.renameProject(this.props.prodetails.pro_id, this.state.projectName);
         let pro_name = this.state.projectName;
         let email = this.props.email;
         axios.post(`${BASE_URL}/pro_name_exists`, {pro_name:pro_name, owner_email:email})
@@ -92,12 +92,13 @@ class Project extends Component {
         return <Redirect to={`/projectView?pro_id=${this.props.prodetails.pro_id}`} />
         }
         return (
-            <div className="col-md-2 col-xs-6 col-sm-4 project-Item">
+            <div className=" project-Item">
             <div className="project">
                 <div className="" onClick={()=>{this.setState({rediectTo:true})}}>
                     <Image src={mapThumbnail} className="map-thumbnail" />
                 </div>
                 <div className="drawing-bottom">
+                    {/* <span className="pos-drawing">Name</span> */}
                     <span className="pos-drawing">{this.props.prodetails.pro_name}</span>
                     <span className="pos-drawing drawing-right">
                     <DropdownButton id="ddlMenu" className="menu" noCaret title={dropDownTitle} pullRight >
@@ -127,6 +128,7 @@ class Project extends Component {
                       {/* <MenuItem>Details</MenuItem> */}
                     </DropdownButton>
                     </span>
+                    {/* <span className="pos-drawing">jdnjks</span> */}
                     <span className="pos-drawing">{this.props.prodetails.date_time}</span>
                 </div>
             </div>
