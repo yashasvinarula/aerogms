@@ -59,8 +59,8 @@
 .leaflet-top
 {
 	z-index: 999999;
-	top: 1px !important;
+	top: 70px !important;
 } 
 .leaflet-right{
-	right: 206px !important;
+	right: 0 !important;
 }

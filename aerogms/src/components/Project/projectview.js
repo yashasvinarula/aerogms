@@ -5,6 +5,12 @@ import {connect} from 'react-redux';
 import { slide as Menu } from 'react-burger-menu';
 import MediaQuery from 'react-responsive';
 import Layer from './layer';
+import moment from 'moment';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
+import { formatDate, parseDate } from 'react-day-picker/moment';
+import AeroLogo from '../../images/AeroLogoHeader.png'
+import '../../css/property-tax.css';
 import Chat from './specificQuery';
 import BottomDrawer from './bottom-drawer';
 import Analytics from './analytics';
@@ -93,6 +99,9 @@ class ProjectView extends Component{
             updatedAttr : {name : null, value : null}, // updated attr which will be newly inserted
             showLQueryBox: false,
             taxMap:false,
+            from: undefined,
+            to: undefined,
+            selFYear:'2018-2019',
         }
 
         this.closeImportModal = this.closeImportModal.bind(this);
@@ -121,9 +130,38 @@ class ProjectView extends Component{
         this.createNewLayer = this.createNewLayer.bind(this);
         this.GoToUserDash = this.GoToUserDash.bind(this);
         this.updateAttributes = this.updateAttributes.bind(this);
+        this.showFromMonth = this.showFromMonth.bind(this);
+        this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
     }
     
-   
+    showFromMonth() {
+        const { from, to } = this.state;
+        if (!from) {
+          return;
+        }
+        if (moment(to).diff(moment(from), 'months') < 2) {
+          this.to.getDayPicker().showMonth(from);
+        }
+    }
+    handleFromChange(from) {
+        // if(this.state.to !== "undefined" && this.state.from !== "undefined")
+        //     this.setState({ showMapBtn : true });
+        // else {
+            this.setState({ from })
+        // }
+        console.log(from);
+        console.log((moment(from).format("X") - 43200)*1000);
+    }
+    handleToChange(to){
+        // if(this.state.from !== "undefined" && this.state.to !== "undefined")
+        //     this.setState({ showMapBtn : true });
+        // else {
+            this.setState({ to }, this.showFromMonth);
+        // }
+        console.log(to);
+        console.log((moment(to).format("X") - 43200)*1000);
+    }
     renderAttrInfo() {
         if(this.state.attrInfoList.length>0)
         {
@@ -620,8 +658,8 @@ class ProjectView extends Component{
     }
 
     render(){
-        // const { from, to } = this.state;
-        // const modifiers = { start: from, end: to };
+        const { from, to } = this.state;
+        const modifiers = { start: from, end: to };
         // if(!this.props.userDetails.isLoggedIn)
         // {
         //     window.wmsLayers=[];
@@ -811,6 +849,11 @@ class ProjectView extends Component{
                         return (
                             <div>
                                 <Navbar fixedTop style={{backgroundColor:'#9096a0'}}>
+                                    <Navbar.Header>
+                                        <Navbar.Brand>
+                                            <Image src={AeroLogo} className="aerologo-img" />
+                                        </Navbar.Brand>
+                                    </Navbar.Header>
                                     {
                                             (<NavItem className="nav-items"><input type="button" id="btnMakePoint" className="hide-btn"
                                             value="AddPoint" onClick={this.addPoint}/></NavItem>)
@@ -831,11 +874,73 @@ class ProjectView extends Component{
                                             (<NavItem className="nav-items layer-btn"><input type="button" id="saveLayer" className="hide-btn"
                                             value="Save Layer" onClick={this.saveLayer}/></NavItem>)
                                     }   
-                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Logout" onClick={this.props.doLogout}/></NavItem>
+                                    {/* <NavItem className="nav-items"><input className="btnLogout" type="button" value="Logout" onClick={this.props.doLogout}/></NavItem>
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Dashboard" onClick={()=>{this.GoToUserDash()}}/></NavItem>
-                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Layer Query" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}/></NavItem>
-                                    {/* <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={()=>{this.state.taxMap?this.setState({taxMap:false}):this.setState({taxMap:true})}}/></NavItem> */}
-                                    <NavItem className="nav-items" onClick={() => { return <Redirect to="/propertytax" /> }}><input className="btnLogout" type="button" value="Tax Map" /></NavItem>
+                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Layer Query" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}/></NavItem> */}
+                                    <NavItem className="nav-items" onClick={this.props.doLogout}>Logout</NavItem>
+                                    <NavItem className="nav-items" onClick={()=>{this.GoToUserDash()}}>Dashboard</NavItem>
+                                    <NavItem className="nav-items" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}>Layer Query</NavItem>
+                                    {/* <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={() => this.setState({taxMap : true})} /></NavItem> */}
+                                    {
+                                        this.state.taxMap ?
+                                        (
+                                            <div>
+                                            <NavItem className="nav-items">
+                                                <select id='ddlPropertyCat'>
+                                                    <option value="0">-Type-</option>
+                                                    <option value="pro_tax" selected>Tax</option>
+                                                </select>
+                                            </NavItem>
+                                            <NavItem className="nav-items">
+                                                <select id='ddlSelFY'>
+                                            <option value="0">-Year-</option>
+                                            <option value="2018-2019" selected>2018-19</option>
+                                        </select>
+                                            </NavItem>
+                                            <NavItem className="nav-items">
+                                        <DayPickerInput value={from}  placeholder="From" format="LL"
+                                            formatDate={formatDate} parseDate={parseDate} dayPickerProps={{
+                                            selectedDays: [from, { from, to }],
+                                            fromMonth:new Date(this.state.selFYear.split('-')[0], 3),
+                                            toMonth: new Date(this.state.selFYear.split('-')[1], 2), modifiers, numberOfMonths: 1,
+                                            onDayClick: () => this.to.getInput().focus(),}}
+                                            onDayChange={this.handleFromChange}
+                                        />
+                                    </NavItem>
+                                            <NavItem className="nav-items">
+                                                <DayPickerInput
+                                                  ref={el => (this.to = el)}
+                                                  value={to}
+                                                  placeholder="To"
+                                                  format="LL"
+                                                  formatDate={formatDate}
+                                                  parseDate={parseDate}
+                                                  dayPickerProps={{
+                                                    selectedDays: [from, { from, to }],
+                                                    disabledDays: { before:from, after: new Date(2019, 3) },
+                                                    modifiers,
+                                                    month: from,
+                                                    fromMonth: from,
+                                                    toMonth:new Date(this.state.selFYear.split('-')[1], 3),
+                                                    numberOfMonths: 1,
+                                                  }}
+                                                  onDayChange={this.handleToChange}
+                                                />
+                                            </NavItem>
+                                            {
+                                                this.state.from && this.state.to ? 
+                                                    (
+                                                        <NavItem className="nav-items"><input 
+                                                            className={this.state.from !== "undefined" && this.state.to !== "undefined" ? "show-map-btn" : "hide-show-map-btn"} 
+                                                            type="button" value="Show Map" onClick={()=>{window.addSnagatMandiLayer()}}/>
+                                                        </NavItem>
+                                                    )
+                                                :   ''
+                                            }
+                                            </div>
+                                        ) : <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={() => this.setState({taxMap : true})} /></NavItem>
+                                    }
+                                    {/* <NavItem className="nav-items" onClick={() => { return <Redirect to="/propertytax" /> }}><input className="btnLogout" type="button" value="Tax Map" /></NavItem> */}
                                     {/* <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Query Dashboard" 
                                         onClick={()=>{this.setState({queryTable : true})}}/></NavItem> */}
                                 </Navbar>

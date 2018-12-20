@@ -4,6 +4,7 @@ body {
   font-family: sans-serif;
   /* background-color: rgb(220, 220, 220); */
   position: relative;
+  font-size: 16px;
 }
 #map {
   position: relative;
