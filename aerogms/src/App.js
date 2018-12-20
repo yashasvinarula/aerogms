@@ -17,7 +17,7 @@ import FAQ from './components/faq';
 import Feedback from './components/feedback';
 import UserDashboard from './components/Dashboard/user-dashboard';
 import ProjectView from './components/Project/projectview';
-
+import PropertyTax from './components/Project/propertyTax';
 import {connect} from 'react-redux';
 import {doLogin, doLogout} from './actions'
 
@@ -45,6 +45,7 @@ class App extends Component {
         <Route path="/feedback" render={() => <Feedback />} />
         <Route path="/usernotactivated" component={() => <div><p>User account is not activated now. Please try again later!</p></div>} />
         <Route path="/projectView" render={()=><ProjectView doLogout={this.props.doLogout} userDetails={this.props.userDetails}/>}/>
+        <Route path="/propertytax" render={() => <PropertyTax />} />
         <Route component={() => <div>No Such Page!!</div>} />
         </Switch>
         </Router>
