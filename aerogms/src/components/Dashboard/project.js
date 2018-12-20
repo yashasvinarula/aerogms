@@ -16,7 +16,8 @@ class Project extends Component {
         super(props);
         this.state = {
             showMenu : false,
-            projectName:this.props.prodetails.pro_name,
+            // projectName:this.props.prodetails.pro_name,
+            projectName : 123,
             showmodal: false,
             rediectTo:false
         }
@@ -92,13 +93,14 @@ class Project extends Component {
         return <Redirect to={`/projectView?pro_id=${this.props.prodetails.pro_id}`} />
         }
         return (
-            <div className="col-md-2 col-xs-6 col-sm-4 project-Item">
+            <div className=" project-Item">
             <div className="project">
                 <div className="" onClick={()=>{this.setState({rediectTo:true})}}>
                     <Image src={mapThumbnail} className="map-thumbnail" />
                 </div>
                 <div className="drawing-bottom">
-                    <span className="pos-drawing">{this.props.prodetails.pro_name}</span>
+                    <span className="pos-drawing">Name</span>
+                    {/* <span className="pos-drawing">{this.props.prodetails.pro_name}</span> */}
                     <span className="pos-drawing drawing-right">
                     <DropdownButton id="ddlMenu" className="menu" noCaret title={dropDownTitle} pullRight >
                       <MenuItem className="" onClick={this.deleteProject}>Delete</MenuItem>
@@ -127,7 +129,8 @@ class Project extends Component {
                       {/* <MenuItem>Details</MenuItem> */}
                     </DropdownButton>
                     </span>
-                    <span className="pos-drawing">{this.props.prodetails.date_time}</span>
+                    <span className="pos-drawing">jdnjks</span>
+                    {/* <span className="pos-drawing">{this.props.prodetails.date_time}</span> */}
                 </div>
             </div>
             </div>

@@ -588,18 +588,18 @@ class ProjectView extends Component{
     }
 
     render(){
-        if(!this.props.userDetails.isLoggedIn)
-        {
-            window.wmsLayers=[];
-            document.getElementById('map').style.display='none';
-            return <Redirect to={{pathname:'/login'}}/>
-        }
-        if(this.state.gotouserdash)
-        {
-            window.wmsLayers=[];
-            document.getElementById('map').style.display='none';
-            return <Redirect to='/userDashboard' />
-        }
+        // if(!this.props.userDetails.isLoggedIn)
+        // {
+        //     window.wmsLayers=[];
+        //     document.getElementById('map').style.display='none';
+        //     return <Redirect to={{pathname:'/login'}}/>
+        // }
+        // if(this.state.gotouserdash)
+        // {
+        //     window.wmsLayers=[];
+        //     document.getElementById('map').style.display='none';
+        //     return <Redirect to='/userDashboard' />
+        // }
         if(this.props.activelayerdata.activeLayer){
             //let pre_act_lay_id = window.activeMapLayer_id;
             // if(pre_act_lay_id){

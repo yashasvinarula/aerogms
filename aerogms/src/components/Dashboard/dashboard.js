@@ -51,21 +51,21 @@ class Dashboard extends Component {
 
     render()
     {
-        if(!this.props.userDetails.isLoggedIn)
-        {
-          return <Redirect to={{pathname:'/login'}}/>
-        }
-        if(this.props.userDetails.isadmin === "false")
-        {
-            return <Redirect to={{pathname:'/userDashboard'}}/>
-        }
-        if(this.props.users['error']){
-            alert('Your session is expired. Please login!')
-            delete this.props.users['error'];
-            console.log('error session out!');
-            this.props.doLogout();
-            return <Redirect to='/login' />
-        }
+        // if(!this.props.userDetails.isLoggedIn)
+        // {
+        //   return <Redirect to={{pathname:'/login'}}/>
+        // }
+        // if(this.props.userDetails.isadmin === "false")
+        // {
+        //     return <Redirect to={{pathname:'/userDashboard'}}/>
+        // }
+        // if(this.props.users['error']){
+        //     alert('Your session is expired. Please login!')
+        //     delete this.props.users['error'];
+        //     console.log('error session out!');
+        //     this.props.doLogout();
+        //     return <Redirect to='/login' />
+        // }
        
         return (
             <MediaQuery maxWidth={768}>
@@ -107,36 +107,36 @@ class Dashboard extends Component {
                                     </span>
                                 </NavItem> */}
                                 <NavItem className="">
-                                    {/* <div className="circular-icon-mobile text-center">
-                                        <span>{this.props.userDetails.username.charAt(0)}</span>
-                                    </div> */}
                                 <DropdownButton id="ddb"
                                     title={this.props.userDetails.username.charAt(0)}
                                     noCaret
-                                    className="circular-icon text-center"
+                                    className="circular-icon text-center row"
                                   >
+                                    <MenuItem className="circular-icon-menu text-center">
+                                      <span>{this.props.userDetails.username.charAt(0)}</span>
+                                    </MenuItem>
                                     <div className="">
                                       <MenuItem className="">
                                         <p className="menu-text">
-                                          {this.props.userDetails.username}
+                                          {this.props.userDetails.username}Parveen Sahrawat
                                         </p>
                                       </MenuItem>
                                       <MenuItem className="">
                                         <p className="menu-text">
-                                          {this.props.userDetails.email}
+                                          {this.props.userDetails.email}parveen.sahrawat1209@gmail.com
                                         </p>
                                       </MenuItem>
                                       <MenuItem>
-                                        <Button className="">Profile</Button>
+                                        <Button className="btn-menu">Profile</Button>
                                       </MenuItem>
                                       <MenuItem>
-                                        <Button name="btnLogout" className="" pullRight
+                                        <Button name="btnLogout" className="btn-menu" pullRight
                                           onClick={this.handleLogout}
                                         >
                                           Logout
                                         </Button>
                                       </MenuItem>
-                                      </div>
+                                    </div>
                                   </DropdownButton>
                                 </NavItem>
                             </Nav>
