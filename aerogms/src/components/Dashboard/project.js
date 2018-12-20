@@ -16,8 +16,7 @@ class Project extends Component {
         super(props);
         this.state = {
             showMenu : false,
-            // projectName:this.props.prodetails.pro_name,
-            projectName : 123,
+            projectName:this.props.prodetails.pro_name,
             showmodal: false,
             rediectTo:false
         }
@@ -62,7 +61,7 @@ class Project extends Component {
         }
     }
     renameProject(){
-        //this.props.renameProject(this.props.prodetails.pro_id, this.state.projectName);
+        // this.props.renameProject(this.props.prodetails.pro_id, this.state.projectName);
         let pro_name = this.state.projectName;
         let email = this.props.email;
         axios.post(`${BASE_URL}/pro_name_exists`, {pro_name:pro_name, owner_email:email})
@@ -99,8 +98,8 @@ class Project extends Component {
                     <Image src={mapThumbnail} className="map-thumbnail" />
                 </div>
                 <div className="drawing-bottom">
-                    <span className="pos-drawing">Name</span>
-                    {/* <span className="pos-drawing">{this.props.prodetails.pro_name}</span> */}
+                    {/* <span className="pos-drawing">Name</span> */}
+                    <span className="pos-drawing">{this.props.prodetails.pro_name}</span>
                     <span className="pos-drawing drawing-right">
                     <DropdownButton id="ddlMenu" className="menu" noCaret title={dropDownTitle} pullRight >
                       <MenuItem className="" onClick={this.deleteProject}>Delete</MenuItem>
@@ -129,8 +128,8 @@ class Project extends Component {
                       {/* <MenuItem>Details</MenuItem> */}
                     </DropdownButton>
                     </span>
-                    <span className="pos-drawing">jdnjks</span>
-                    {/* <span className="pos-drawing">{this.props.prodetails.date_time}</span> */}
+                    {/* <span className="pos-drawing">jdnjks</span> */}
+                    <span className="pos-drawing">{this.props.prodetails.date_time}</span>
                 </div>
             </div>
             </div>

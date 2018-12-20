@@ -13,6 +13,7 @@ var activeMapLayer;
 var activeMapLayer_id = '';
 var hideInfoBox, showInfoBox;
 var nf_hl_Layer =  new L.featureGroup([]);
+var sangatLayer=undefined;
 
 function enablemap(){
     debugger
@@ -28,6 +29,9 @@ function zoomTo(box){
         var corner1 = L.latLng(parseFloat(box[0].split(' ')[1]) + 0.001, box[0].split(' ')[0]),
         corner2 = L.latLng(box[1].split(' ')[1] , box[1].split(' ')[0]),
         bounds = L.latLngBounds(corner1, corner2);
+        // console.log(corner1);
+        // console.log(corner2);
+        // console.log(bounds);
         m.fitBounds(bounds);
     }
 }
@@ -374,7 +378,7 @@ function initMap()
     }
 
     function resetNewLayer(){
-        m.off("click");
+        sangatLayer ? false: m.off("click");
         m.off("dblclick");
         if(currentLayer?currentLayer.getLayers().length>0:false){
             m.removeLayer(currentLayer)
@@ -437,7 +441,16 @@ function initMap()
                        finalInfoArray = keysArray.map(key => {
                            return {name:capFL(key), value:(key == 'creation_date')?`${feature.properties[key].split('T')[0]} ${feature.properties[key].split('T')[1].substring(0, 5)}` :feature.properties[key]}
                        })
-                       finalInfoArray.push({name:'Property Tax', value:pro_tax});
+
+                       finalInfoArray = finalInfoArray.map(obj =>{
+                        if(obj.name === 'Property_tax')
+                        {
+                            obj.value = pro_tax;
+                        }
+                        return obj;
+                       })
+                       //finalInfoArray['Property_tax'] = pro_tax;
+                       //finalInfoArray.push({name:'Property Tax', value:pro_tax});
                        setAttrInfo(finalInfoArray);
                    }
                    else
@@ -778,3 +791,63 @@ function initMap()
             alert('please select feature!');
         }
     }
+
+    function addSnagatMandiLayer()
+    {
+        sangatLayer?m.removeLayer(sangatLayer):'';
+        sangatLayer = new L.tileLayer.wms(geourl, {
+            layers: 'AeroGMS:sangat_mandi_props',
+            format:'image/png', 
+            transparent:true, 
+            tiled:true
+        }).addTo(m);
+
+        var corner2 = L.latLng(30.091423962135 + 0.001, 74.8419154894146),
+        corner1 = L.latLng(30.082162604414002 , 74.8347664375407),
+        bounds = L.latLngBounds(corner1, corner2);
+        m.fitBounds(bounds);
+
+        // if(sangatLayer)
+        // {
+            m.on('click', function(e){
+          
+            var url = getFeatureInfoUrl(
+                m,
+                sangatLayer,
+                e.latlng,
+                {
+                    'info_format': 'application/json'
+                    //'propertyName': 'sid,name,address,zone,nature,covered_area,vacant_area'
+                    //'FEATURE_COUNT': 50
+                }
+            );
+            //Send the request and create a popup showing the response
+            reqwest({
+            url: url,
+            type: 'json',
+            }).then(function (data) {
+            if(data.features.length > 0){
+                var feature = data.features[0];
+                featureHL('sangat_mandi_props', feature.geometry.type.toLowerCase(), feature.properties.aero_id);
+               
+                let keysArray = Object.keys(feature.properties);
+                keysArray.sort();
+                finalInfoArray = keysArray.map(key => {
+                    return {name:capFL(key), value:(key == 'creation_date')?`${feature.properties[key].split('T')[0]} ${feature.properties[key].split('T')[1].substring(0, 5)}` :feature.properties[key]}
+                })
+                setAttrInfo(finalInfoArray);
+                showInfoBox();
+            }
+            else
+            {
+             lyrhighlighter ? m.removeLayer(lyrhighlighter):false;
+             hideInfoBox();
+            }
+    
+            }).catch(err=>{
+            });   
+        });
+        //}
+    }
+
+    

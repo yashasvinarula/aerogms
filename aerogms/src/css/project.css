@@ -97,6 +97,34 @@ input[type=button] {
     display: none;
 }
 
+.sangatmandi-infobox {
+    width: 300px;
+    min-height: 191px;
+    max-height: 191px;
+    position: absolute;
+    z-index: 1000;
+    right: 40%;
+    top: 52px;
+    background: #f5f5f5;
+    display: block;
+    -webkit-box-shadow: #036;
+    box-shadow: #036;
+}
+.sangatmandi-infoboxhide {
+    width: 300px;
+    min-height: 191px;
+    max-height: 191px;
+    position: absolute;
+    z-index: 1000;
+    right: 40%;
+    top: 52px;
+    background: #f5f5f5;
+    display: none;
+    -webkit-box-shadow: #036;
+    box-shadow: #036;
+}
+
+
 .text-area{
     height: 200px;
     width: 261px;

@@ -581,3 +581,36 @@ module.exports.update_layer_color = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
+module.exports.update_layer_attrib = function(req, res){
+    let layname = req.body.layer;
+    let attrib = req.body.attrib;
+    let attriblist = '';
+    let id = 0;
+    attrib.map(attri => {
+        if(attri.name !== 'Aero_id' && attri.name !== 'Creation_date')
+        {
+            attriblist += attri.name.toLowerCase() + "='" + attri.value + "' ,"; 
+        }
+        else
+        {
+            if(attri.name === 'Aero_id')
+            {
+                id = attri.value;
+            }
+        }
+    });
+    attriblist = attriblist.replace(/.$/,"");
+    db.any('UPDATE public.' + layname + ' SET ' + attriblist + ' where aerogmsid=$1::integer returning aerogmsid;',[id])
+    .then((result)=>{
+        if(result.length > 0){
+            return res.status(200).send({status:'success', message: 'layer attribute updated successfully.'});
+        }
+        else{
+            return res.status(200).send({status:'fail', message:'Problem in updating records!'});
+        }
+    })
+    .catch(error=>{
+        console.log('ERROR:', error); // print the error;
+        return res.status(400).send({status:'error', message:error.message});
+    })
+}

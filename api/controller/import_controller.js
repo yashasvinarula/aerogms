@@ -310,35 +310,6 @@ try
             console.log('ERROR:', error);
             return res.status(400).send(error);
             });
-            //---------------------
-            // registervector(tname, function(err){
-            //     if(err){
-            //         console.log(err);
-            //         return res.status(200).send(err);
-            //     }
-            //     else{
-            //         //your table will appear as a new layer in GeoServer admin UI
-            //         db.func('public.sp_aerogms', ['get_box', [tname.toString()]])
-            //         .then(result => {
-            //         if(result[0])
-            //         {
-            //             //return res.status(200).send({pro_id:result[0].sp_aerogms});
-            //             console.log('TABLE PUBLISHED SUCCESSFULLY.');
-            //             //-------------------------------
-            //             return res.status(200).json([{'status':'published', 'message': 'table created and published successfully.', 'tname':tname, 'box':result[0].sp_aerogms}]);
-            //         }
-            //         else
-            //         {
-            //             return res.status(200).send({message:'Problem in finding box!'});
-            //         }
-            //         })
-            //         .catch(error => {
-            //         console.log('ERROR:', error); // print the error;
-            //         return res.status(400).send(error);
-            //         });
-            //     }
-            // })
-            //---------------------
         })
         .catch(error => {
             console.log(error.message);
@@ -380,13 +351,11 @@ catch(err)
 }
 
  var registervector = function(datasetName, callback){
-    //dataset name is the name of the PostGIS table
-   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //my dev SSL is self-signed. don't do this in production.
-   var http = require('http'); //using SSL because of basic auth in this example
+   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; 
+   var http = require('http'); 
    var auth = 'Basic ' + new Buffer(userpw).toString('base64');
    //build the object to post
    var post_data = {'featureType': {'name': datasetName}};
-   //be sure to turn it into a string
    var s = JSON.stringify(post_data);
    var post_options = {
       host:config.secdata.geo_host,
@@ -399,19 +368,16 @@ catch(err)
 	    'Authorization': auth
       }
    }
-   // Set up the request
+
    var post_req = http.request(post_options, function(res) {
       res.setEncoding('utf8');
-      //201 is good, anything else is Problem
       if (res.statusCode === 201){
           res.on('data', function (chunk) {
           });
-        //since we're good, call back with no error
 	    callback(null);
       }
       else{
           res.on('data', function (chunk) {
-              //something went wrong so call back with error message
              callback(chunk);
           });
       }

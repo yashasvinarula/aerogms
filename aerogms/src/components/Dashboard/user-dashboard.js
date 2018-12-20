@@ -100,31 +100,31 @@ class UserDashboard extends Component {
     }
 
     renderProjects(){
-        // if(Object.keys(this.props.projects).indexOf('error') >-1)
-        // {
-        //     let {message, status} = this.props.projects.error;
-        //     message ? alert(message):'';
-        //     delete this.props.projects['error'];
-        //     // if(status === 'unauthorised')
-        //     // {
-        //     //     this.props.doLogout();
-        //     // }
-        // }
-        // if(Object.keys(this.props.projects).length>0){
-        //     return _.map(this.props.projects, project=>{
-        //         return (<ProjectItem key={project.pro_id}  prodetails={project} email={this.props.userDetails.email} doLogout={()=>this.props.doLogout()}/>)
-        //     })
-        // }
-         return [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map((item) => {
-            return <ProjectItem />;
-        });
+        if(Object.keys(this.props.projects).indexOf('error') >-1)
+        {
+            let {message, status} = this.props.projects.error;
+            message ? alert(message):'';
+            delete this.props.projects['error'];
+            if(status === 'unauthorised')
+            {
+                this.props.doLogout();
+            }
+        }
+        if(Object.keys(this.props.projects).length>0){
+            return _.map(this.props.projects, project=>{
+                return (<ProjectItem key={project.pro_id}  prodetails={project} email={this.props.userDetails.email} doLogout={()=>this.props.doLogout()}/>)
+            })
+        }
+        //  return [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map((item) => {
+        //     return <ProjectItem />;
+        // });
     }
 
     render() {
-        // if(!this.props.userDetails.isLoggedIn)
-        // {
-        //   return <Redirect to={{pathname:'/login'}}/>
-        // }
+        if(!this.props.userDetails.isLoggedIn)
+        {
+          return <Redirect to={{pathname:'/login'}}/>
+        }
         
         return (
             <div>
