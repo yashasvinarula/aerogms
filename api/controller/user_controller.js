@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const fs = require("fs");
 const path = require('path');
 const config = require('../../config/config');
+const request = require("request");
 
 module.exports.user_signup =  function(req, res){
 
@@ -250,8 +251,15 @@ function sendMail(req, res, from, to, sub, content, message) {
         {
             console.log('error in mail sending ' + err);
         }
-        //console.log(info);
-      return res.status(200).send({message:message});
+        return res.status(200).send({message:message});
+        // if(from === 'aerogmsdeveloper@gmail.com')
+        // {
+        //     console.log('mail send from aerogmsdeveloper@gmail.com to ' + to);
+        // }
+        // else
+        // {
+        //     return res.status(200).send({message:message});
+        // }
     });
   }
 
@@ -457,7 +465,21 @@ module.exports.m_signup =  function(req, res){
                 if(result2[0].sp_aerogms)
                 {
                     console.log(result2[0].sp_aerogms);
-                    return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:jsonarr.photo,fname:jsonarr.fname, lname:jsonarr.lname, mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                    let from = 'aerogmsdeveloper@gmail.com';//process.env.mail_id;
+                    let to = jsonarr.email;
+                    let sub = 'AeroGMS Measure account confirmation';
+                    let content ='Welcome to AeroGMS Family.\n\n' + 
+                    'Thank you for showing your interest in AeroGMS.\n\n' + 
+                    'User Id: '+ jsonarr.email +'\n'+
+                    'Password: '+ jsonarr.pw +'\n\n';
+                    let message = 'Your account has been created successfully.';
+                    sendMailForMobile(req, res, from, to, sub, content, message, function(err, status){
+                        if(err && !status)
+                        {
+                            return res.send({status:'success', message:'Account created successfully but there is problem in sending confirmation mail.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:jsonarr.photo,fname:jsonarr.fname, lname:jsonarr.lname, mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                        }
+                        return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:jsonarr.photo,fname:jsonarr.fname, lname:jsonarr.lname, mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                    });
                 }
                 })
                 .catch(error => {
@@ -516,7 +538,22 @@ module.exports.m_signup =  function(req, res){
                                     if(result2[0].sp_aerogms)
                                     {
                                         console.log(result2[0].sp_aerogms);
-                                        return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:imageloc,fname:jsonarr.fname, lname:jsonarr.lname, mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                                        let from = 'aerogmsdeveloper@gmail.com';//process.env.mail_id;
+                                        let to = jsonarr.email;
+                                        let sub = 'AeroGMS Measure account confirmation';
+                                        let content ='Welcome to AeroGMS Family.\n\n' + 
+                                        'Thank you for showing your interest in AeroGMS.\n\n' + 
+                                        'User Id: '+ jsonarr.email +'\n'+
+                                        'Password: '+ jsonarr.pw +'\n\n';
+                                        let message = 'Your account has been created successfully.';
+                                        sendMailForMobile(req, res, from, to, sub, content, message, function(err, status){
+                                            if(err && !status)
+                                            {
+                                                return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:imageloc,fname:jsonarr.fname, lname:jsonarr.lname, mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                                            }
+                                            return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:imageloc,fname:jsonarr.fname, lname:jsonarr.lname, mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                                        });
+                                        
                                     }
                                     })
                                     .catch(error => {
@@ -545,7 +582,23 @@ module.exports.m_signup =  function(req, res){
                             if(result2[0].sp_aerogms)
                             {
                                 console.log(result2[0].sp_aerogms);
-                                return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:'/images/m_profile/default.png', fname:jsonarr.fname, lname:jsonarr.lname,mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                                
+
+                                let from = 'aerogmsdeveloper@gmail.com';//process.env.mail_id;
+                                        let to = jsonarr.email;
+                                        let sub = 'AeroGMS Measure account confirmation';
+                                        let content ='Welcome to AeroGMS Family.\n\n' + 
+                                        'Thank you for showing your interest in AeroGMS.\n\n' + 
+                                        'User Id: '+ jsonarr.email +'\n'+
+                                        'Password: '+ jsonarr.pw +'\n\n';
+                                        let message = 'Your account has been created successfully.';
+                                        sendMailForMobile(req, res, from, to, sub, content, message, function(err, status){
+                                            if(err && !status)
+                                            {
+                                                return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:'/images/m_profile/default.png', fname:jsonarr.fname, lname:jsonarr.lname,mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                                            }
+                                            return res.send({status:'success', message:'Account created successfully.', data:{uid:result2[0].sp_aerogms, email:jsonarr.email, photo:'/images/m_profile/default.png', fname:jsonarr.fname, lname:jsonarr.lname,mobile:jsonarr.mobile, acc_type:jsonarr.acc_type}});
+                                        });
                             }
                             })
                             .catch(error => {
@@ -1020,11 +1073,11 @@ module.exports.m_updatePolyPointsById = function(req, res){
     if(req.body.kuchbhi)
     {
         jsondata = JSON.parse(req.body.kuchbhi);
-        if(jsondata.poi_id && jsondata.data)
+        if(jsondata.lat && jsondata.lng && jsondata.data)
         {
             if(jsondata.data.photo === '')
             {
-                db.any('UPDATE public.mobile_poly_points SET name=$1, descrip=$2 WHERE aerogmsid=$3::integer returning aerogmsid;', [jsondata.data.name.toString(), jsondata.data.descrip.toString(), jsondata.poi_id])
+                db.any('UPDATE public.mobile_poly_points SET name=$1, descrip=$2 WHERE st_x(geom)=$3::double precision and st_y(geom)=$4::double precision returning aerogmsid;', [jsondata.data.name.toString(), jsondata.data.descrip.toString(), jsondata.lng, jsondata.lat])
                 .then(result1=>{
                     if(result1.length>0)
                     {
@@ -1054,7 +1107,7 @@ module.exports.m_updatePolyPointsById = function(req, res){
                     }
                     else
                     {
-                        db.any('UPDATE public.mobile_poly_points SET name=$1, descrip=$2, photo=$3 WHERE aerogmsid=$4::integer returning aerogmsid;', [jsondata.data.name.toString(), jsondata.data.descrip.toString(), imageloc.toString(), jsondata.poi_id])
+                        db.any('UPDATE public.mobile_poly_points SET name=$1, descrip=$2, photo=$3 WHERE st_x(geom)=$4::double precision and st_y(geom)=$5::double precision returning aerogmsid;', [jsondata.data.name.toString(), jsondata.data.descrip.toString(), imageloc.toString(), jsondata.lng, jsondata.lat])
                         .then(result1=>{
                             if(result1.length>0)
                             {
@@ -1084,3 +1137,74 @@ module.exports.m_updatePolyPointsById = function(req, res){
     }
 
 }
+
+module.exports.getmsevaToken = function(requ, resp){
+try{
+    var loginoptions = { method: 'POST',
+      url: config.secdata.mseva.authurl,
+      headers: config.secdata.mseva.header,
+      form: config.secdata.mseva.formdata };
+    request(loginoptions, function (error, response, body) {
+    if (error) 
+        throw new Error(error);
+    let ac_tk = JSON.parse(body).access_token;
+
+    var receiptoptions = { method: 'POST',
+      url: config.secdata.mseva.receipturl,
+      qs: 
+       { fromDate: '1543170600000',
+         toDate: '1543276799000',
+         businessCode: 'PT',
+         tenantId: 'pb.sangatmandi' },
+      headers:config.secdata.mseva.headers,
+      body: 
+       { RequestInfo: 
+          { apiId: 'Rainmaker',
+            ver: '.01',
+            ts: 0,
+            action: '_get',
+            did: '1',
+            key: '',
+            msgId: '20170310130900|en_IN',
+            authToken: ac_tk }},
+      json: true };
+    request(receiptoptions, function (error, response, body) {
+      if (error) throw new Error(error);
+      console.log(body);
+      resp.status(200).send(body);
+    });
+});
+}
+catch(error){
+    resp.status().send({error:error});
+}
+}
+
+function sendMailForMobile(req, res, from, to, sub, content, message, callback) {
+    var smtpTransport = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'aerogmsdeveloper@gmail.com',
+        pass: 'enbenb123'
+      }
+    });
+    var mailOptions = {
+      to: to,//req.body.email,//req.headers.host, //
+      from: from,
+      subject: sub,
+      html: content
+    };
+    smtpTransport.sendMail(mailOptions, function(err, info) {
+        if(err)
+        {
+            console.log('error in mail sending for mobile' + err);
+            callback(err, false);
+        }
+        console.log('mail send from aerogmsdeveloper@gmail.com to ' + to);
+        callback(false, 'success');
+    })
+    .catch(err=>{
+        console.log('error in mail sending for mobile' + err);
+        callback(err, false);
+    });
+  }

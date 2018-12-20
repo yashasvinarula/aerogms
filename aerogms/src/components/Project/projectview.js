@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
 import { Navbar, NavItem, Image, DropdownButton, MenuItem, Modal, Button, Table, Tabs, Tab } from 'react-bootstrap/lib';
 import {connect} from 'react-redux';
+import moment from 'moment';
 import { slide as Menu } from 'react-burger-menu';
 import MediaQuery from 'react-responsive';
 import Layer from './layer';
@@ -27,6 +28,10 @@ import SpecificQuery from './specificQuery';
 import { throws } from 'assert';
 import {BASE_URL} from '../../config';
 
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
+import { formatDate, parseDate } from 'react-day-picker/moment';
+
 const queryList = [
     {
         aero_id : 1234,
@@ -38,10 +43,12 @@ const queryList = [
     }
 ];
 
-// const attrInfoList = [
-//     {name : 'Area', value : '1234'},
-//     {name : 'Perimeter', value : '4567'},
-// ];
+const attrInfoList = [
+    {name : 'aero_id', value : '22'},
+    {name : 'Area', value : '1234'},
+    {name : 'Perimeter', value : '4567'},
+    {name : 'date', value : '23 July, 2018'},
+];
 
 const AddLayer = (
     <div className="icons-display text-center col-xs-6">
@@ -87,8 +94,17 @@ class ProjectView extends Component{
             //drawingTools : [{pointBtn : false}, {lineBtn : false}, {polygonBtn : false}, {saveLayerBtn : false}, {remFeature : false}],
             attrInfoList:[],
             gotouserdash:false,
+            editAttributes : false, // to enable attributes edit mode
+            updatedAttr : {name : null, value : null}, // updated attr which will be newly inserted
+            showLQueryBox: false,
+            taxMap:false,
+            from: undefined,
+            to: undefined,
+            selFYear:'2018-2019',
         }
-        
+
+        this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
         this.closeImportModal = this.closeImportModal.bind(this);
         this.closeAddLayerModal = this.closeAddLayerModal.bind(this);
         this.addLayer = this.addLayer.bind(this);
@@ -114,16 +130,93 @@ class ProjectView extends Component{
         this.showRespectiveButtons =this.showRespectiveButtons.bind(this);
         this.createNewLayer = this.createNewLayer.bind(this);
         this.GoToUserDash = this.GoToUserDash.bind(this);
+        this.updateAttributes = this.updateAttributes.bind(this);
     }
-
+    showFromMonth() {
+        const { from, to } = this.state;
+        if (!from) {
+          return;
+        }
+        if (moment(to).diff(moment(from), 'months') < 2) {
+          this.to.getDayPicker().showMonth(from);
+        }
+      }
+    handleFromChange(from) {
+        this.setState({ from });
+        console.log(from);
+        console.log((moment(from).format("X") - 43200)*1000);
+      }
+    handleToChange(to){
+        this.setState({ to }, this.showFromMonth);
+        console.log(to);
+        console.log((moment(to).format("X") - 43200)*1000);
+      }
     renderAttrInfo() {
         if(this.state.attrInfoList.length>0)
         {
-            return this.state.attrInfoList.map((item) => {
-                return (<tr key={item.name}>
-                    <td>{item.name}</td>
-                    <td><input defaultValue={item.value}></input></td>
-                </tr>)  
+            if(!this.state.editAttributes) {
+                    return this.state.attrInfoList.map((item) => {
+                        return (<tr key={item.name}>
+                                    <td>{item.name}</td>
+                                    <td>{item.value}</td>
+                                </tr>)
+                    });
+            } else {
+              
+                return this.state.attrInfoList.map((item) => {
+                    if(item.name === 'Aero_id' || item.name === 'Creation_date'){
+                        return (<tr key={item.name}>
+                            <td>{item.name}</td>
+                            <td id={item.name}>{item.value}</td>
+                        </tr>)
+                    } else {
+                        return (<tr key={item.name}>
+                            <td>{item.name}</td>
+                            <td><input id={item.name} name={item.name} defaultValue={item.value} /></td>
+                        </tr>)
+                    }
+                });
+            }
+        }
+    }
+    updateAttributes() {
+        if(this.state.editAttributes === true)
+        {
+            var that =this;
+            let attrList = [...this.state.attrInfoList];
+            let updatedList = [];
+            attrList.map((item) => {
+                let attribute = {name : null, value : null};
+                attribute.name = item.name;
+                if(item.name==='Aero_id' || item.name === 'Creation_date')
+                {
+                    attribute.value = document.getElementById(item.name).innerText;
+                }
+                else
+                {
+                    attribute.value = document.getElementById(item.name).value;
+                }
+
+                updatedList.push(attribute);
+            });
+
+            this.servicecaller('update_layer_attrib', {layer:this.props.activelayerdata.activeLayer, attrib:updatedList}, function(err, data){
+                if(!err && data){
+                    //updatedList=[];
+                    alert(data.message);
+                    that.setState({attrInfoList:[...updatedList], editAttributes : false});
+
+                }
+                else{
+                    if(err.status === 'unauthorised')
+                    {
+                        err.message?alert(err.message):'';
+                        that.props.doLogout();
+                    }
+                    else{
+                        err.message?alert(err.message):'';
+                    }
+                }
             });
         }
     }
@@ -554,6 +647,8 @@ class ProjectView extends Component{
     }
 
     render(){
+        const { from, to } = this.state;
+        const modifiers = { start: from, end: to };
         if(!this.props.userDetails.isLoggedIn)
         {
             window.wmsLayers=[];
@@ -595,8 +690,8 @@ class ProjectView extends Component{
                     document.getElementById(layer.orig_name).className='';
                 })
             }
-            if(this.state.infoBoxShow)
-                this.setState({infoBoxShow:false});
+            if(this.state.infoBoxShow && !(this.state.attrInfoList.length>0))
+                 this.setState({infoBoxShow:false});
         }
         let drawerStates={};
         drawerStates.slider = this.state.slider;
@@ -765,6 +860,8 @@ class ProjectView extends Component{
                                     }   
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Logout" onClick={this.props.doLogout}/></NavItem>
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Dashboard" onClick={()=>{this.GoToUserDash()}}/></NavItem>
+                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Layer Query" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}/></NavItem>
+                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={()=>{this.state.taxMap?this.setState({taxMap:false}):this.setState({taxMap:true})}}/></NavItem>
                                     {/* <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Query Dashboard" 
                                         onClick={()=>{this.setState({queryTable : true})}}/></NavItem> */}
                                 </Navbar>
@@ -889,8 +986,11 @@ class ProjectView extends Component{
                                 </div>
                             </div>
                             <div  id="infoDiv" className={this.state.infoBoxShow ? 'project-infobox':'project-infobox infoDiv'}>    
+                            {/* <div  id="infoDiv" className="project-infobox">    */}
                                 <Image src={CrossIcon} className="cross-icon" onClick={()=>this.setState({infoBoxShow:false})}/>
                                 <h3 className="text-center">Info Panel</h3>
+                                <Button onClick={() => {this.state.editAttributes?this.setState({editAttributes : false}):this.setState({editAttributes : true})}}>Edit Attributes</Button>
+                                <Button onClick={this.updateAttributes} >Save</Button>
                                 <Table striped className="info-panel-attr-list scroll">
                                     <caption className="text-center">Attributes Information</caption>
                                     <thead>
@@ -899,12 +999,13 @@ class ProjectView extends Component{
                                             <th className=" text-center">Value</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="attr-tbody">
                                         {
                                            this.renderAttrInfo()
                                         }
                                     </tbody>
                                 </Table>
+                               
                                 {
                                     !this.state.queryForm ?
                                         (
@@ -1000,7 +1101,78 @@ class ProjectView extends Component{
                                     <input style={{marginLeft:5, marginTop:10, visibility:"true"}}  type="button" id="hideInfo2" value="cancel" onClick={this.showCompBox}/>
                                 </div>
                             </div>
-                        </div>
+                            <div  id="inflqueryBox" className={this.state.showLQueryBox ? 'project-infobox':'project-infobox infoDiv'}> 
+                            </div>
+                            <div  id="taxqueryBox" className={this.state.taxMap ? 'sangatmandi-infobox':'sangatmandi-infoboxhide'}> 
+                                <select id='ddlPropertyCat'>
+                                    <option value="0">-Type-</option>
+                                    <option value="pro_tax">Tax</option>
+                                </select>
+                                <select id='ddlSelFY'>
+                                    <option value="0">-Year-</option>
+                                    {/* <option value="2017-2018">2017-18</option> */}
+                                    <option value="2018-2019">2018-19</option>
+                                </select>
+                                
+        <div className="InputFromTo">
+        <DayPickerInput value={from}  placeholder="From" format="LL"
+            formatDate={formatDate} parseDate={parseDate} dayPickerProps={{
+            selectedDays: [from, { from, to }],
+            fromMonth:new Date(this.state.selFYear.split('-')[0], 3),
+            toMonth: new Date(this.state.selFYear.split('-')[1], 2), modifiers, numberOfMonths: 1,
+            onDayClick: () => this.to.getInput().focus(),}}
+          onDayChange={this.handleFromChange}
+           />
+       <br/>
+        <span className="InputFromTo-to">
+          <DayPickerInput
+            ref={el => (this.to = el)}
+            value={to}
+            placeholder="To"
+            format="LL"
+            formatDate={formatDate}
+            parseDate={parseDate}
+            dayPickerProps={{
+              selectedDays: [from, { from, to }],
+              disabledDays: { before:from, after: new Date(2019, 3) },
+              modifiers,
+              month: from,
+              fromMonth: from,
+              toMonth:new Date(this.state.selFYear.split('-')[1], 3),
+              numberOfMonths: 1,
+            }}
+            onDayChange={this.handleToChange}
+          />
+        </span>
+          <style>{`
+  .InputFromTo .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
+    background-color: #f0f8ff !important;
+    color: #4a90e2;
+  }
+  .InputFromTo .DayPicker-Day {
+    border-radius: 0 !important;
+  }
+  .InputFromTo .DayPicker-Day--start {
+    border-top-left-radius: 50% !important;
+    border-bottom-left-radius: 50% !important;
+  }
+  .InputFromTo .DayPicker-Day--end {
+    border-top-right-radius: 50% !important;
+    border-bottom-right-radius: 50% !important;
+  }
+  .InputFromTo .DayPickerInput-Overlay {
+    width: 170px;
+  }
+  .InputFromTo-to .DayPickerInput-Overlay {
+    // margin-left: -198px;
+  }
+`}
+</style>
+      </div>
+      <NavItem className="nav-items"><input className="btnLogout" type="button" value="Show Map" onClick={()=>{window.addSnagatMandiLayer()}}/></NavItem>
+                            </div>
+                       </div>
+                      
                         );
                     }
                 }}

@@ -70,7 +70,7 @@ input[type=button] {
     display: inline-block;
     position: relative;
 }
-.modal-custom{
+.modal-custom {
     position: fixed;
     top: 10%;
     left: 50%;
@@ -81,7 +81,7 @@ input[type=button] {
     border: none !important;
     box-shadow: none !important;
 }
-.project-infobox{
+.project-infobox {
     width: 300px;
     min-height: 330px;
     max-height: 719px;
@@ -93,9 +93,37 @@ input[type=button] {
     display: block;
     box-shadow: #036;
 }
-.infoDiv{
-        display: none;
-    }
+.infoDiv {
+    display: none;
+}
+
+.sangatmandi-infobox {
+    width: 300px;
+    min-height: 191px;
+    max-height: 191px;
+    position: absolute;
+    z-index: 1000;
+    right: 40%;
+    top: 52px;
+    background: #f5f5f5;
+    display: block;
+    -webkit-box-shadow: #036;
+    box-shadow: #036;
+}
+.sangatmandi-infoboxhide {
+    width: 300px;
+    min-height: 191px;
+    max-height: 191px;
+    position: absolute;
+    z-index: 1000;
+    right: 40%;
+    top: 52px;
+    background: #f5f5f5;
+    display: none;
+    -webkit-box-shadow: #036;
+    box-shadow: #036;
+}
+
 
 .text-area{
     height: 200px;
@@ -191,11 +219,11 @@ thead, tbody, tr {
     margin: auto;
     background-color: transparent;
 }
-.tempBtn {
-    /* width: 250px; */
-    /* float: right; */
-    /* margin-right: 15px; */
-}
+/* .tempBtn {
+    width: 250px;
+    float: right;
+    margin-right: 15px;
+} */
 .query-head {
     margin-left: 10px;
 }

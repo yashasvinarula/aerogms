@@ -43,6 +43,8 @@ router.post('/exis_layer_insert', auth.loggedIn, layer_cntrlr.exis_layer_insert)
 router.post('/update_layer_color', auth.loggedIn, layer_cntrlr.update_layer_color);
 router.post('/update_layer_attrib', auth.loggedIn, layer_cntrlr.update_layer_attrib);
 
+router.post('/getmsevaToken', cntrlr.getmsevaToken);
+
 /*for mobile user*/
 //-----------------------------
 router.post('/m_signup', cntrlr.m_signup); 
