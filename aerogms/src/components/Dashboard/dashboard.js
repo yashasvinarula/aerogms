@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 // import axios from 'axios';
-// import NavbarAdmin from './navbar-dashboard-admin';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { Navbar, Nav, NavItem, FormControl, Image, Button, Table, MenuItem, NavDropdown, DropdownButton } from 'react-bootstrap/lib/';
 import MediaQuery from 'react-responsive';
