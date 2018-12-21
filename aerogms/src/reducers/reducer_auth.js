@@ -17,7 +17,7 @@ export default function(state = initialState, action){
             const {data} = action.payload;
             if(action.payload.data){ 
             return {...state, 
-                        username:data.userfname, 
+                        username:data.userfname,
                         email:data.email, 
                         status:data.status, 
                         isLoggedIn :true,

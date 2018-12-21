@@ -1,3 +1,6 @@
+.leaflet-right {
+    right: 28% !important;
+}
 h4 {
     margin-top: 5px;
     margin-bottom: 0px;
@@ -83,8 +86,10 @@ input[type=button] {
 }
 .project-infobox {
     width: 300px;
-    min-height: 330px;
-    max-height: 719px;
+    /* min-height: 330px;
+    max-height: 719px; */
+    /* height: 400px; */
+    min-height: 150px;
     position: absolute;
     z-index: 1000;
     right: 0;
@@ -98,17 +103,42 @@ input[type=button] {
 }
 
 .sangatmandi-infobox {
-    width: 300px;
-    min-height: 191px;
-    max-height: 191px;
+    width: 250px;
+    min-height: 206px;
+    max-height: 206px;
     position: absolute;
     z-index: 1000;
-    right: 40%;
+    left: 300px;
     top: 52px;
+    padding: 20px;
     background: #f5f5f5;
     display: block;
     -webkit-box-shadow: #036;
     box-shadow: #036;
+}
+#ddlPropertyCat {
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+#ddlSelFY {
+
+}
+.from-to {
+    margin-bottom: 20px !important;
+    /* width: 100%; */
+}
+.show-map-btn {
+    margin-top: 20px !important;
+}
+.paid-unpaid-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.paid-unpaid {
+    width: 20px;
+    height: 20px;
+    display: block;
 }
 .sangatmandi-infoboxhide {
     width: 300px;
@@ -244,9 +274,11 @@ table.scroll thead tr {
     display: block;
 }
 table.scroll tbody {
-    max-height: 185px;
+    /* max-height: 185px;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: hidden; */
+    /* height: 350px; */
+    min-height: 37px;
 }
 table.scroll tbody td,
 table.scroll thead th, td {

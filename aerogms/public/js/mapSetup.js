@@ -122,6 +122,7 @@ function initMap()
         m = L.map("map", {
             //crs: L.CRS.EPSG4326,
             //projection:'EPSG:4326',
+           
             zoomControl: false,
             measureControl: false
         });
@@ -141,7 +142,7 @@ function initMap()
         var watercolor = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
             attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
         });
-        var osmMap = new L.TileLayer(osmUrl);
+        var osmMap = new L.TileLayer(osmUrl,{ maxZoom: 25});
         var dummyMap = L.tileLayer('', '');
         osmMap.addTo(m);
         
@@ -401,6 +402,7 @@ function initMap()
                    }
                }
            })
+           //debugger
            if(selectedWMSLayer.length==0)
            {
                 return;
@@ -410,10 +412,10 @@ function initMap()
                            selectedWMSLayer[0],
                            e.latlng,
                            {
-                               'info_format': 'application/json'
-                               //'propertyName': 'sid,name,address,zone,nature,covered_area,vacant_area'
-                               //'FEATURE_COUNT': 50
-                           }
+                            'info_format': 'application/json'
+                            //'propertyName': 'sid,name,address,zone,nature,covered_area,vacant_area'
+                            //'FEATURE_COUNT': 50
+                        }
                        );
            //Send the request and create a popup showing the response
            reqwest({
@@ -427,6 +429,7 @@ function initMap()
                    // .setContent(L.Util.template("<h2>{covered_area}</h2><p>{unit_price}</p>", feature.properties))
                    // .openOn(m);
                    featureHL(activeMapLayer, feature.geometry.type.toLowerCase(), feature.properties.aero_id);
+                   let finalInfoArray='';
                    if(activeMapLayer == 'jalandhar')
                    {
                        let pro_tax = null;
@@ -695,7 +698,7 @@ function initMap()
             if(isLayerExist.length == 0){
                 var layer = layName;
                 layer = new L.tileLayer.wms(geourl, {
-                layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, env:"color:"+color
+                layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, env:"color:"+color,  maxZoom: 25
                 }).addTo(m);
                 wmsLayers.push(layer);//env:'color:00FF00'
             }
@@ -712,14 +715,14 @@ function initMap()
                 if(laytype === 'polygon' || laytype === 'multipolygon' || laytype === 'linestring')
                 {
                     lyrhighlighter = new L.tileLayer.wms(geourl, {
-                    layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, CQL_FILTER:"aero_id="+ aeroid , env:'color:00FFFF'  
+                    layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, CQL_FILTER:"aero_id="+ aeroid , env:'color:00FFFF', maxZoom: 25
                     }).addTo(m);
                     //wmsLayers.push(layer);//env:'color:00FF00'
                 }
                 else if(laytype === 'point')
                 {
                     lyrhighlighter = new L.tileLayer.wms(geourl, {
-                        layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, CQL_FILTER:"aero_id="+ aeroid , env:'color:00FFFF;size:8'  
+                        layers: 'AeroGMS:'+ layName, format:'image/png', transparent:true, tiled:true, CQL_FILTER:"aero_id="+ aeroid , env:'color:00FFFF;size:8' , maxZoom: 25
                         }).addTo(m);
                 }
             }
@@ -799,7 +802,8 @@ function initMap()
             layers: 'AeroGMS:sangat_mandi_props',
             format:'image/png', 
             transparent:true, 
-            tiled:true
+            tiled:false,
+            maxZoom: 25
         }).addTo(m);
 
         var corner2 = L.latLng(30.091423962135 + 0.001, 74.8419154894146),
@@ -817,7 +821,7 @@ function initMap()
                 e.latlng,
                 {
                     'info_format': 'application/json'
-                    //'propertyName': 'sid,name,address,zone,nature,covered_area,vacant_area'
+                    //'propertyName': 'aero_id,property_id_old,property_id_new,tax_status,financial_year,amount_paid,address,area_sqyard'
                     //'FEATURE_COUNT': 50
                 }
             );
@@ -827,13 +831,18 @@ function initMap()
             type: 'json',
             }).then(function (data) {
             if(data.features.length > 0){
-                var feature = data.features[0];
-                featureHL('sangat_mandi_props', feature.geometry.type.toLowerCase(), feature.properties.aero_id);
+                var feature = data.features[0];//feature.geometry.type.toLowerCase()
+                featureHL('sangat_mandi_props', 'polygon', feature.properties.aero_id);
                
                 let keysArray = Object.keys(feature.properties);
                 keysArray.sort();
-                finalInfoArray = keysArray.map(key => {
-                    return {name:capFL(key), value:(key == 'creation_date')?`${feature.properties[key].split('T')[0]} ${feature.properties[key].split('T')[1].substring(0, 5)}` :feature.properties[key]}
+                let finalInfoArray=[];
+                debugger
+                keysArray.map(key => {
+                    if(key == 'aero_id' || key == 'property_id_old' || key == 'property_id_new' || key == 'tax_status'|| key=='financial_year' || key=='amount_paid'|| key=='address'|| key=='area_sqyard')
+                    {
+                        finalInfoArray.push({name:capFL(key), value:(key == 'creation_date')?`${feature.properties[key].split('T')[0]} ${feature.properties[key].split('T')[1].substring(0, 5)}` :feature.properties[key]});
+                    }
                 })
                 setAttrInfo(finalInfoArray);
                 showInfoBox();

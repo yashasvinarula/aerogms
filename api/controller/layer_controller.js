@@ -321,23 +321,6 @@ module.exports.delete_column = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
-module.exports.lay_stats = function(req, res){
-    db.func('public.dall_version', [])
-        .then(result => {
-        if(result[0].dall_version > 0)
-        {
-            return res.status(200).send({'status':'success', 'data':result[0].dall_version});
-        }
-        else
-        {
-            return res.status(200).send({status:'fail', message:result[0]});
-        }
-        })
-        .catch(error => {
-        console.log('ERROR:', error);
-        return res.status(400).send({status:'error', message:error.message});
-        });
-}
 module.exports.rename_column = function(req, res){
     var tab_name = req.body.layer;
     var old_col_name = req.body.old_column;

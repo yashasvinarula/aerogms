@@ -31,7 +31,6 @@ router.post('/get_layers', auth.loggedIn, layer_cntrlr.get_layers)
 router.post('/create_layer', auth.loggedIn, layer_cntrlr.create_layer);
 router.post('/rename_layer', auth.loggedIn, layer_cntrlr.rename_layer);
 router.post('/lay_name_exists', auth.loggedIn, layer_cntrlr.lay_name_exists);
-router.get('/lay_stats_dne', layer_cntrlr.lay_stats);
 router.post('/delete_layer', auth.loggedIn, layer_cntrlr.delete_layer);
 router.post('/layer_attribute', auth.loggedIn, layer_cntrlr.layer_attribute);
 router.post('/delete_column', auth.loggedIn, layer_cntrlr.delete_column);

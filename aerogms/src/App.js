@@ -3,7 +3,6 @@ import { Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import './css/dashboard.css';
 import {history} from './store';
-// components
 import 'react-bootstrap';
 import Signup from './components/signup';
 import Login from './components/login';

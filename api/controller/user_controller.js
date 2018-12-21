@@ -1147,13 +1147,13 @@ try{
     request(loginoptions, function (error, response, body) {
     if (error) 
         throw new Error(error);
-    let ac_tk = JSON.parse(body).access_token;
+    let ac_tk = JSON.parse(body).access_token; //"ac70f148-5865-459c-afd6-7caa0382c2b1"
 
     var receiptoptions = { method: 'POST',
       url: config.secdata.mseva.receipturl,
       qs: 
-       { fromDate: '1543170600000',
-         toDate: '1543276799000',
+       { fromDate: '1533101918000',
+         toDate: '1545284318000',
          businessCode: 'PT',
          tenantId: 'pb.sangatmandi' },
       headers:config.secdata.mseva.headers,
@@ -1169,9 +1169,40 @@ try{
             authToken: ac_tk }},
       json: true };
     request(receiptoptions, function (error, response, body) {
-      if (error) throw new Error(error);
-      console.log(body);
-      resp.status(200).send(body);
+    if (error) throw new Error(error);
+        //console.log(body);
+        let payeeDetails = [];
+        let newpropsids = '';
+        if(body.Receipt && body.Receipt.length>0)
+        {
+            body.Receipt.map(receipt =>{
+                let address = receipt.Bill[0].payeeAddress;
+                let property_id_new = receipt.Bill[0].billDetails[0].consumerCode.split(':')[0];
+                let amount_paid = receipt.Bill[0].billDetails[0].amountPaid;
+                let paid_timestamp = receipt.Bill[0].billDetails[0].receiptDate;
+                newpropsids +=  receipt.Bill[0].billDetails[0].consumerCode.split(':')[0] + ',';
+                payeeDetails.push({address, property_id_new,amount_paid, paid_timestamp});
+            })
+        }
+        newpropsids = newpropsids.replace(/.$/, '.');
+
+        var optionsprops = { method: 'POST',
+          url: config.secdata.mseva.propsurl,
+          qs: 
+           { tenantId: 'pb.sangatmandi',
+             ids: 'PT-319-005731,PT-319-005730,PT-319-005729,PT-319-005728,PT-319-005725,PT-319-005683,PT-319-005679,PT-319-005678,%0APT-319-005609,PT-319-005608,PT-319-005605,PT-319-005603,PT-319-005600,PT-319-005597,PT-319-005389,PT-319-005386,PT-319-003986' },
+          headers: config.secdata.mseva.headersp,
+          body: '{\n    "RequestInfo": {\n        "apiId": "Rainmaker",\n        "ver": ".01",\n        "ts": "",\n        "action": "_get",\n        "did": "1",\n        "key": "",\n        "msgId": "20170310130900|en_IN",\n        "authToken": "ac70f148-5865-459c-afd6-7caa0382c2b1"\n    }\n}'
+        };
+        
+        request(optionsprops, function (error, response, body) {
+          if (error) throw new Error(error);
+          console.log(body);
+          console.log(payeeDetails);
+          resp.status(200).send(payeeDetails);
+          
+
+        });
     });
 });
 }

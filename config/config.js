@@ -38,8 +38,19 @@ secdata.mseva.headers = {
     'accept-language': 'en-US,en;q=0.9',
     origin: 'https://mseva-uat.lgpunjab.gov.in'}
 
+secdata.mseva.headersp = {  dnt: '1',
+    authority: 'mseva-uat.lgpunjab.gov.in',
+    referer: 'https://mseva-uat.lgpunjab.gov.in/employee/property-tax/search-property',
+    accept: 'application/json, text/plain, */*',
+    'content-type': 'application/json;charset=UTF-8',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
+    'accept-language': 'en-US,en;q=0.9',
+    origin: 'https://mseva-uat.lgpunjab.gov.in' }
+
 secdata.mseva.authurl = 'https://mseva-uat.lgpunjab.gov.in/user/oauth/token';
 secdata.mseva.receipturl = 'https://mseva-uat.lgpunjab.gov.in/collection-services/receipts/_search';
+secdata.mseva.propsurl = 'https://mseva-uat.lgpunjab.gov.in/pt-services-v2/property/_search';
+
 // secdata.mail_id = 'elevenx099@gmail.com';
 // secdata.geo_path = 'http://122.176.113.56:8081/geoserver/rest/workspaces/AeroGMS/datastores/aeroGMS/featuretypes';
 // secdata.geo_host = '122.176.113.56';

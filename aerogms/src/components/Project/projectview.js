@@ -27,7 +27,6 @@ import axios from 'axios';
 import SpecificQuery from './specificQuery';
 import { throws } from 'assert';
 import {BASE_URL} from '../../config';
-
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import { formatDate, parseDate } from 'react-day-picker/moment';
@@ -101,6 +100,7 @@ class ProjectView extends Component{
             from: undefined,
             to: undefined,
             selFYear:'2018-2019',
+            taxStatus:false,
         }
 
         this.handleFromChange = this.handleFromChange.bind(this);
@@ -152,14 +152,40 @@ class ProjectView extends Component{
         console.log((moment(to).format("X") - 43200)*1000);
       }
     renderAttrInfo() {
+        debugger
         if(this.state.attrInfoList.length>0)
         {
             if(!this.state.editAttributes) {
                     return this.state.attrInfoList.map((item) => {
-                        return (<tr key={item.name}>
+                        //alert(item.value)
+                        // if(this.state.activelayerdata === undefined)
+                        // {
+                        //     if(item.name == 'Aero_id' || item.name == 'Property_id_old' || item.name == 'Property_id_new' || item.name == 'Tax_status'|| item.name=='Financial_year' || item.name=='Amount_paid'|| item.name=='Address'|| item.name=='Area_sqyard')
+                        //     {
+                        //         return (<tr key={item.name}>
+                        //             <td>{item.name}</td>
+                        //             <td>{item.value}</td>
+                        //         </tr>)
+                        //     }
+                           
+                        // }
+                        // else
+                        // {
+                            if(item.name === 'Tax_status' && item.value === 'NO'){
+                                return (<tr key={item.name}>
+                                    <td>{item.name}</td>
+                                    <td>{<a target="_blank" href="https://lgpunjab.gov.in">Payment</a>}</td>
+                                </tr>)
+                            }
+                            else{
+                                //console.log('attribute info');
+                                return (<tr key={item.name}>
                                     <td>{item.name}</td>
                                     <td>{item.value}</td>
                                 </tr>)
+                            }
+                        //}
+                      
                     });
             } else {
               
@@ -170,6 +196,8 @@ class ProjectView extends Component{
                             <td id={item.name}>{item.value}</td>
                         </tr>)
                     } else {
+                        debugger
+                       
                         return (<tr key={item.name}>
                             <td>{item.name}</td>
                             <td><input id={item.name} name={item.name} defaultValue={item.value} /></td>
@@ -862,6 +890,49 @@ class ProjectView extends Component{
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Dashboard" onClick={()=>{this.GoToUserDash()}}/></NavItem>
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Layer Query" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}/></NavItem>
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={()=>{this.state.taxMap?this.setState({taxMap:false}):this.setState({taxMap:true})}}/></NavItem>
+                                    {/* <NavItem>
+                                        <select id='ddlPropertyCat'>
+                                            <option value="0">-Type-</option>
+                                            <option selected value="pro_tax">Tax</option>
+                                        </select>
+                                    </NavItem>
+                                    <NavItem>
+                                        <select id='ddlSelFY'>
+                                            <option value="0">-Year-</option>
+                                            <option selected value="2018-2019">2018-19</option>
+                                        </select>
+                                    </NavItem>
+                                    <NavItem>
+                                        <DayPickerInput value={from}  placeholder="From" format="LL"
+                                              formatDate={formatDate} parseDate={parseDate} dayPickerProps={{
+                                              selectedDays: [from, { from, to }],
+                                              fromMonth:new Date(this.state.selFYear.split('-')[0], 3),
+                                              toMonth: new Date(this.state.selFYear.split('-')[1], 2), modifiers, numberOfMonths: 1,
+                                              onDayClick: () => this.to.getInput().focus(),}}
+                                            onDayChange={this.handleFromChange}
+                                        />
+                                    </NavItem>
+                                    <NavItem>
+                                        <DayPickerInput
+                                          ref={el => (this.to = el)}
+                                          value={to}
+                                          placeholder="To"
+                                          format="LL"
+                                          formatDate={formatDate}
+                                          parseDate={parseDate}
+                                          dayPickerProps={{
+                                            selectedDays: [from, { from, to }],
+                                            disabledDays: { before:from, after: new Date(2019, 3) },
+                                            modifiers,
+                                            month: from,
+                                            fromMonth: from,
+                                            toMonth:new Date(this.state.selFYear.split('-')[1], 3),
+                                            numberOfMonths: 1,
+                                          }}
+                                          onDayChange={this.handleToChange}
+                                        />
+                                    </NavItem>
+                                    <NavItem className="nav-items"><input className="" type="button" value="Show Map" onClick={()=>{window.addSnagatMandiLayer()}}/></NavItem> */}
                                     {/* <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Query Dashboard" 
                                         onClick={()=>{this.setState({queryTable : true})}}/></NavItem> */}
                                 </Navbar>
@@ -989,8 +1060,8 @@ class ProjectView extends Component{
                             {/* <div  id="infoDiv" className="project-infobox">    */}
                                 <Image src={CrossIcon} className="cross-icon" onClick={()=>this.setState({infoBoxShow:false})}/>
                                 <h3 className="text-center">Info Panel</h3>
-                                <Button onClick={() => {this.state.editAttributes?this.setState({editAttributes : false}):this.setState({editAttributes : true})}}>Edit Attributes</Button>
-                                <Button onClick={this.updateAttributes} >Save</Button>
+                                {/* <Button onClick={() => {this.state.editAttributes?this.setState({editAttributes : false}):this.setState({editAttributes : true})}}>Edit Attributes</Button>
+                                <Button onClick={this.updateAttributes} >Save</Button> */}
                                 <Table striped className="info-panel-attr-list scroll">
                                     <caption className="text-center">Attributes Information</caption>
                                     <thead>
@@ -1005,7 +1076,7 @@ class ProjectView extends Component{
                                         }
                                     </tbody>
                                 </Table>
-                               
+                               {this.state.taxStatus ? <a href="https://lgpunjab.gov.in">Payment</a>:''}
                                 {
                                     !this.state.queryForm ?
                                         (
@@ -1106,16 +1177,16 @@ class ProjectView extends Component{
                             <div  id="taxqueryBox" className={this.state.taxMap ? 'sangatmandi-infobox':'sangatmandi-infoboxhide'}> 
                                 <select id='ddlPropertyCat'>
                                     <option value="0">-Type-</option>
-                                    <option value="pro_tax">Tax</option>
+                                    <option selected value="pro_tax">Tax</option>
                                 </select>
                                 <select id='ddlSelFY'>
                                     <option value="0">-Year-</option>
-                                    {/* <option value="2017-2018">2017-18</option> */}
-                                    <option value="2018-2019">2018-19</option>
+                                    <option value="2017-2018">2017-18</option>
+                                    <option selected value="2018-2019">2018-19</option>
                                 </select>
                                 
         <div className="InputFromTo">
-        <DayPickerInput value={from}  placeholder="From" format="LL"
+        <DayPickerInput value={from} classNames="from-to" placeholder="From" format="LL"
             formatDate={formatDate} parseDate={parseDate} dayPickerProps={{
             selectedDays: [from, { from, to }],
             fromMonth:new Date(this.state.selFYear.split('-')[0], 3),
@@ -1126,6 +1197,7 @@ class ProjectView extends Component{
        <br/>
         <span className="InputFromTo-to">
           <DayPickerInput
+          className="from-to"
             ref={el => (this.to = el)}
             value={to}
             placeholder="To"
@@ -1166,10 +1238,16 @@ class ProjectView extends Component{
   .InputFromTo-to .DayPickerInput-Overlay {
     // margin-left: -198px;
   }
+  .InputFromTo-to, .inputFromTo {
+      margin-btotom: 20px;
+  }
 `}
 </style>
       </div>
-      <NavItem className="nav-items"><input className="btnLogout" type="button" value="Show Map" onClick={()=>{window.addSnagatMandiLayer()}}/></NavItem>
+      <NavItem className="nav-items "><input className="btnLogout show-map-btn" style={{marginTop:15}} type="button" value="Show Map" onClick={()=>{window.addSnagatMandiLayer()}}/></NavItem>
+      <div  style={{marginTop:15}} className="paid-unpaid-container"><Image src={'http://122.176.113.56:8081/geoserver/wms?Service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=25&HEIGHT=25&STYLES=AeroGMS:sm_red_leg&LAYER=AeroGMS:sangat_mandi_props&STYLE=AeroGMS:sm_green_leg'} className="paid-unpaid" /><span>Paid</span></div>
+      <div className="paid-unpaid-container"><Image src={'http://122.176.113.56:8081/geoserver/wms?Service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=25&HEIGHT=25&STYLES=AeroGMS:sm_red_leg&LAYER=AeroGMS:sangat_mandi_props&STYLE=AeroGMS:sm_red_leg'} className="paid-unpaid" /><span>Unpaid</span></div>
+      <div className="paid-unpaid-container"><Image src={'http://122.176.113.56:8081/geoserver/wms?Service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=25&HEIGHT=25&STYLES=AeroGMS:sm_red_leg&LAYER=AeroGMS:sangat_mandi_props&STYLE=AeroGMS:sm_yellow_leg'} className="paid-unpaid" /><span>Exempted</span></div>
                             </div>
                        </div>
                       
