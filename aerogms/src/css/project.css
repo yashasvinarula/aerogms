@@ -1,5 +1,29 @@
+.projectview-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.projectview-navbar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.navbar-brand {
+    padding: 10px 15px !important;
+}
+.nav-img-header {
+    width: 245px;
+}
 .aerologo-img {
+    width: 245px;
     height: 70px !important;
+}
+.navigation-nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: calc(100% - 245px);
+    justify-content: space-between;
 }
 h4 {
     margin-top: 5px;
@@ -195,6 +219,8 @@ thead, tbody, tr {
     max-width: 800px;
 } */
 .nav-items {
+    /* float: right; */
+    padding-top: 10px;
     display: inline;
 }
 .query-table {

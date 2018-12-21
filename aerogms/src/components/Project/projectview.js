@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
-import { Navbar, NavItem, Image, DropdownButton, MenuItem, Modal, Button, Table, Tabs, Tab } from 'react-bootstrap/lib';
+import { Navbar, NavItem, Nav, Image, DropdownButton, MenuItem, Modal, Button, Table, Tabs, Tab } from 'react-bootstrap/lib';
 import {connect} from 'react-redux';
 import { slide as Menu } from 'react-burger-menu';
 import MediaQuery from 'react-responsive';
@@ -847,13 +847,14 @@ class ProjectView extends Component{
                         );
                     } else {
                         return (
-                            <div>
-                                <Navbar fixedTop style={{backgroundColor:'#9096a0'}}>
-                                    <Navbar.Header>
+                            <div className="projectview-container">
+                                <Navbar className="projectview-navbar" fixedTop style={{backgroundColor:'#9096a0'}}>
+                                    <Navbar.Header className="nav-img-header">
                                         <Navbar.Brand>
                                             <Image src={AeroLogo} className="aerologo-img" />
                                         </Navbar.Brand>
                                     </Navbar.Header>
+                                    <Nav className="navigation-nav">
                                     {
                                             (<NavItem className="nav-items"><input type="button" id="btnMakePoint" className="hide-btn"
                                             value="AddPoint" onClick={this.addPoint}/></NavItem>)
@@ -877,14 +878,14 @@ class ProjectView extends Component{
                                     {/* <NavItem className="nav-items"><input className="btnLogout" type="button" value="Logout" onClick={this.props.doLogout}/></NavItem>
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Dashboard" onClick={()=>{this.GoToUserDash()}}/></NavItem>
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Layer Query" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}/></NavItem> */}
-                                    <NavItem className="nav-items" onClick={this.props.doLogout}>Logout</NavItem>
-                                    <NavItem className="nav-items" onClick={()=>{this.GoToUserDash()}}>Dashboard</NavItem>
-                                    <NavItem className="nav-items" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}>Layer Query</NavItem>
+                                    
+                                    
+                                    
                                     {/* <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={() => this.setState({taxMap : true})} /></NavItem> */}
                                     {
                                         this.state.taxMap ?
                                         (
-                                            <div>
+                                            <Nav>
                                             <NavItem className="nav-items">
                                                 <select id='ddlPropertyCat'>
                                                     <option value="0">-Type-</option>
@@ -937,12 +938,17 @@ class ProjectView extends Component{
                                                     )
                                                 :   ''
                                             }
-                                            </div>
-                                        ) : <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={() => this.setState({taxMap : true})} /></NavItem>
+                                            </Nav>
+                                        ) : <NavItem className="nav-items" onClick={() => this.setState({taxMap : true})} >Tax Map</NavItem>
+                                        // ) : <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={() => this.setState({taxMap : true})} /></NavItem>
                                     }
                                     {/* <NavItem className="nav-items" onClick={() => { return <Redirect to="/propertytax" /> }}><input className="btnLogout" type="button" value="Tax Map" /></NavItem> */}
                                     {/* <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Query Dashboard" 
                                         onClick={()=>{this.setState({queryTable : true})}}/></NavItem> */}
+                                        <NavItem className="nav-items" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}>Layer Query</NavItem>
+                                        <NavItem className="nav-items" onClick={()=>{this.GoToUserDash()}}>Dashboard</NavItem>
+                                        <NavItem className="nav-items" onClick={this.props.doLogout}>Logout</NavItem>
+                                    </Nav>
                                 </Navbar>
                                 {
                                     this.state.queryTable ?
@@ -1003,7 +1009,7 @@ class ProjectView extends Component{
                                     : ''
                                 }
                                     
-                            <div className=""> </div>
+                            {/* <div className=""> </div> */}
                             <div className="project-layer-box">
                                 <div>
                                     <h4 className="text-center">Project Title</h4>
