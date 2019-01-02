@@ -64,6 +64,10 @@ app.get('*', (req, res)=>{
   res.sendFile(path.join(__dirname, './aerogms/build/index.html'));
 });
 
+// app.get('/download', (req, res)=>{
+//     res.sendFile(path.join(__dirname, './aerogms/build/exceldata1546245755455.xlsx'));
+//   });
+  
 app.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
 });

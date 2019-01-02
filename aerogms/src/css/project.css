@@ -1,3 +1,11 @@
+.filter-div {
+    position: fixed;
+    top: 60px;
+    left: 310px;
+    z-index: 999;
+    background-color: #fff;
+    padding: 10px;
+}
 .leaflet-right {
     right: 28% !important;
 }
@@ -104,8 +112,9 @@ input[type=button] {
 
 .sangatmandi-infobox {
     width: 250px;
-    min-height: 206px;
-    max-height: 206px;
+    /* min-height: 206px;
+    max-height: 206px; */
+    height: 400px;
     position: absolute;
     z-index: 1000;
     left: 300px;

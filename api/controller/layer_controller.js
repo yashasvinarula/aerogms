@@ -3,6 +3,7 @@ const {registervector, getBbox} = require('../controller/import_controller');
 const userpw=geocred;
 const config = require('../../config/config');
 
+// to get all the layers of a specific project
 module.exports.get_layers = function(req, res){
     db.func('public.sp_getlayerlist', [req.body.pro_id, req.body.u_id])
     .then(result => {
@@ -20,6 +21,7 @@ module.exports.get_layers = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
+// to rename a layer in a project
 module.exports.rename_layer = function(req, res){
     db.func('public.sp_aerogms', ['rename_layer', [req.body.lay_id.toString(), req.body.name]])
     .then(result => {
@@ -39,6 +41,7 @@ module.exports.rename_layer = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
+// called when clicked on save layer
 module.exports.create_layer = function(req, res){
     var tab_name = req.body.name.toLowerCase();
     var tab_type = req.body.type;
@@ -228,6 +231,7 @@ module.exports.create_layer = function(req, res){
     });
     }
 }
+// invoked when adding layer
 module.exports.lay_name_exists = function(req, res){
     db.func('public.sp_aerogms', ['lay_name_exists', [req.body.lay_name]])
     .then(result => {
@@ -245,6 +249,7 @@ module.exports.lay_name_exists = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
+// to delete a layer
 module.exports.delete_layer = function(req, res){
     var layName = req.body.layer_name;
     var layId = req.body.lay_id
@@ -277,6 +282,7 @@ module.exports.delete_layer = function(req, res){
         });
     }
 }
+// to fetch attributes list
 module.exports.layer_attribute = function(req, res){
     var tab_name = req.body.layer;
     db.func('public.sp_gettable_attrilist', [tab_name.toString()])
@@ -295,6 +301,7 @@ module.exports.layer_attribute = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
+// to delete attribute
 module.exports.delete_column = function(req, res){
     var tab_name = req.body.layer;
     var col_name = req.body.column;
@@ -321,6 +328,7 @@ module.exports.delete_column = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
+// to rename attribute
 module.exports.rename_column = function(req, res){
     var tab_name = req.body.layer;
     var old_col_name = req.body.old_column;
@@ -349,6 +357,7 @@ module.exports.rename_column = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
+// to add attribute
 module.exports.add_column = function(req, res){
     var tab_name = req.body.layer;
     var col_name = req.body.column;
@@ -386,6 +395,7 @@ module.exports.add_column = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
+// to set layer bounds
 module.exports.get_bound = function(req, res){
     let layer_nm = req.body.layer;
     if(layer_nm){
@@ -404,10 +414,10 @@ module.exports.get_bound = function(req, res){
         .catch(error => {
         console.log('ERROR:', error);
         return res.status(400).send({status:'error', message:error.message});
-        //return res.status(400).send({status:'error', message:error.message});
         });
         }
 }
+// common test function...
 module.exports.layer_col_update = function(req, res){
     var funName = req.body.funname;
     db.func('public.' + funName, [])
@@ -426,6 +436,7 @@ module.exports.layer_col_update = function(req, res){
     return res.status(400).send({status:'error', message:error.message});
     });
 }
+
 var deletevector = function(datasetName, callback){
     //dataset name is the name of the PostGIS table
    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";

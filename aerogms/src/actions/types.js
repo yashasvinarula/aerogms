@@ -22,3 +22,4 @@ export const UPDATE_LAYER_COLOR = 'update_layer_color';
 export const ROOT_URL = '/api';
 export const GET_SUCCESS = 'get_success';
 export const GET_ERROR = 'get_error';
+export const GET_FEATURE = 'get_feature';// by parveen

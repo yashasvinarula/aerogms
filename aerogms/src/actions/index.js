@@ -1,6 +1,12 @@
 import axios from 'axios';
 import * as type from './types';
 
+export function get_feature(attrInfoList) {
+    return {
+        type: type.GET_FEATURE,
+        payload: attrInfoList,
+    }
+}
 export function doLogin(username, pwd, callback){
     const request = axios.post(`${type.ROOT_URL}/login`,
     { username: username, password: pwd});

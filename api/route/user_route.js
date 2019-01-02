@@ -43,6 +43,9 @@ router.post('/update_layer_color', auth.loggedIn, layer_cntrlr.update_layer_colo
 router.post('/update_layer_attrib', auth.loggedIn, layer_cntrlr.update_layer_attrib);
 
 router.post('/getmsevaToken', cntrlr.getmsevaToken);
+router.post('/downloadExcel', cntrlr.exportExcel);
+router.post('/downloadgeojson', cntrlr.exportGeoJson);
+
 
 /*for mobile user*/
 //-----------------------------
@@ -55,6 +58,8 @@ router.post('/m_getPoly', cntrlr.m_getPoly);
 router.post('/m_getPolyPoints', cntrlr.m_getPolyPoints);
 router.post('/m_getPolyPointsById', cntrlr.m_getPolyPointsById);
 router.post('/m_updatePolyPointsById', cntrlr.m_updatePolyPointsById);
+router.post('/m_polyRename', cntrlr.m_polyRename);
+router.post('/m_polyDelete', cntrlr.m_polyDelete);
 
 let storage = multer.diskStorage({
     destination: function(req, file, cb) {

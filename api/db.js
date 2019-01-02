@@ -11,7 +11,7 @@ var config = {
     password: 'postgres', 
     port: 5432,
     max: 50, // max number of connection can be open to database
-    idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
+    // idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
   };
 
 const pgp = require('pg-promise')(initOptions);

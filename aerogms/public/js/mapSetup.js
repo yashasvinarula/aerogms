@@ -14,6 +14,7 @@ var activeMapLayer_id = '';
 var hideInfoBox, showInfoBox;
 var nf_hl_Layer =  new L.featureGroup([]);
 var sangatLayer=undefined;
+var sikarLayer = undefined;
 
 function enablemap(){
     debugger
@@ -22,6 +23,7 @@ function enablemap(){
     });
 }
 function zoomTo(box){
+    debugger
     if(box)
     {
         debugger
@@ -36,6 +38,7 @@ function zoomTo(box){
     }
 }
 function addJalandharLayer(){
+    debugger
 var owsrootUrl = geourl;
 var defaultParameters = {
     service : 'WFS',
@@ -55,6 +58,7 @@ var ajax = $.ajax({
     dataType : 'jsonp',
     jsonpCallback : 'getJson',
     success : function (response) {
+        console.log(response);
         debugger
         jalandhar_wfs_layer = L.geoJson(response, {
             style: function (feature) {
@@ -77,12 +81,13 @@ var ajax = $.ajax({
         }).addTo(m);
     }
 });
-}   
+}
 function capFL(string) {
+    debugger
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 function getFeatureInfoUrl(map, layer, latlng, params) {
-
+    debugger
     var point = map.latLngToContainerPoint(latlng, map.getZoom()),
         size = map.getSize(),
         bounds = map.getBounds(),
@@ -115,8 +120,8 @@ function getFeatureInfoUrl(map, layer, latlng, params) {
     return layer._url + L.Util.getParamString(params, layer._url, true);
 
 }
-function initMap()
-    {
+function initMap(){
+    debugger
         if(m){ m.remove();}
         document.getElementById('map').style.display = 'block';
         m = L.map("map", {
@@ -131,24 +136,23 @@ function initMap()
             m.setView([31.3635, 75.5962], 15); // jalandhar view
         }
         //m.addHash();
+        var BING_KEY = 'AuhiCJHlGzhg93IqUH_oCpl_-ZUrIE6SPftlyGYUvr9Amx5nzA-WqGcPquyFZl4L'
         var url = 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png';
         var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var satLayer = L.tileLayer("https://1.aerial.maps.api.here.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png8?app_id=nNKwromcftRseWU464ZI&app_code=tIWKR3_1_sFG7Efmp_8Luw");
         
         var optionsObject ={
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>', maxZoom: 25
         }
     
         var mq = L.tileLayer(url, optionsObject);
         var watercolor = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>', maxZoom: 25
         });
         var osmMap = new L.TileLayer(osmUrl,{ maxZoom: 25});
         var dummyMap = L.tileLayer('', '');
         osmMap.addTo(m);
         
-        var water_bodies_MLayer = new L.tileLayer.wms(geourl, {
-            layers: 'AeroGMS:water_bodies', format:'image/png', 'transparent': true, 'tiled': true
-        });//.addTo(m);
         
         // var roadMutant = L.gridLayer.googleMutant({
         // 		maxZoom: 24,
@@ -162,15 +166,17 @@ function initMap()
         L.control.scale().addTo(m);
          var baseLayers = {
             "OSM":osmMap,
+            "Satellite":satLayer,
             "Stamen Watercolor": watercolor,
             "Stamen Toner": mq,
+            //"Google Map":satMutant,
             "No Maps":dummyMap
-            };
+            };  
             var overlays = {};//{"WaterBody":water_bodies_MLayer};
             layControl = L.control.orderlayers(baseLayers, overlays,{
                 collapsed: true,
                 title: 'Layers'
-            });//.addTo(m);
+            }).addTo(m);
            //layControl.addOverlay(water_bodies_MLayer, 'WaterBody');
            //layControl.removeLayer(water_bodies_MLayer);
            
@@ -180,18 +186,9 @@ function initMap()
            m.on('overlayadd', function(e){
             var activeOverlay = e.layer.options.layers;
         });
-        // jalandhar_prop_layer = new L.tileLayer.wms(geourl, {
-        //     layers: 'AeroGMS:jalandhar', format:'image/png', 'transparent': true, 'tiled': true
-        // }).addTo(m);
-        //addJalandharLayer();
-        // m.on('click', function(ev) {
-        //     alert(ev.latlng); // ev is an event object (MouseEvent in this case)
-        // });
-        //-----------------------------------------------------------
+
         $('#btnGoToLoc').on('click', function()
         {m.locate({setView : true})});   
-        //make the map
-        //-----------------------------------------------------------
         var pIcon = L.icon({
             iconUrl: './images/pointer.png',
             iconSize:     [12, 12], // size of the icon
@@ -199,10 +196,8 @@ function initMap()
         var myPolyStyle = {color: '#0000ff', weight:12 ,radius:4, clickTolerance:15};
         var multipolygon = L.featureGroup({color:'#0000ff'}).addTo(m);
         
-        //for area
         var polygon = L.polygon({color: 'red'}).addTo(m);
         polygon.setStyle({color: '#ff0000', weight:7,radius:4});
-        //for distance
         var distLine = L.polyline({color:'#ff0000', clickTolerance:15}).addTo(m);
         distLine.setStyle({color:'#ff0000', weight:12});	
         //-----------------------------------------------------------
@@ -335,6 +330,7 @@ function initMap()
 
     var type;
     function createNewLayer(layer_type){
+        debugger
         type = layer_type;
         m.off("click");
         m.off("dblclick");
@@ -379,6 +375,7 @@ function initMap()
     }
 
     function resetNewLayer(){
+        debugger
         sangatLayer ? false: m.off("click");
         m.off("dblclick");
         if(currentLayer?currentLayer.getLayers().length>0:false){
@@ -393,6 +390,7 @@ function initMap()
     }
 
     function getInfo(e) {
+        debugger
        nf_hl_Layer ? resetnfhl():'';        
        if(activeMapLayer && activeMapLayer_id && currentLayer?currentLayer.getLayers().length == 0:true){
            var selectedWMSLayer = wmsLayers.filter(layer=>{
@@ -458,6 +456,7 @@ function initMap()
                    }
                    else
                    {
+                       // runs all the time when data is fetched
                        debugger
                        let keysArray = Object.keys(feature.properties);
                        keysArray.sort();
@@ -483,12 +482,14 @@ function initMap()
    }
 
    function resetnfhl(){
+    debugger
     nf_hl_Layer ? m.removeLayer(nf_hl_Layer):'';
     nf_hl_Layer = new L.featureGroup([]);
    }
 
     var selFeature = null;
     function removeSelFeature(){
+        debugger
         if(selFeature !== null  && currentLayer !== null ){
             currentLayer.removeLayer(currentLayer._layers[selFeature]);
         }
@@ -676,7 +677,7 @@ function initMap()
         }
     }
 
-
+    // adds overlay to the map
     var wmsLayers =[];
     function addWMSLayer(layName, color){
         debugger
@@ -707,7 +708,7 @@ function initMap()
             }
         }
     }
-    var lyrhighlighter = '';
+    var lyrhighlighter = ''; // 
     function featureHL(layName, laytype, aeroid){
         debugger
             if(laytype && layName && aeroid){
@@ -769,7 +770,7 @@ function initMap()
             }
         }
     }
-
+    // cql_filter : "categories = 'Agricultural'"
     function hideWMSLayer(layName){
         debugger
         console.log(wmsLayers);
@@ -787,6 +788,7 @@ function initMap()
     }
 
     function getSelectedFeaValue(){
+        debugger
         if(Object.keys(selcted_fea_info).length != 0){
             return selcted_fea_info;
         }
@@ -795,22 +797,36 @@ function initMap()
         }
     }
 
-    function addSnagatMandiLayer()
+    function addSnagatMandiLayer(ward, from, to)
     {
+        debugger
         sangatLayer?m.removeLayer(sangatLayer):'';
-        sangatLayer = new L.tileLayer.wms(geourl, {
-            layers: 'AeroGMS:sangat_mandi_props',
-            format:'image/png', 
-            transparent:true, 
-            tiled:false,
-            maxZoom: 25
-        }).addTo(m);
-
+        sangatLayer?layControl.removeLayer(sangatLayer):'';
+        if(!ward || !from || !to) {
+            sangatLayer = new L.tileLayer.wms(geourl, {
+                layers: 'AeroGMS:sangat_mandi_props',
+                format:'image/png', 
+                transparent:true, 
+                tiled:false,
+                maxZoom: 25
+            });//.addTo(m);
+        } else {
+            sangatLayer = new L.tileLayer.wms(geourl, {
+                layers: 'AeroGMS:sangat_mandi_props',
+                format:'image/png', 
+                transparent:true, 
+                tiled:false,
+                cql_filter: `area_sqyard > '${from}' And area_sqyard < '${to}' And ward_no='${ward}'`,
+                maxZoom: 25
+            });//.addTo(m);
+        }
+        
+        layControl.addOverlay(sangatLayer, 'Sangat Layer');
         var corner2 = L.latLng(30.091423962135 + 0.001, 74.8419154894146),
         corner1 = L.latLng(30.082162604414002 , 74.8347664375407),
         bounds = L.latLngBounds(corner1, corner2);
         m.fitBounds(bounds);
-
+        
         // if(sangatLayer)
         // {
             m.on('click', function(e){
@@ -858,5 +874,84 @@ function initMap()
         });
         //}
     }
+    function addSikarLayer(categ, from, to) {
+        debugger
+        sikarLayer?m.removeLayer(sikarLayer):'';
+        sikarLayer?layControl.removeLayer(sikarLayer):'';
+        if(categ == null || from == null || to == null) {
+            sikarLayer = new L.tileLayer.wms(geourl, {
+                layers: 'AeroGMS:landuse',
+                format:'image/png', 
+                transparent:true, 
+                tiled:false,
+                maxZoom: 25,
+                // cql_filter:"shape_area>1000 And shape_area<100000"
+                // cql_filter: "categories = 'Agricultural'"
+            });//.addTo(m);
+        } else {
+            sikarLayer = new L.tileLayer.wms(geourl, {
+                layers: 'AeroGMS:landuse',
+                format:'image/png', 
+                transparent:true, 
+                tiled:false,
+                maxZoom: 25,
+                // cql_filter:"shape_area>1000 And shape_area<100000"
+                // cql_filter: "categories = 'Agricultural'"
+                cql_filter: `shape_area > '${from}' And shape_area < '${to}' And categories='${categ}'`
+            });//.addTo(m);
+        }
+        console.log(`Filters : ${sikarLayer}`)
+        layControl.addOverlay(sikarLayer, 'Sikar Layer');
 
+        var corner2 = L.latLng(27.7144682006816 + 0.001, 75.2621877689494),
+        corner1 = L.latLng(27.5214266021175, 75.0448867985928),
+        bounds = L.latLngBounds(corner1, corner2);
+        m.fitBounds(bounds);
+        
+        // if(sangatLayer)
+        // {
+            m.on('click', function(e){
+          
+            var url = getFeatureInfoUrl(
+                m,
+                sikarLayer,
+                e.latlng,
+                {
+                    'info_format': 'application/json'
+                    //'propertyName': 'aero_id,property_id_old,property_id_new,tax_status,financial_year,amount_paid,address,area_sqyard'
+                    //'FEATURE_COUNT': 50
+                }
+            );
+            //Send the request and create a popup showing the response
+            reqwest({
+            url: url,
+            type: 'json',
+            }).then(function (data) {
+            if(data.features.length > 0){
+                var feature = data.features[0];//feature.geometry.type.toLowerCase()
+                featureHL('landuse', 'polygon', feature.properties.aero_id);
+               
+                let keysArray = Object.keys(feature.properties);
+                keysArray.sort();
+                let finalInfoArray=[];
+                debugger
+                keysArray.map(key => {
+                    if(key == 'objectid' || key == 'name' || key == 'shape_leng' || key == 'shape_area'|| key=='categories' || key=='name'|| key=='address'|| key=='area_sqyard')
+                    {
+                        finalInfoArray.push({name:capFL(key), value:(key == 'creation_date')?`${feature.properties[key].split('T')[0]} ${feature.properties[key].split('T')[1].substring(0, 5)}` :feature.properties[key]});
+                    }
+                })
+                setAttrInfo(finalInfoArray);
+                showInfoBox();
+            }
+            else
+            {
+                lyrhighlighter ? m.removeLayer(lyrhighlighter):false;
+                hideInfoBox();
+            }
     
+            }).catch(err=>{
+            });   
+        });
+
+    }

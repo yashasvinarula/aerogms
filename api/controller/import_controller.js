@@ -109,6 +109,7 @@ module.exports.fileuploaddprocess = function(req, res){
         return res.end(err.message);
     }
 }
+// to read json from directory
 function readjson(newfilepath, req, res){
     try
     {
@@ -139,7 +140,7 @@ function readjson(newfilepath, req, res){
         res.end(err.message);
     }
 }
-
+// to make table from json returned by readjson
 function layerfromjson( jsonObj, req, res)
 {
     var shpArr = []; var filedArr =[];          
@@ -349,8 +350,8 @@ catch(err)
     return res.status(200).send([{status:'formatError', message:'file is not in proper format! Please check and try again.'}]);
 }
 }
-
- var registervector = function(datasetName, callback){
+// to put table  created in database to geoserver
+var registervector = function(datasetName, callback){
    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; 
    var http = require('http'); 
    var auth = 'Basic ' + new Buffer(userpw).toString('base64');
@@ -388,7 +389,7 @@ catch(err)
 };
 
 module.exports.registervector = registervector;
-
+// to delete the table
 module.exports.deletelayer = function(request, responce){
     //dataset name is the name of the PostGIS table
    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //my dev SSL is self-signed. don't do this in production.
@@ -431,7 +432,7 @@ module.exports.deletelayer = function(request, responce){
    post_req.write(s);
    post_req.end();
 };
-
+// insertShpTable used earlier
 module.exports.insertShpTable = function(req, res){
     var shpArr = []; var filedArr =[];          
     let tname = '';
@@ -601,7 +602,7 @@ catch(err)
     //  });
     //res.send({'status':'ok'});
 }
-
+// to get the bounds of the layer
 var getBbox = function(tname){
     db.func('public.sp_aerogms', ['get_box', [tname.toString()]])
             .then(result => {

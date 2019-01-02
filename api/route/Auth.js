@@ -1,5 +1,5 @@
 module.exports.loggedIn = (req, res, next)=>{
-
+    // debugger
     if(req.isAuthenticated())
     {
         next();

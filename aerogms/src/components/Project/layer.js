@@ -17,10 +17,12 @@ import {delete_layer, updateLayerActive, updateLayerColor} from '../../actions';
 import _ from 'lodash';
 import {BASE_URL} from '../../config';
 
-
-
 const MenuImage = ( <Image src={InfoIcon} className="menu-icon inline-display margin-outside" />);
 const MenuIcon = ( <Image src={InfoIcon} className="attr-menu-icon" />);
+
+var obj = {a: 123, b: "4 5 6"};
+var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
+let anch = '<a href="data:' + data + 'id="download_json" download="data.json">download JSON</a>';
 
 class Layer extends Component {
     constructor(props) {
@@ -55,8 +57,45 @@ class Layer extends Component {
         this.getLayerSchema = this.getLayerSchema.bind(this);
         this.servicecaller = this.servicecaller.bind(this);
         this.handleColorChange = this.handleColorChange.bind(this);
+        this.downloadExcel = this.downloadExcel.bind(this);
+        this.downloadGeoJson = this.downloadGeoJson.bind(this);
     };
 
+    downloadGeoJson() {
+        debugger;
+        let layer_name = this.props.layer.orig_name;
+        axios.post(`${BASE_URL}/downloadgeojson`, {layer_name : layer_name })
+        .then(response=>{
+            debugger;
+            console.log(response.data);
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display:none";
+            var jsondata = JSON.stringify(response.data),
+                blob = new Blob([jsondata], {type: "octet/stream"}),
+                url = window.URL.createObjectURL(blob);
+            a.href = url;
+            a.download = "geojson.json";
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(err=>{
+            alert(err);
+        });
+    }
+    downloadExcel() {
+        debugger;
+        let layer_name = this.props.layer.orig_name;
+        axios.post(`${BASE_URL}/downloadExcel`, {layer_name : layer_name })
+        .then(response=>{
+            debugger;
+            let file = response.data.filename;
+            window.location.href = `http://localhost:3001/${file}`
+        })
+        .catch(err=>{
+            alert(err);
+        });
+    }
     handleColorChange = (color) => {
         if(this.props.layer.lay_id)
         {
@@ -74,7 +113,7 @@ class Layer extends Component {
             alert('First save layer then change its color!');
             this.setState({colorPicker:false});
         }
-      };
+    };
     
     showColorPicker() {
         this.setState({ colorPicker : true });
@@ -149,7 +188,7 @@ class Layer extends Component {
         else if(prevProps.layer.color !== this.props.layer.color){
                 window.addWMSLayer(this.props.layer.orig_name, this.props.layer.color);
         }
-      }
+    }
 
     handleSubmit(event) {
         event.preventDefault();
@@ -277,6 +316,7 @@ class Layer extends Component {
         }
     }
     setActiveLayer(){
+        debugger;
         let that = this;
         if(this.props.layer.lay_id){
             this.servicecaller('get_bound', {layer:this.props.layer.orig_name}, function(err, data){
@@ -320,7 +360,8 @@ class Layer extends Component {
         }
        
     }
-resetActiveLayer(){
+    resetActiveLayer(){
+        debugger;
         let style='';
         switch(this.props.layer.type)
         {
@@ -601,7 +642,6 @@ resetActiveLayer(){
                                             <Button onClick={this.changeLayerName}>Update</Button>
                                         </Modal.Body>
                                 </Modal>
-                                {/* <MenuItem>Download</MenuItem> */}
                                 <MenuItem onClick={() => this.getLayerSchema()}>Attributes</MenuItem>
                                     <Modal
                                         show={this.state.showAttributes}
@@ -711,10 +751,11 @@ resetActiveLayer(){
                                             }
                                         </Modal.Body>
                                     </Modal>
-                                {/* <MenuItem>Table</MenuItem> */}
                                 <MenuItem onClick={()=>this.deleteLayer()}>Delete</MenuItem>
+
+                                <MenuItem onClick={() => this.downloadExcel() }>Download Excel</MenuItem>
+                                <MenuItem onClick={() => this.downloadGeoJson() }>Download GeoJson</MenuItem>
                             </DropdownButton>
-                            
                             {
                                 this.state.colorPicker ? (<CompactPicker  color={ this.state.selectedColor }
                                     onChangeComplete={ this.handleColorChange }/>) : null

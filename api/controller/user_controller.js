@@ -7,6 +7,85 @@ const fs = require("fs");
 const path = require('path');
 const config = require('../../config/config');
 const request = require("request");
+var json2xls = require('json2xls');
+var excelFile = 'undefined';
+var geojsonFile = 'undefined';
+
+module.exports.exportExcel =function(req, res)
+{
+    console.log('In download excel');
+    console.log(req.body.layer_name);
+    if(excelFile !== 'undefined') {
+        var filepath = path.join(__dirname,  `../../aerogms/build/${excelFile}`);
+        fs.unlink(filepath, (err) => {
+            if(err) {
+                console.error(err);
+            }
+        });
+    }
+        db.any(`select * from ${req.body.layer_name};`)
+        .then(result=>{
+            if(result.length>0)
+            {
+                var xlsx = json2xls(result);
+                var fileName = `exceldata${new Date().getTime()}.xlsx`;
+                excelFile = fileName;
+                fs.writeFileSync(path.join(__dirname,  `../../aerogms/build/${fileName}`), xlsx, 'binary');
+                console.log('excel created');
+                    res.status(200).json({message : 'File created successfully', filename : fileName});
+            }
+        }).
+        catch(error=>{
+            console.log(err);
+            res.status(500).send('Error in fetching records!');
+        })
+}
+module.exports.exportGeoJson = (req, res) => {
+    console.log('In download geojson');
+    if(geojsonFile !== 'undefined') {
+        var filepath = path.join(__dirname,  `../../aerogms/build/${geojsonFile}`);
+        fs.unlink(filepath, (err) => {
+            if(err) {
+                console.error(err);
+            }
+        });
+    }
+    db.any(`select * from ${req.body.layer_name};`)
+        .then(result=>{
+            if(result.length>0)
+            {
+                var resultKeys = [];
+                resultKeys.push(Object.keys(result[0]));
+                var rindex = resultKeys[0].indexOf('geom');
+                resultKeys[0].splice(rindex, 1);
+                console.log(`Keys in result are ${resultKeys}`);
+                var valueString = resultKeys.toString();
+                var queryStr = `select row_to_json(fc) from 
+                (select 'FeatureCollection' as "type",  array_to_json(array_agg(f)) as "features" from 
+                (select 'Feature' as "type", ST_AsGeoJSON(geom, 6) :: json as "geometry",(select json_strip_nulls(row_to_json(t)) 
+                from (select ${valueString}) t ) as "properties" from ${req.body.layer_name} limit 500) as f) as fc;`
+                db.any(queryStr)
+                .then((data) => {
+                console.log(data);
+                var fileName = `geojson${new Date().getTime()}.json`;
+                geojsonFile = fileName;
+                var newjson = JSON.stringify(data[0].row_to_json);
+                fs.writeFileSync(path.join(__dirname,  `../../aerogms/build/${fileName}`), newjson);
+                    res.setHeader('Content-disposition', 'attachment; filename= myFile.json');
+                    res.setHeader('Content-type', 'application/json');
+                    res.send(newjson);
+                })
+                .catch((err) =>{
+                    console.log(err);
+                    res.status(500).send('Error in downloading file');
+            });
+            }
+        }).
+        catch(error=>{
+            console.log(err);
+            res.status(500).send('Error in fetching records!');
+        })
+}
 
 module.exports.user_signup =  function(req, res){
 
@@ -958,13 +1037,13 @@ module.exports.m_getPoly = function(req, res){
         jsondata = JSON.parse(req.body.kuchbhi);
         if(jsondata.email)
         {
-            db.any('SELECT aerogmsid as poly_id, type, geometry, date FROM public.mobile_poly where email=$1 order by date', [jsondata.email.toString()])
+            db.any('SELECT aerogmsid as poly_id, type, geometry, date, poly_name FROM public.mobile_poly where email=$1 order by date', [jsondata.email.toString()])
             .then(result=>{
                 if(result.length>0)
                 {
                     let finalresult = [];
                     result.map(element => {
-                        finalresult.push({date:element.date, geometry:JSON.parse(element.geometry), poly_id:element.poly_id, type:element.type})
+                        finalresult.push({date:element.date, geometry:JSON.parse(element.geometry), poly_id:element.poly_id, type:element.type,poly_name:element.poly_name?element.poly_name:''})
                     })
                     //return res.send({status:'success', data:{date:result[0].date, geometry:JSON.parse(result[0].geometry), poly_id:result[0].poly_id, type:result[0].type}});
                     return res.send({status:'success', data:finalresult});
@@ -1238,4 +1317,57 @@ function sendMailForMobile(req, res, from, to, sub, content, message, callback) 
         console.log('error in mail sending for mobile' + err);
         callback(err, false);
     });
+  }
+
+module.exports.m_polyRename = function m_polyRename(req, res){
+    if(req.body.kuchbhi)
+    {
+        let jsondata = JSON.parse(req.body.kuchbhi);
+        if(jsondata.poly_id && jsondata.poly_name)
+        {
+            db.any('update mobile_poly set poly_name=$1 where aerogmsid=$2::integer;', [jsondata.poly_name,jsondata.poly_id])
+            .then(result1=>{
+               
+                    return res.send({status:'success', message:"Polygon renamed successfully."});
+            })
+            .catch(error=>{
+                return res.send({status:'error', message:error});
+            })
+        }
+        else
+        {
+            console.log('please send poly_id!');
+            return res.send({message:'Please send poly_id!'});
+        }
+    }
+    else{
+        console.log('please send required field!');
+        return res.send({message:'Please send required field'});
+    }
+  }
+
+module.exports.m_polyDelete = function m_polyDelete(req, res){
+    if(req.body.kuchbhi)
+    {
+        let jsondata = JSON.parse(req.body.kuchbhi);
+        if(jsondata.poly_id)
+        {
+            db.any('delete from mobile_poly where aerogmsid=$1::integer;', [jsondata.poly_id])
+            .then(result1=>{
+                return res.send({status:'success', message:"Polygon deleted successfully."});
+            })
+            .catch(error=>{
+                return res.send({status:'error', message:error});
+            })
+        }
+        else
+        {
+            console.log('please send poly_id!');
+            return res.send({message:'Please send poly_id!'});
+        }
+    }
+    else{
+        console.log('please send required field!');
+        return res.send({message:'Please send required field'});
+    }
   }

@@ -1,4 +1,5 @@
 import {combineReducers} from 'redux';
+import attrinfo from './reducer_attrInfo';
 import authReducer from './reducer_auth';
 import usersReducer from './reducer_users';
 import projectReducer from './reducer_project';
@@ -15,6 +16,7 @@ import activeLayerReducer from './reducer_active_layer';
 // });
 
 const AppReducer = combineReducers({
+    attrinfo: attrinfo,
     userDetails: authReducer,
     users:usersReducer,
     projects:projectReducer,

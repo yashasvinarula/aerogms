@@ -21,7 +21,7 @@ import buddy from '../../images/buddy.png';
 import bhim from '../../images/bhim.png';
 import tez from '../../images/tez.png';
 import importLayer from '../../images/ImportLayerPNG.png';
-import {create_layer, rename_layer, get_layers, addUserComplaint, makelayerafterimport, makeLayerActive} from '../../actions'
+import {create_layer, rename_layer, get_layers, addUserComplaint, makelayerafterimport, makeLayerActive, get_feature} from '../../actions'
 import _ from 'lodash';
 import axios from 'axios';
 import SpecificQuery from './specificQuery';
@@ -131,6 +131,24 @@ class ProjectView extends Component{
         this.createNewLayer = this.createNewLayer.bind(this);
         this.GoToUserDash = this.GoToUserDash.bind(this);
         this.updateAttributes = this.updateAttributes.bind(this);
+        this.addFilters = this.addFilters.bind(this); // for filters
+        this.addSangatFilters = this.addSangatFilters.bind(this);
+    }
+    addFilters() {
+        var categ = document.getElementById('filter-category').value;
+        var from = document.getElementById('from-value').value;
+        var to = document.getElementById('to-value').value;
+        window.addSikarLayer(categ, from, to);
+    }
+    addSangatFilters() {
+        var ward_no = document.getElementById("ward_area").value;
+        var from_area = document.getElementById("from_area").value;
+        var to_area = document.getElementById("to_area").value;
+        if(!ward_no || !from_area || !to_area) {
+            window.addSnagatMandiLayer(null, null, null);
+        } else {
+            window.addSnagatMandiLayer(ward_no, from_area, to_area);
+        }
     }
     showFromMonth() {
         const { from, to } = this.state;
@@ -155,22 +173,9 @@ class ProjectView extends Component{
         debugger
         if(this.state.attrInfoList.length>0)
         {
+            this.props.get_feature(this.state.attrInfoList);
             if(!this.state.editAttributes) {
                     return this.state.attrInfoList.map((item) => {
-                        //alert(item.value)
-                        // if(this.state.activelayerdata === undefined)
-                        // {
-                        //     if(item.name == 'Aero_id' || item.name == 'Property_id_old' || item.name == 'Property_id_new' || item.name == 'Tax_status'|| item.name=='Financial_year' || item.name=='Amount_paid'|| item.name=='Address'|| item.name=='Area_sqyard')
-                        //     {
-                        //         return (<tr key={item.name}>
-                        //             <td>{item.name}</td>
-                        //             <td>{item.value}</td>
-                        //         </tr>)
-                        //     }
-                           
-                        // }
-                        // else
-                        // {
                             if(item.name === 'Tax_status' && item.value === 'NO'){
                                 return (<tr key={item.name}>
                                     <td>{item.name}</td>
@@ -184,8 +189,6 @@ class ProjectView extends Component{
                                     <td>{item.value}</td>
                                 </tr>)
                             }
-                        //}
-                      
                     });
             } else {
               
@@ -208,6 +211,7 @@ class ProjectView extends Component{
         }
     }
     updateAttributes() {
+        debugger;
         if(this.state.editAttributes === true)
         {
             var that =this;
@@ -462,7 +466,13 @@ class ProjectView extends Component{
         }
         if(Object.keys(this.props.layers).length>0){
             return _.map(this.props.layers, layer=>{
-                return (<li key={layer.orig_name}><Layer layer={layer} changeLayerNameParent={(name)=>{this.props.rename_layer(layer.lay_id, name)}}  setActiveLayer={(box)=>{this.props.makeLayerActive({activelayerdata:{activeLayer:layer.orig_name, activeLayer_id:layer.lay_id, activeLayer_type:layer.type, activeLayer_box:box}});this.createNewLayer(layer.type);window.zoomTo(box)}} resetActiveLayer={()=>{window.lyrhighlighter ? window.m.removeLayer(window.lyrhighlighter):'';this.props.makeLayerActive({activelayerdata:{activeLayer:'', activeLayer_id:'', activeLayer_type:'', activeLayer_box:''}})}} deleteTempLayer={(name)=>{this.deleteTempLayer(name)}} doLogout={()=>{this.props.doLogout()}}/></li>);
+                return (<li key={layer.orig_name}>
+                            <Layer layer={layer} changeLayerNameParent={(name)=>{this.props.rename_layer(layer.lay_id, name)}}  
+                                setActiveLayer={(box)=>{this.props.makeLayerActive({activelayerdata:{activeLayer:layer.orig_name, 
+                                    activeLayer_id:layer.lay_id, activeLayer_type:layer.type, activeLayer_box:box}});
+                                this.createNewLayer(layer.type); window.zoomTo(box)}} resetActiveLayer={()=>{window.lyrhighlighter ? window.m.removeLayer(window.lyrhighlighter):'';
+                                this.props.makeLayerActive({activelayerdata:{activeLayer:'', activeLayer_id:'', activeLayer_type:'', activeLayer_box:''}})}} 
+                                deleteTempLayer={(name)=>{this.deleteTempLayer(name)}} doLogout={()=>{this.props.doLogout()}}/></li>);
             })
         }
     }
@@ -888,8 +898,9 @@ class ProjectView extends Component{
                                     }   
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Logout" onClick={this.props.doLogout}/></NavItem>
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Dashboard" onClick={()=>{this.GoToUserDash()}}/></NavItem>
-                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Layer Query" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}/></NavItem>
+                                    {/* <NavItem className="nav-items"><input className="btnLogout" type="button" value="Layer Query" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}/></NavItem> */}
                                     <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={()=>{this.state.taxMap?this.setState({taxMap:false}):this.setState({taxMap:true})}}/></NavItem>
+                                    <NavItem className="nav-items" onClick={()=>window.addSikarLayer(null, null, null)}>Sikar Layer</NavItem>
                                     {/* <NavItem>
                                         <select id='ddlPropertyCat'>
                                             <option value="0">-Type-</option>
@@ -936,6 +947,34 @@ class ProjectView extends Component{
                                     {/* <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Query Dashboard" 
                                         onClick={()=>{this.setState({queryTable : true})}}/></NavItem> */}
                                 </Navbar>
+                                {/* <div className="filter-div">
+                                    <div>
+                                        <select name="Categories" id="filter-category">
+                                            <option selected>Select Category</option>
+                                            <option value="Public and Semipublic">Public and Semipublic</option>
+                                            <option value="Residential">Residential</option>
+                                            <option value="Circulation">Circulation</option>
+                                            <option value="Public &amp; Semi-Public">Public &amp; Semi-Public</option>
+                                            <option value="Agricultural">Agricultural</option>
+                                            <option value="Public &amp; Semi Public">Public &amp; Semi Public</option>
+                                            <option value="Industrial">Industrial</option>
+                                            <option value="Others">Others</option>
+                                            <option value="Govermental">Govermental</option>
+                                            <option value="Governmental">Governmental</option>
+                                            <option value="Public and Semi Public">Public and Semi Public</option>
+                                            <option value="Recreational">Recreational</option>
+                                            <option value="Public and Semi-public">Public and Semi-public</option>
+                                            <option value="Commercial">Commercial</option>
+                                        </select>
+                                        <label>Area</label>
+                                        <label>From</label>
+                                        <input id="from-value" />
+                                        <label>To</label>
+                                        <input id="to-value" />
+                                        <button onClick={this.addFilters}>Ok</button>
+                                        <button>Ok</button>
+                                    </div>
+                                </div> */}
                                 {
                                     this.state.queryTable ?
                                     (
@@ -1057,11 +1096,12 @@ class ProjectView extends Component{
                                 </div>
                             </div>
                             <div  id="infoDiv" className={this.state.infoBoxShow ? 'project-infobox':'project-infobox infoDiv'}>    
+                            {/* <div  id="infoDiv" className={this.state.attrInfoList ? 'project-infobox':'project-infobox infoDiv'}>  */}
                             {/* <div  id="infoDiv" className="project-infobox">    */}
                                 <Image src={CrossIcon} className="cross-icon" onClick={()=>this.setState({infoBoxShow:false})}/>
                                 <h3 className="text-center">Info Panel</h3>
-                                {/* <Button onClick={() => {this.state.editAttributes?this.setState({editAttributes : false}):this.setState({editAttributes : true})}}>Edit Attributes</Button>
-                                <Button onClick={this.updateAttributes} >Save</Button> */}
+                                <Button onClick={() => {this.state.editAttributes?this.setState({editAttributes : false}):this.setState({editAttributes : true})}}>Edit Attributes</Button>
+                                <Button onClick={this.updateAttributes} >Save</Button>
                                 <Table striped className="info-panel-attr-list scroll">
                                     <caption className="text-center">Attributes Information</caption>
                                     <thead>
@@ -1072,7 +1112,7 @@ class ProjectView extends Component{
                                     </thead>
                                     <tbody id="attr-tbody">
                                         {
-                                           this.renderAttrInfo()
+                                            this.renderAttrInfo()
                                         }
                                     </tbody>
                                 </Table>
@@ -1245,12 +1285,29 @@ class ProjectView extends Component{
 </style>
       </div>
       <NavItem className="nav-items "><input className="btnLogout show-map-btn" style={{marginTop:15}} type="button" value="Show Map" onClick={()=>{window.addSnagatMandiLayer()}}/></NavItem>
-      <div  style={{marginTop:15}} className="paid-unpaid-container"><Image src={'http://122.176.113.56:8081/geoserver/wms?Service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=25&HEIGHT=25&STYLES=AeroGMS:sm_red_leg&LAYER=AeroGMS:sangat_mandi_props&STYLE=AeroGMS:sm_green_leg'} className="paid-unpaid" /><span>Paid</span></div>
-      <div className="paid-unpaid-container"><Image src={'http://122.176.113.56:8081/geoserver/wms?Service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=25&HEIGHT=25&STYLES=AeroGMS:sm_red_leg&LAYER=AeroGMS:sangat_mandi_props&STYLE=AeroGMS:sm_red_leg'} className="paid-unpaid" /><span>Unpaid</span></div>
-      <div className="paid-unpaid-container"><Image src={'http://122.176.113.56:8081/geoserver/wms?Service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=25&HEIGHT=25&STYLES=AeroGMS:sm_red_leg&LAYER=AeroGMS:sangat_mandi_props&STYLE=AeroGMS:sm_yellow_leg'} className="paid-unpaid" /><span>Exempted</span></div>
+      <div  style={{marginTop:15}} className="paid-unpaid-container"><Image src={'http://localhost:8081/geoserver/wms?Service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=25&HEIGHT=25&STYLES=AeroGMS:sm_red_leg&LAYER=AeroGMS:sangat_mandi_props&STYLE=AeroGMS:sm_green_leg'} className="paid-unpaid" /><span>Paid</span></div>
+      <div className="paid-unpaid-container"><Image src={'http://localhost:8081/geoserver/wms?Service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=25&HEIGHT=25&STYLES=AeroGMS:sm_red_leg&LAYER=AeroGMS:sangat_mandi_props&STYLE=AeroGMS:sm_red_leg'} className="paid-unpaid" /><span>Unpaid</span></div>
+      <div className="paid-unpaid-container"><Image src={'http://localhost:8081/geoserver/wms?Service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=25&HEIGHT=25&STYLES=AeroGMS:sm_red_leg&LAYER=AeroGMS:sangat_mandi_props&STYLE=AeroGMS:sm_yellow_leg'} className="paid-unpaid" /><span>Exempted</span></div>
+                            {/* <select id="ward_area">
+                                <option selected value="Select Ward">Select Ward</option>
+                                <option value="Ward-01">Ward-01</option>
+                                <option value="Ward-02">Ward-02</option>
+                                <option value="Ward-03">Ward-03</option>
+                                <option value="Ward-04">Ward-04</option>
+                                <option value="Ward-05">Ward-05</option>
+                                <option value="Ward-06">Ward-06</option>
+                                <option value="Ward-07">Ward-07</option>
+                                <option value="Ward-08">Ward-08</option>
+                                <option value="Ward-09">Ward-09</option>
+                            </select>
+                            <label>Area</label>
+                            <label>From</label>
+                            <input id="from_area" />
+                            <label>To</label>
+                            <input id="to_area" /> */}
+                            {/* <NavItem className="nav-items "><input className="btnLogout show-map-btn" style={{marginTop:15}} type="button" value="Show Map" onClick={this.addSangatFilters}/></NavItem> */}
                             </div>
                        </div>
-                      
                         );
                     }
                 }}
@@ -1263,4 +1320,4 @@ function mapStateToProps({layers, userComplaint, activelayerdata}){
     return{layers, userComplaint, activelayerdata}
 }
 
-export default connect(mapStateToProps, {create_layer, rename_layer, get_layers, addUserComplaint, makelayerafterimport, makeLayerActive})(ProjectView);
+export default connect(mapStateToProps, {create_layer, rename_layer, get_layers, addUserComplaint, makelayerafterimport, makeLayerActive, get_feature})(ProjectView);
