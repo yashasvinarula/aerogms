@@ -4,7 +4,7 @@ var cntrlr = require('../controller/user_controller');
 var imprt_cntrlr = require('../controller/import_controller');
 var layer_cntrlr = require('../controller/layer_controller');
 const passport = require('passport');
-const auth = require('./Auth.js');9
+const auth = require('./Auth.js');
 const multer = require('multer');
 
 
@@ -41,6 +41,7 @@ router.post('/layer_col_update', layer_cntrlr.layer_col_update)
 router.post('/exis_layer_insert', auth.loggedIn, layer_cntrlr.exis_layer_insert);
 router.post('/update_layer_color', auth.loggedIn, layer_cntrlr.update_layer_color);
 router.post('/update_layer_attrib', auth.loggedIn, layer_cntrlr.update_layer_attrib);
+router.post('/search_attrib', auth.loggedIn, layer_cntrlr.search_attrib);
 
 router.post('/getmsevaToken', cntrlr.getmsevaToken);
 router.post('/downloadExcel', cntrlr.exportExcel);

@@ -5,7 +5,7 @@ import { stat } from 'fs';
 const initialstate={};
 
 export default function(state=initialstate, action){
-    debugger
+    // debugger
     try
     {
         if(action.error)

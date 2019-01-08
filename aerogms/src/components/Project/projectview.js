@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
-import { Navbar, NavItem, Image, DropdownButton, MenuItem, Modal, Button, Table, Tabs, Tab } from 'react-bootstrap/lib';
+import { Navbar, NavItem, Nav, Image, DropdownButton, MenuItem, Modal, Button, Table, Tabs, Tab } from 'react-bootstrap/lib';
 import {connect} from 'react-redux';
-import moment from 'moment';
 import { slide as Menu } from 'react-burger-menu';
 import MediaQuery from 'react-responsive';
 import Layer from './layer';
+import moment from 'moment';
+import AeroLogo from '../../images/AeroLogoHeader.png'
+import '../../css/property-tax.css';
 import Chat from './specificQuery';
 import BottomDrawer from './bottom-drawer';
 import Analytics from './analytics';
@@ -31,23 +33,23 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import { formatDate, parseDate } from 'react-day-picker/moment';
 
-const queryList = [
-    {
-        aero_id : 1234,
-        query_id : 1234,
-        date : '21 May, 2018',
-        subject : 'First complaint',
-        status : 'Pending',
-        description : 'First complaint in query list'
-    }
-];
+// const queryList = [
+//     {
+//         aero_id : 1234,
+//         query_id : 1234,
+//         date : '21 May, 2018',
+//         subject : 'First complaint',
+//         status : 'Pending',
+//         description : 'First complaint in query list'
+//     }
+// ];
 
-const attrInfoList = [
-    {name : 'aero_id', value : '22'},
-    {name : 'Area', value : '1234'},
-    {name : 'Perimeter', value : '4567'},
-    {name : 'date', value : '23 July, 2018'},
-];
+// const attrInfoList = [
+//     {name : 'aero_id', value : '22'},
+//     {name : 'Area', value : '1234'},
+//     {name : 'Perimeter', value : '4567'},
+//     {name : 'date', value : '23 July, 2018'},
+// ];
 
 const AddLayer = (
     <div className="icons-display text-center col-xs-6">
@@ -85,7 +87,7 @@ class ProjectView extends Component{
             queryForm : false,
             queryType : '',
             tabKey : 1, // for list of complaints and specific complaint
-            queryList : queryList, // list of all types queries
+            // queryList : queryList, // list of all types queries
             currentQueryIndex : 0, //index for current query row selected by default for 1st query row
             showSpecificQuery : true, // for showing specific query by default true for showing first query
             enableNext : 'prev-next-btn', // to enable css class on next button
@@ -101,10 +103,18 @@ class ProjectView extends Component{
             to: undefined,
             selFYear:'2018-2019',
             taxStatus:false,
+            searchLayer: false, // for search layer toggle
+            layerChoosen:false, // layer to be searched
+            dummyLayer: '', // for getting attributes
+            attrKeyList: [], // attributes for searching layer
+            selectedAttribName: '', // name of the attribute for search
+            selectedAttrValue: '', // value of the selected attribute for search
+            searchedFeatures: [], // list of the searched features
+            adminSearchOption: false,
+            adminOption: true, // for two options in the search for the admin
+            userAttributeSearchList: [], // list of attributes choosen by admin for user to search layer
         }
 
-        this.handleFromChange = this.handleFromChange.bind(this);
-        this.handleToChange = this.handleToChange.bind(this);
         this.closeImportModal = this.closeImportModal.bind(this);
         this.closeAddLayerModal = this.closeAddLayerModal.bind(this);
         this.addLayer = this.addLayer.bind(this);
@@ -133,6 +143,26 @@ class ProjectView extends Component{
         this.updateAttributes = this.updateAttributes.bind(this);
         this.addFilters = this.addFilters.bind(this); // for filters
         this.addSangatFilters = this.addSangatFilters.bind(this);
+        this.hideSearchLayer = this.hideSearchLayer.bind(this);
+        this.showSearchLayer = this.showSearchLayer.bind(this);
+        this.chooseLayer = this.chooseLayer.bind(this);
+        this.removeChoosedLayer = this.removeChoosedLayer.bind(this); 
+        this.getLayerAttributes = this.getLayerAttributes.bind(this);
+        this.selectedAttribute = this.selectedAttribute.bind(this);
+        this.selectedAttributeValue = this.selectedAttributeValue.bind(this);
+        this.searchFeatures = this.searchFeatures.bind(this);
+        this.chooseUserSearchAttributes = this.chooseUserSearchAttributes.bind(this);
+        this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    }
+
+    removeChoosedLayer() {
+        this.setState({layerChoosen: false});
+    }
+    hideSearchLayer(){
+        this.setState({searchLayer : false});
+    }
+    showSearchLayer() {
+        this.setState({searchLayer : true});
     }
     addFilters() {
         var categ = document.getElementById('filter-category').value;
@@ -149,6 +179,9 @@ class ProjectView extends Component{
         } else {
             window.addSnagatMandiLayer(ward_no, from_area, to_area);
         }
+        this.showFromMonth = this.showFromMonth.bind(this);
+        this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
     }
     showFromMonth() {
         const { from, to } = this.state;
@@ -158,17 +191,25 @@ class ProjectView extends Component{
         if (moment(to).diff(moment(from), 'months') < 2) {
           this.to.getDayPicker().showMonth(from);
         }
-      }
+    }
     handleFromChange(from) {
-        this.setState({ from });
+        // if(this.state.to !== "undefined" && this.state.from !== "undefined")
+        //     this.setState({ showMapBtn : true });
+        // else {
+            this.setState({ from })
+        // }
         console.log(from);
         console.log((moment(from).format("X") - 43200)*1000);
-      }
+    }
     handleToChange(to){
-        this.setState({ to }, this.showFromMonth);
+        // if(this.state.from !== "undefined" && this.state.to !== "undefined")
+        //     this.setState({ showMapBtn : true });
+        // else {
+            this.setState({ to }, this.showFromMonth);
+        // }
         console.log(to);
         console.log((moment(to).format("X") - 43200)*1000);
-      }
+    }
     renderAttrInfo() {
         debugger
         if(this.state.attrInfoList.length>0)
@@ -307,7 +348,6 @@ class ProjectView extends Component{
     openPartialDrawer() {
         this.setState({close : '', sliderPartial : 'slider-Partial', slider : '', more : true });
     }
-
     componentDidMount(){
         window.getLayerDataFromJS = this.getLayerDataFromJS;
         window.setAttrInfo = this.getAttrInfo;
@@ -472,7 +512,9 @@ class ProjectView extends Component{
                                     activeLayer_id:layer.lay_id, activeLayer_type:layer.type, activeLayer_box:box}});
                                 this.createNewLayer(layer.type); window.zoomTo(box)}} resetActiveLayer={()=>{window.lyrhighlighter ? window.m.removeLayer(window.lyrhighlighter):'';
                                 this.props.makeLayerActive({activelayerdata:{activeLayer:'', activeLayer_id:'', activeLayer_type:'', activeLayer_box:''}})}} 
-                                deleteTempLayer={(name)=>{this.deleteTempLayer(name)}} doLogout={()=>{this.props.doLogout()}}/></li>);
+                                deleteTempLayer={(name)=>{this.deleteTempLayer(name)}} doLogout={()=>{this.props.doLogout()}}
+                                chosedlayer={this.state.layerChoosen} removeChoosedLayer={this.removeChoosedLayer} 
+                                getLayerAttributes={this.getLayerAttributes} active_layer={this.props.activelayerdata.activeLayer} /></li>);
             })
         }
     }
@@ -630,7 +672,6 @@ class ProjectView extends Component{
     removeFeature(){
         window.removeSelFeature();
     }
-
     showCompBox(){
         this.setState({compBoxShow:!this.state.compBoxShow});
         this.setState({compboxvalue:''});
@@ -652,10 +693,9 @@ class ProjectView extends Component{
         this.setState({ 
             compboxvalue: e.target.value 
         });
-      }
+    }
 
     getTableData(){
-        
         if(Object.keys(this.props.userComplaint).length>0){
             return  _.map(this.props.userComplaint, complaint=>{
                 return (<tr><td>{complaint.sid}</td>
@@ -682,6 +722,101 @@ class ProjectView extends Component{
     showInfoBox()
     {
         this.setState({infoBoxShow:true});
+    }
+    getLayerAttributes(){
+        // debugger;
+        let layerName= this.state.dummyLayer
+        var that = this;
+       if(layerName)
+       {
+        this.servicecaller('layer_attribute', {layer:layerName}, function(err, data){
+            debugger
+            if(!err && data){
+                let keyList = [];
+                data.data.map((item) => {
+                    return keyList.push(item.name);
+                })
+                console.log(`keyList is ${keyList}`);
+                that.setState({attrKeyList: keyList});      
+                console.log(` Attr list is ${that.state.attrKeyList}`);
+            }
+            else
+            {
+                if(err.status === 'unauthorised')
+                {
+                    err.message ? alert(err.message):'';
+                    that.props.doLogout();
+                }
+                else{
+                    err.message ? alert(err.message):'';
+                }
+            }
+        });
+       }
+    }
+    chooseLayer() {
+        let layer_choosen = document.getElementById('select-layer').value;
+        debugger;
+        if(layer_choosen) {
+            this.setState({layerChoosen : layer_choosen, dummyLayer: layer_choosen, adminOption: true, adminSearchOption: false});
+        }
+        console.log(layer_choosen);
+    }
+    selectedAttribute() {
+        let attribName = document.getElementById('select-attrib').value;
+        this.setState({selectedAttribName : attribName});
+    }
+    selectedAttributeValue() {
+        let attribValue = document.getElementById('attrib-value').value;
+        this.setState({selectedAttrValue : attribValue});
+    }
+    searchFeatures() {
+        let that = this;
+        let layer = this.props.activelayerdata.activeLayer;
+        let attribute = this.state.selectedAttribName;
+        let attribValue = this.state.selectedAttrValue;
+        this.servicecaller('search_attrib', {layer:layer, attribute:attribute, attribValue:attribValue}, function(err, data){
+            debugger
+            if(!err && data){
+                that.setState({searchedFeatures : data.data});
+                console.log(that.state.searchedFeatures);
+                // alert(`Attributes are ${data.data[0]}`);
+                let style='';
+                    switch(that.props.activelayerdata.activeLayer_type)
+                    {
+                        case 'Point':
+                            style = 'point_hl';
+                            break;
+                        case 'Linestring':
+                            style = 'line_hl';
+                            break;
+                        case 'LineString':
+                            style = 'line_hl';
+                            break;
+                        case 'Polygon':
+                            style = 'polygon_hl';
+                            break;
+                    }
+                    window.updateWMSStyle(layer, style, attribute, attribValue);
+            }
+            else
+            {
+                if(err.status === 'unauthorised')
+                {
+                    err.message ? alert(err.message):'';
+                    that.props.doLogout();
+                }
+                else{
+                    err.message ? alert(err.message):'';
+                }
+            }
+        });
+    }
+    handleCheckboxChange() {
+
+    }
+    chooseUserSearchAttributes() {
+
     }
 
     render(){
@@ -874,8 +1009,14 @@ class ProjectView extends Component{
                         );
                     } else {
                         return (
-                            <div>
-                                <Navbar fixedTop style={{backgroundColor:'#9096a0'}}>
+                            <div className="projectview-container">
+                                <Navbar className="projectview-navbar" fixedTop style={{backgroundColor:'#9096a0'}}>
+                                    <Navbar.Header className="nav-img-header">
+                                        <Navbar.Brand>
+                                            <Image src={AeroLogo} className="aerologo-img" />
+                                        </Navbar.Brand>
+                                    </Navbar.Header>
+                                    <Nav className="navigation-nav">
                                     {
                                             (<NavItem className="nav-items"><input type="button" id="btnMakePoint" className="hide-btn"
                                             value="AddPoint" onClick={this.addPoint}/></NavItem>)
@@ -896,11 +1037,10 @@ class ProjectView extends Component{
                                             (<NavItem className="nav-items layer-btn"><input type="button" id="saveLayer" className="hide-btn"
                                             value="Save Layer" onClick={this.saveLayer}/></NavItem>)
                                     }   
-                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Logout" onClick={this.props.doLogout}/></NavItem>
-                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Dashboard" onClick={()=>{this.GoToUserDash()}}/></NavItem>
                                     {/* <NavItem className="nav-items"><input className="btnLogout" type="button" value="Layer Query" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}/></NavItem> */}
-                                    <NavItem className="nav-items"><input className="btnLogout" type="button" value="Tax Map" onClick={()=>{this.state.taxMap?this.setState({taxMap:false}):this.setState({taxMap:true})}}/></NavItem>
-                                    <NavItem className="nav-items" onClick={()=>window.addSikarLayer(null, null, null)}>Sikar Layer</NavItem>
+                                    <NavItem className="nav-items" onClick={this.state.searchLayer?this.hideSearchLayer:this.showSearchLayer}>Search Layer</NavItem>
+                                    <NavItem className="nav-items" onClick={()=>{this.state.taxMap?this.setState({taxMap:false}):this.setState({taxMap:true})}}>Tax Map</NavItem>
+                                    {/* <NavItem className="nav-items" onClick={()=>window.addSikarLayer(null, null, null)}>Sikar Layer</NavItem> */}
                                     {/* <NavItem>
                                         <select id='ddlPropertyCat'>
                                             <option value="0">-Type-</option>
@@ -946,7 +1086,12 @@ class ProjectView extends Component{
                                     <NavItem className="nav-items"><input className="" type="button" value="Show Map" onClick={()=>{window.addSnagatMandiLayer()}}/></NavItem> */}
                                     {/* <NavItem className="nav-items"><input className="tempButnWid" type="button" value="Query Dashboard" 
                                         onClick={()=>{this.setState({queryTable : true})}}/></NavItem> */}
+                                        {/* <NavItem className="nav-items" onClick={()=>{this.state.showLQueryBox?this.setState({showLQueryBox:false}):this.setState({showLQueryBox:true})}}>Layer Query</NavItem> */}
+                                        <NavItem className="nav-items" onClick={()=>{this.GoToUserDash()}}>Dashboard</NavItem>
+                                        <NavItem className="nav-items" onClick={this.props.doLogout}>Logout</NavItem>
+                                    </Nav>
                                 </Navbar>
+                                
                                 {/* <div className="filter-div">
                                     <div>
                                         <select name="Categories" id="filter-category">
@@ -1034,7 +1179,7 @@ class ProjectView extends Component{
                                     : ''
                                 }
                                     
-                            <div className=""> </div>
+                            {/* <div className=""> </div> */}
                             <div className="project-layer-box">
                                 <div>
                                     <h4 className="text-center">Project Title</h4>
@@ -1045,7 +1190,6 @@ class ProjectView extends Component{
                                         <Image src={importLayer} className="add-import-icons " />
                                         <span className="margin-outside">Import Layer</span>
                                     </div>
-                                                
                                     <DropdownButton 
                                         bsStyle="default"
                                         noCaret
@@ -1095,6 +1239,96 @@ class ProjectView extends Component{
                                     </ul>
                                 </div>
                             </div>
+                            {
+                                this.state.searchLayer ? 
+                                    (
+                                        <div className="search-div">
+                                            <label className="inline_block">Select Layer</label>
+                                            <select className="inline_block" onChange={this.chooseLayer} id="select-layer">
+                                                <option selected>Select Layer Name</option>
+                                                {
+                                                    _.map(this.props.layers, layer=> {
+                                                        return <option value={layer.orig_name}>{layer.orig_name}</option>
+                                                    })
+                                                }
+                                            </select>
+                                            {
+                                                this.state.attrKeyList.length !== 0 && this.props.activelayerdata.activeLayer === this.state.dummyLayer ?
+                                                    (
+                                                        <div>
+                                                            {
+                                                                this.props.userDetails.isadmin && this.state.adminOption ?
+                                                                    (<div>
+                                                                       <p><a href="#" onClick={() => this.setState({adminSearchOption : false, adminOption : false})}>Select Attributes for user</a></p>
+                                                                       <p><a href="#" onClick={() => this.setState({adminSearchOption : true, adminOption : false})}>Search by Attribute</a></p>
+                                                                    </div>)
+                                                                :   ''
+                                                            }
+                                                            {/* {
+                                                                !this.props.userDetails.isadmin || this.state.adminSearchOption ? 
+                                                                    (<div>
+                                                                        <label>Select Attribute</label>
+                                                                        <select onChange={this.selectedAttribute} id="select-attrib">
+                                                                            <option selected>Select Attribute Name</option>
+                                                                            {
+                                                                                this.state.attrKeyList.map((attr => {
+                                                                                    return <option value={attr}>{attr}</option>
+                                                                                }))
+                                                                            }
+                                                                        </select>
+                                                                        <input id="attrib-value" onChange={this.selectedAttributeValue} placeholder="Enter attribute value"></input>
+                                                                        {
+                                                                            this.state.selectedAttrValue ?
+                                                                                <button onClick={this.searchFeatures}>Search</button>
+                                                                                : ''
+                                                                        }
+                                                                    </div>)
+                                                                : ''    
+                                                            } */}
+                                                            {
+                                                                this.state.adminSearchOption ?
+                                                                    (<div>
+                                                                        <label className="inline_block">Select Attribute</label>
+                                                                        <select className="inline_block" onChange={this.selectedAttribute} id="select-attrib">
+                                                                            <option selected>Select Attribute Name</option>
+                                                                            {
+                                                                                this.state.attrKeyList.map((attr => {
+                                                                                    return <option value={attr}>{attr}</option>
+                                                                                }))
+                                                                            }
+                                                                        </select>
+                                                                        <input id="attrib-value" onChange={this.selectedAttributeValue} placeholder="Enter attribute value"></input>
+                                                                        {
+                                                                            this.state.selectedAttrValue ?
+                                                                                <button onClick={this.searchFeatures}>Search</button>
+                                                                                : ''
+                                                                        }
+                                                                    </div>)
+                                                                :   ''
+                                                            }
+                                                            {
+                                                                !this.state.adminOption && !this.state.adminSearchOption ? 
+                                                                    ((<div>
+                                                                        <label>Choose Attributes</label>
+                                                                        <ul>
+                                                                            {
+                                                                                this.state.attrKeyList.map((attr) => {
+                                                                                    return (<li><input onChange={this.handleCheckboxChange()} type="checkbox" value={attr} />{attr}</li>)
+                                                                                })
+                                                                            }
+                                                                        </ul>
+                                                                        <button onClick={this.chooseUserSearchAttributes}>Save</button>
+                                                                    </div>))
+                                                                : ''
+                                                            }
+                                                        </div>
+                                                    )
+                                                : ''
+                                            } 
+                                        </div>
+                                    )
+                                : ''
+                            }
                             <div  id="infoDiv" className={this.state.infoBoxShow ? 'project-infobox':'project-infobox infoDiv'}>    
                             {/* <div  id="infoDiv" className={this.state.attrInfoList ? 'project-infobox':'project-infobox infoDiv'}>  */}
                             {/* <div  id="infoDiv" className="project-infobox">    */}
@@ -1212,6 +1446,32 @@ class ProjectView extends Component{
                                     <input style={{marginLeft:5, marginTop:10, visibility:"true"}}  type="button" id="hideInfo2" value="cancel" onClick={this.showCompBox}/>
                                 </div>
                             </div>
+                            
+                            {/* Searched features list */}
+                            {
+                                this.state.searchedFeatures.length > 0 ?
+                                (
+                                    <div id="searched-features">
+                                        <Table striped className="scroll">
+                                            <caption className="text-center">{this.state.dummyLayer} Searched Features</caption>
+                                            <thead>
+                                                <tr className="search-list">
+                                                    <th className=" text-center">aero_id</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    this.state.searchedFeatures.map((item) => 
+                                                    {
+                                                        debugger
+                                                        return (<tr className="search-list search-result-item " onClick={window.featureHL(this.props.activelayerdata.activeLayer, this.props.activelayerdata.activeLayer_type, item.aero_id)}><td>{item.aero_id}</td></tr>)
+                                                    })
+                                                }
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                ) : ''
+                            }
                             <div  id="inflqueryBox" className={this.state.showLQueryBox ? 'project-infobox':'project-infobox infoDiv'}> 
                             </div>
                             <div  id="taxqueryBox" className={this.state.taxMap ? 'sangatmandi-infobox':'sangatmandi-infoboxhide'}> 

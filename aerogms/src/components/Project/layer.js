@@ -20,10 +20,6 @@ import {BASE_URL} from '../../config';
 const MenuImage = ( <Image src={InfoIcon} className="menu-icon inline-display margin-outside" />);
 const MenuIcon = ( <Image src={InfoIcon} className="attr-menu-icon" />);
 
-var obj = {a: 123, b: "4 5 6"};
-var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
-let anch = '<a href="data:' + data + 'id="download_json" download="data.json">download JSON</a>';
-
 class Layer extends Component {
     constructor(props) {
         super(props);
@@ -59,8 +55,21 @@ class Layer extends Component {
         this.handleColorChange = this.handleColorChange.bind(this);
         this.downloadExcel = this.downloadExcel.bind(this);
         this.downloadGeoJson = this.downloadGeoJson.bind(this);
+        this.choosenLayerActive = this.choosenLayerActive.bind(this);
     };
 
+    choosenLayerActive() {
+        debugger;
+        if(this.props.chosedlayer == this.props.layer.orig_name) {
+            if(this.props.chosedlayer !== this.props.active_layer)
+                document.getElementById(`${this.props.layer.lay_id}`).click();
+            // let attrKeyList = this.state.attributes;
+            // this.getLayerSchema();
+            // this.props.getAttrKeyList(attrKeyList)
+            this.props.getLayerAttributes();
+            this.props.removeChoosedLayer();
+        }
+    }
     downloadGeoJson() {
         debugger;
         let layer_name = this.props.layer.orig_name;
@@ -405,6 +414,7 @@ class Layer extends Component {
     }
 
     getLayerSchema(){
+        debugger;
         let layerName= this.props.layer.orig_name;
         var that = this;
        if(layerName)
@@ -618,7 +628,11 @@ class Layer extends Component {
                                 <h6 className="layer-type margin-outside">{'(' + this.props.layer.type + ')'}</h6>
                             </div>
                           {/* <Button id="zoomBtn" onClick={}>Zoom</Button> */}
-                            
+                            {
+                                this.props.chosedlayer ?
+                                    this.choosenLayerActive()
+                                : ''
+                            }
                             <DropdownButton
                                 title={MenuImage}
                                 noCaret

@@ -608,3 +608,22 @@ module.exports.update_layer_attrib = function(req, res){
         return res.status(400).send({status:'error', message:error.message});
     })
 }
+// for searching according to layer attributes
+module.exports.search_attrib = (req, res) => {
+    console.log(req.body);
+    // let value = req.body.attribValue.replace(/"/g, '');
+    let layer = req.body.layer;
+    console.log(req.body.attribValue);
+    db.any('select * from public.' + req.body.layer + ' where ' + req.body.attribute + '=' + "'" + req.body.attribValue + "'" + ';')
+    .then((result) => {
+        if(result.length > 0) {
+            console.log(result);
+            return res.status(200).send({status : 'success', message : 'Attributes successfully received', data : result});
+        } else {
+            return res.status(400).send({status : 'fail', message : 'Error in receiving attributes'});
+        }
+    }).catch((error) => {
+        console.log('ERROR:', error); // print the error;
+        return res.status(400).send({status:'error', message:error.message});
+    });
+}

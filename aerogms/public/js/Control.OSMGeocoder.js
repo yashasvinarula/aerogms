@@ -2,7 +2,6 @@ if (typeof console == "undefined") {
 	this.console = { log: function (msg) { /* do nothing since it would otherwise break IE */} };
 }
 
-
 L.Control.OSMGeocoder = L.Control.extend({
 	options: {
 		collapsed: true,
@@ -39,7 +38,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 		L.DomEvent.disableClickPropagation(container);
 
 		var form = this._form = L.DomUtil.create('form', className + '-form');
-		form.style = 'margin: 0 0 -10px;';
+		// form.style = 'margin: 0 0 -10px;';
 		var input = this._input = document.createElement('input');
 		input.type = "text";
 		input.placeholder = this.options.placeholder || '';
@@ -47,7 +46,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 		var submit = document.createElement('input');
 		submit.type = "submit";
 		submit.value = this.options.text;
-		submit.style = 'margin-top: -10px;height: 29px;';
+		// submit.style = 'margin-top: -10px;height: 29px;';
 
 		form.appendChild(input);
 		form.appendChild(submit);

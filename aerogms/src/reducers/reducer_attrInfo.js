@@ -4,7 +4,7 @@ import _ from 'lodash';
 const initialstate = {};
 
 export default function(state=initialstate, action){
-    debugger
+    // debugger
     try
     {
         if(action.error)

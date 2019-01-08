@@ -1,0 +1,9 @@
+.aero-img {
+    height: 70px;
+}
+.show-map-btn {
+    visibility: block;
+}
+.hide-show-map-btn {
+    visibility: hidden;
+}

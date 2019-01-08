@@ -16,7 +16,6 @@ import FAQ from './components/faq';
 import Feedback from './components/feedback';
 import UserDashboard from './components/Dashboard/user-dashboard';
 import ProjectView from './components/Project/projectview';
-
 import {connect} from 'react-redux';
 import {doLogin, doLogout} from './actions'
 
