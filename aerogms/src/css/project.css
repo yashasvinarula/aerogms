@@ -21,9 +21,18 @@
     padding: 10px;
     border-bottom: 2px solid lightgray;
 }
-#searched-features {
+.searched-features {
     position: absolute;
     top: 230px;
+    right: 0;
+    width: 300px;
+    background-color: #fff;
+    padding: 10px;
+    z-index: 999;
+}
+.searched-features-2 {
+    position: absolute;
+    top: 70px;
     right: 0;
     width: 300px;
     background-color: #fff;
@@ -164,6 +173,20 @@ input[type=button] {
     /* min-height: 330px;
     max-height: 719px; */
     /* height: 400px; */
+    min-height: 500px;
+    position: absolute;
+    z-index: 1000;
+    right: 0;
+    top: 220px;
+    background:#fff;
+    display: block;
+    box-shadow: #036;
+}
+.project-infobox-2 {
+    width: 300px;
+    /* min-height: 330px;
+    max-height: 719px; */
+    /* height: 400px; */
     min-height: 150px;
     position: absolute;
     z-index: 1000;
@@ -172,6 +195,7 @@ input[type=button] {
     background:#fff;
     display: block;
     box-shadow: #036;
+    border-top: 2px solid lightgray;
 }
 .infoDiv {
     display: none;

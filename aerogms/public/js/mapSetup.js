@@ -747,7 +747,7 @@ function initMap(){
         }
     }
   
-    function updateWMSStyle(layName, laystyle, attribute, attrValue){
+    function updateWMSStyle2(layName, laystyle, attribute, attrValue){
         debugger
         let isLayerExist = null;
         if(layName != undefined && layName!= null){
@@ -775,29 +775,29 @@ function initMap(){
             }
         }
     }
-    // function updateWMSStyle(layName, laystyle){
-    //     debugger
-    //     let isLayerExist = null;
-    //     if(layName != undefined && layName!= null){
-    //         isLayerExist = wmsLayers.filter(layer=>{
-    //             if(layer.options){
-    //                 debugger
-    //                 if(layer.options.layers.split(':')[1] == layName){
-    //                     return layer;
-    //                 }
-    //                 else{
-    //                     if(layer.wmsParams.styles.split('_')[1])
-    //                     {
-    //                         layer.wmsParams.styles = layer.wmsParams.styles.split('_')[0];
-    //                     }
-    //                 }
-    //             }
-    //         })
-    //         if(isLayerExist.length == 1){
-    //             isLayerExist[0].setParams({styles:laystyle}, false);
-    //         }
-    //     }
-    // }
+    function updateWMSStyle(layName, laystyle){
+        debugger
+        let isLayerExist = null;
+        if(layName != undefined && layName!= null){
+            isLayerExist = wmsLayers.filter(layer=>{
+                if(layer.options){
+                    debugger
+                    if(layer.options.layers.split(':')[1] == layName){
+                        return layer;
+                    }
+                    else{
+                        if(layer.wmsParams.styles.split('_')[1])
+                        {
+                            layer.wmsParams.styles = layer.wmsParams.styles.split('_')[0];
+                        }
+                    }
+                }
+            })
+            if(isLayerExist.length == 1){
+                isLayerExist[0].setParams({styles:laystyle}, false);
+            }
+        }
+    }
     // cql_filter : "categories = 'Agricultural'"
     function hideWMSLayer(layName){
         debugger

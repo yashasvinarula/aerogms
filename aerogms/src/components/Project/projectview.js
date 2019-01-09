@@ -109,6 +109,7 @@ class ProjectView extends Component{
             attrKeyList: [], // attributes for searching layer
             selectedAttribName: '', // name of the attribute for search
             selectedAttrValue: '', // value of the selected attribute for search
+            showSearchedFeatures: false,
             searchedFeatures: [], // list of the searched features
             adminSearchOption: false,
             adminOption: true, // for two options in the search for the admin
@@ -150,11 +151,38 @@ class ProjectView extends Component{
         this.getLayerAttributes = this.getLayerAttributes.bind(this);
         this.selectedAttribute = this.selectedAttribute.bind(this);
         this.selectedAttributeValue = this.selectedAttributeValue.bind(this);
-        this.searchFeatures = this.searchFeatures.bind(this);
-        this.chooseUserSearchAttributes = this.chooseUserSearchAttributes.bind(this);
+        this.searchFeatures = this.searchFeatures.bind(this); // to search the features after inserting values in form inputs
+        this.chooseUserSearchAttributes = this.chooseUserSearchAttributes.bind(this); // to choose the attributes by admin for search by the user
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+        this.normalLayer = this.normalLayer.bind(this); // to bring the layer back to normal form
     }
-
+    normalLayer() {
+        debugger
+        if(this.state.searchedFeatures.length > 0) {
+            let style = '';
+            switch(this.props.activelayerdata.activeLayer_type)
+            {
+                case 'Point':
+                    style = 'point_hl';
+                    break;
+                case 'Linestring':
+                    style = 'line_hl';
+                    break;
+                case 'LineString':
+                    style = 'line_hl';
+                    break;
+                case 'Polygon':
+                    style = 'polygon_hl';
+                    break;
+            }
+            let emptyArray = []; // to empty the state's searchedFeatures array
+            this.setState({searchLayer : false, searchFeatures : [...emptyArray]});
+            console.log(`Searched features are : ${this.state.searchedFeatures}`);
+            window.updateWMSStyle(this.props.activelayerdata.activeLayer, style);
+        } else {
+            this.setState({searchLayer : false});
+        }
+    }
     removeChoosedLayer() {
         this.setState({layerChoosen: false});
     }
@@ -778,7 +806,7 @@ class ProjectView extends Component{
         this.servicecaller('search_attrib', {layer:layer, attribute:attribute, attribValue:attribValue}, function(err, data){
             debugger
             if(!err && data){
-                that.setState({searchedFeatures : data.data});
+                that.setState({searchedFeatures : data.data, showSearchedFeatures : true});
                 console.log(that.state.searchedFeatures);
                 // alert(`Attributes are ${data.data[0]}`);
                 let style='';
@@ -797,7 +825,7 @@ class ProjectView extends Component{
                             style = 'polygon_hl';
                             break;
                     }
-                    window.updateWMSStyle(layer, style, attribute, attribValue);
+                    window.updateWMSStyle2(layer, style, attribute, attribValue);
             }
             else
             {
@@ -1243,6 +1271,7 @@ class ProjectView extends Component{
                                 this.state.searchLayer ? 
                                     (
                                         <div className="search-div">
+                                            <Image src={CrossIcon} className="cross-icon" onClick={this.normalLayer}></Image>
                                             <label className="inline_block">Select Layer</label>
                                             <select className="inline_block" onChange={this.chooseLayer} id="select-layer">
                                                 <option selected>Select Layer Name</option>
@@ -1329,7 +1358,7 @@ class ProjectView extends Component{
                                     )
                                 : ''
                             }
-                            <div  id="infoDiv" className={this.state.infoBoxShow ? 'project-infobox':'project-infobox infoDiv'}>    
+                            <div  id="infoDiv" className={this.state.infoBoxShow ? ( this.state.searchLayer ? 'project-infobox' : 'project-infobox-2'):'project-infobox infoDiv'}>    
                             {/* <div  id="infoDiv" className={this.state.attrInfoList ? 'project-infobox':'project-infobox infoDiv'}>  */}
                             {/* <div  id="infoDiv" className="project-infobox">    */}
                                 <Image src={CrossIcon} className="cross-icon" onClick={()=>this.setState({infoBoxShow:false})}/>
@@ -1449,9 +1478,10 @@ class ProjectView extends Component{
                             
                             {/* Searched features list */}
                             {
-                                this.state.searchedFeatures.length > 0 ?
+                                this.state.searchedFeatures.length > 0 && this.state.showSearchedFeatures ?
                                 (
-                                    <div id="searched-features">
+                                    <div id="searched-features" className={this.state.searchLayer ? 'searched-features' : 'searched-features-2'}>
+                                        <Image src={CrossIcon} className="cross-icon" onClick={() => this.setState({showSearchedFeatures : false})}></Image>
                                         <Table striped className="scroll">
                                             <caption className="text-center">{this.state.dummyLayer} Searched Features</caption>
                                             <thead>

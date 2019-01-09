@@ -15,11 +15,12 @@ const  morgan = require('morgan');
 const winston = require('./config/winston');
 
 
-app.set('port', config.secdata.ser_port);
-//app.use(express.static(path.join(__dirname, './aerogms/public')));
+// app.set('port', config.secdata.ser_port);
+app.set('port', 4001);
+app.use(express.static(path.join(__dirname, './aerogms/public')));
 //app.use(morgan('combined', { stream: winston.stream }));
 
-app.use(express.static(path.join(__dirname, './aerogms/build')));
+// app.use(express.static(path.join(__dirname, './aerogms/build')));
 //Adding CORS support
 app.all('*', function (req, res, next) {
     // Set CORS headers: allow all origins, methods, and headers: you may want to lock this down in a production environment
