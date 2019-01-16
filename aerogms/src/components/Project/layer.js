@@ -12,6 +12,7 @@ import axios from 'axios';
 import Feature from './featureInfo';
 import TextIcon from '../../images/TextIcon.png';
 import NumberIcon from '../../images/NumberIcon.png';
+import Download_Loader from '../../images/download_loader.gif';
 import {connect} from 'react-redux';
 import {delete_layer, updateLayerActive, updateLayerColor} from '../../actions';
 import _ from 'lodash';
@@ -36,6 +37,7 @@ class Layer extends Component {
             showAttrForm : false,
             renameAttribute : false,
             selectedColor : '0000ff',
+            downloadShape : false,
         }
         this.makeLayerVisible = this.makeLayerVisible.bind(this);
         this.makeLayerInVisible = this.makeLayerInVisible.bind(this);
@@ -56,8 +58,28 @@ class Layer extends Component {
         this.downloadExcel = this.downloadExcel.bind(this);
         this.downloadGeoJson = this.downloadGeoJson.bind(this);
         this.choosenLayerActive = this.choosenLayerActive.bind(this);
+        this.downloadShapefile = this.downloadShapefile.bind(this);
     };
 
+    downloadShapefile() {
+        debugger;
+        this.setState({downloadShape : true});
+        axios.get(`${BASE_URL}/downloadShapeFile?layer_name=${this.props.layer.orig_name}`, {responseType : 'arraybuffer'}).then((result) => {
+            // axios.post(`${BASE_URL}/downloadShapeFile`, {layer_name : this.props.layer.orig_name}).then((result) => {
+            debugger
+            console.log(result);
+            const url = window.URL.createObjectURL(new Blob([result.data]), {type : 'arrayBuffer'});
+            this.setState({downloadShape : false});
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${this.props.layer.orig_name}.zip`);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+        }).catch((err) => {
+            alert(err);
+        });
+    }
     choosenLayerActive() {
         debugger;
         if(this.props.chosedlayer == this.props.layer.orig_name) {
@@ -93,13 +115,23 @@ class Layer extends Component {
         });
     }
     downloadExcel() {
+        
         debugger;
         let layer_name = this.props.layer.orig_name;
         axios.post(`${BASE_URL}/downloadExcel`, {layer_name : layer_name })
         .then(response=>{
+            // debugger;
+            // let file = response.data.filename;
+            // window.location.href = `http://localhost:4001/${file}`
             debugger;
             let file = response.data.filename;
-            window.location.href = `http://localhost:3001/${file}`
+            console.log(response)
+            // window.location = `/${file}`;
+            // window.open('/download_excel', '_self');
+            var link = document.createElement('a');
+            link.href = `/${file}`;
+            link.download = `${file}`;
+            link.click();
         })
         .catch(err=>{
             alert(err);
@@ -122,21 +154,18 @@ class Layer extends Component {
             alert('First save layer then change its color!');
             this.setState({colorPicker:false});
         }
-    };
-    
+    }
     showColorPicker() {
         this.setState({ colorPicker : true });
     }
     removeColorPicker() {
         this.setState({ colorPicker : false});
     }
-
     makeLayerVisible() {
         this.setState({ layerVisibleState : true });
         window.addWMSLayer(this.props.layer.orig_name, this.props.layer.color);
 
     }
-
     makeLayerInVisible() {
         this.setState({ layerVisibleState : false });
         window.hideWMSLayer(this.props.layer.orig_name);
@@ -627,6 +656,11 @@ class Layer extends Component {
                                 <h4 className="layer-title on-hover margin-outside"> {this.props.layer.name}</h4>
                                 <h6 className="layer-type margin-outside">{'(' + this.props.layer.type + ')'}</h6>
                             </div>
+                            {
+                                this.state.downloadShape ?
+                                    <Image src={Download_Loader} className="download-loader" />
+                                : ''
+                            }
                           {/* <Button id="zoomBtn" onClick={}>Zoom</Button> */}
                             {
                                 this.props.chosedlayer ?
@@ -766,9 +800,9 @@ class Layer extends Component {
                                         </Modal.Body>
                                     </Modal>
                                 <MenuItem onClick={()=>this.deleteLayer()}>Delete</MenuItem>
-
                                 <MenuItem onClick={() => this.downloadExcel() }>Download Excel</MenuItem>
                                 <MenuItem onClick={() => this.downloadGeoJson() }>Download GeoJson</MenuItem>
+                                <MenuItem onClick={() => this.downloadShapefile() }>Download Shape File</MenuItem>
                             </DropdownButton>
                             {
                                 this.state.colorPicker ? (<CompactPicker  color={ this.state.selectedColor }

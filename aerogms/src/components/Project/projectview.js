@@ -156,6 +156,7 @@ class ProjectView extends Component{
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
         this.normalLayer = this.normalLayer.bind(this); // to bring the layer back to normal form
     }
+    
     normalLayer() {
         debugger
         if(this.state.searchedFeatures.length > 0) {

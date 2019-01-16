@@ -7,9 +7,13 @@ const fs = require("fs");
 const path = require('path');
 const config = require('../../config/config');
 const request = require("request");
-var json2xls = require('json2xls');
+const json2xls = require('json2xls');// to convert json file to excel file
+const mapshaper = require('mapshaper');// to export shpefile from other data formats like json, geojson, etc.
+const zlib = require('zlib');
+const archiver = require('archiver');
 var excelFile = 'undefined';
 var geojsonFile = 'undefined';
+var shape_file = 'undefined';
 
 module.exports.exportExcel =function(req, res)
 {
@@ -32,7 +36,8 @@ module.exports.exportExcel =function(req, res)
                 excelFile = fileName;
                 fs.writeFileSync(path.join(__dirname,  `../../aerogms/build/${fileName}`), xlsx, 'binary');
                 console.log('excel created');
-                    res.status(200).json({message : 'File created successfully', filename : fileName});
+                    // res.status(200).json({message : 'File created successfully', filename : fileName});
+                    res.sendFile(`${req.body.layer_name}.zip`, {root : path.join(__dirname, `../../aerogms/build/`)});
             }
         }).
         catch(error=>{
@@ -63,7 +68,7 @@ module.exports.exportGeoJson = (req, res) => {
                 var queryStr = `select row_to_json(fc) from 
                 (select 'FeatureCollection' as "type",  array_to_json(array_agg(f)) as "features" from 
                 (select 'Feature' as "type", ST_AsGeoJSON(geom, 6) :: json as "geometry",(select json_strip_nulls(row_to_json(t)) 
-                from (select ${valueString}) t ) as "properties" from ${req.body.layer_name} limit 500) as f) as fc;`
+                from (select geom) t ) as "properties" from ${req.body.layer_name}) as f) as fc;`
                 db.any(queryStr)
                 .then((data) => {
                 console.log(data);
@@ -82,11 +87,114 @@ module.exports.exportGeoJson = (req, res) => {
             }
         }).
         catch(error=>{
-            console.log(err);
+            console.log(error);
             res.status(500).send('Error in fetching records!');
         })
 }
+module.exports.exportShapeFile = (req, res) => {
+    console.log('In download shapefile');
+    if(geojsonFile !== 'undefined') {
+        var filepath = path.join(__dirname,  `../../aerogms/build/${geojsonFile}`);
+        fs.unlink(filepath, (err) => {
+            if(err) 
+                console.error(err);
+        });
+    }
+    if(shape_file !== 'undefined') {
+        var filepath = path.join(__dirname,  `../../aerogms/build/${shape_file}`);
+        fs.unlink(filepath, (err) => {
+            if(err) 
+                console.error(err);
+        });
+    }
+    let layer_name = req.query.layer_name;
+    db.any(`select * from ${layer_name};`)
+        .then(result=>{
+            if(result.length>0)
+            {
+                var resultKeys = [];
+                resultKeys.push(Object.keys(result[0]));
+                var rindex = resultKeys[0].indexOf('geom');
+                resultKeys[0].splice(rindex, 1);
+                // console.log(`Keys in result are ${resultKeys}`);
+                var valueString = resultKeys.toString();
+                // console.log(resultKeys);
+                var queryStr = `select row_to_json(fc) from 
+                (select 'FeatureCollection' as "type",  array_to_json(array_agg(f)) as "features" from 
+                (select 'Feature' as "type", ST_AsGeoJSON(geom, 6) :: json as "geometry",(select json_strip_nulls(row_to_json(t)) 
+                from (select geom) t ) as "properties" from ${layer_name}) as f) as fc;`
+                db.any(queryStr)
+                .then((data) => {
+                    // console.log(data);
+                    var fileName = `geojson${new Date().getTime()}.json`;
+                    geojsonFile = fileName;
+                    var newjson = JSON.stringify(data[0].row_to_json);
 
+                    fs.writeFileSync(path.join(__dirname,  `../../aerogms/build/${fileName}`), newjson);
+                    fs.readFile(path.join(__dirname,  `../../aerogms/build/${fileName}`), 'utf-8', (err, result) => {
+                        // console.log(result);
+                        let shpFileCommand = `-i input.geojson -o ${layer_name}.shp`;
+                        mapshaper.applyCommands(shpFileCommand, {'input.geojson' : result}, (err, data) => {
+                            var fileNameArray = [];
+                            for(const i in data) {
+                                fileNameArray.push(i);
+                            }
+                            let output = fs.createWriteStream(path.join(__dirname,  `../../aerogms/build/${layer_name}.zip`));
+                            let archive = archiver('zip');
+                            // listen for all archive data to be written
+                            // 'close' event is fired only when a file descriptor is involved
+                            output.on('close', function() {
+                                console.log(archive.pointer() + ' total bytes');
+                                console.log('archiver has been finalized and the output file descriptor has closed.');
+                                shape_file = `${layer_name}.zip`;
+                                fs.readFile(path.join(__dirname, `../../aerogms/build/${layer_name}.zip`), (err, result) => {
+                                    if(err) 
+                                        throw err;
+                                    else {
+                                        res.setHeader('Content-disposition', 'attachment; filename= myFile.zip');
+                                        res.setHeader('Content-type', 'application/octet-stream');
+                                        res.send(result);
+                                    }
+                                });
+                            });
+                            output.on('end', function() {
+                                console.log('Data has been drained');
+                            });
+                            // good practice to catch warnings (ie stat failures and other non-blocking errors)
+                            archive.on('warning', function(err) {
+                                if (err.code === 'ENOENT') {
+                                  // log warning
+                                } else {
+                                  // throw error
+                                  throw err;
+                                }
+                            });
+                            // good practice to catch this error explicitly
+                            archive.on('error', function(err) {
+                              throw err;
+                            });
+                            // pipe archive data to the file
+                            archive.pipe(output);
+                            for(let i = 0; i<fileNameArray.length; i++) {
+                                archive.append(data[fileNameArray[i]], {name : `${fileNameArray[i]}`});
+                            }
+                            archive.finalize();
+                        });
+                    })
+                })
+                .catch((err) =>{
+                    console.log(err);
+                    res.status(500).send('Error in downloading file');
+                });
+            } else {
+                res.status(404).send({message : 'Error in genearating shapefile'});
+            }
+        }).
+        catch(error => {
+            console.log(error);
+            res.status(500).send('Error in fetching records!');
+        })
+}
 module.exports.user_signup =  function(req, res){
 
     let valArr =[];

@@ -66,8 +66,8 @@ app.get('*', (req, res)=>{
 });
 
 // app.get('/download', (req, res)=>{
-//     res.sendFile(path.join(__dirname, './aerogms/build/exceldata1546245755455.xlsx'));
-//   });
+//     res.sendFile(path.join(__dirname, './aerogms/build/sangat_mandi_props.zip'));
+// });
   
 app.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));

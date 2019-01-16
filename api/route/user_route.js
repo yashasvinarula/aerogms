@@ -44,9 +44,9 @@ router.post('/update_layer_attrib', auth.loggedIn, layer_cntrlr.update_layer_att
 router.post('/search_attrib', auth.loggedIn, layer_cntrlr.search_attrib);
 
 router.post('/getmsevaToken', cntrlr.getmsevaToken);
-router.post('/downloadExcel', cntrlr.exportExcel);
-router.post('/downloadgeojson', cntrlr.exportGeoJson);
-
+router.post('/downloadExcel', auth.loggedIn, cntrlr.exportExcel);
+router.post('/downloadgeojson', auth.loggedIn, cntrlr.exportGeoJson);
+router.get('/downloadShapeFile', auth.loggedIn, cntrlr.exportShapeFile);
 
 /*for mobile user*/
 //-----------------------------

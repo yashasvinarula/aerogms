@@ -14,6 +14,13 @@
     margin-bottom: 8px;
     position: relative;
 }
+.download-loader {
+    position: absolute;
+    top: 0;
+    left: 200px;
+    width: 35px;
+    height: 35px;
+}
 #zoomBtn{
         position: absolute;
         top: 17%;
